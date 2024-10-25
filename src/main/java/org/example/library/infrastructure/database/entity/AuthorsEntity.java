@@ -27,6 +27,6 @@ public class AuthorsEntity {
     @Column(name = "surname")
     private String surname;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "authors")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private Set<BooksEntity> books;
 }

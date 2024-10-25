@@ -1,0 +1,10 @@
+drop table if exists categories cascade;
+drop table if exists authors cascade;
+drop table if exists books cascade;
+drop table if exists users cascade;
+drop table if exists loans cascade;
+drop table if exists reservations cascade;
+drop table if exists flyway_schema_history cascade;
+drop table if exists library_app_role cascade;
+drop table if exists library_app_user cascade;
+drop table if exists library_app_user_role cascade;
