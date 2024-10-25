@@ -20,7 +20,7 @@ public class Books {
     Integer copies;
     Boolean available;
     Authors author;
-    Loans category;
+    Categories category;
     List<Loans> loans;
     List<Reservations> reservations;
 }

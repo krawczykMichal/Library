@@ -16,6 +16,7 @@ public class Users {
     String surname;
     String email;
     String phoneNumber;
+    String username;
     List<Loans> loans;
     List<Reservations> reservations;
     User user;

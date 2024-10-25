@@ -10,4 +10,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CategoriesDTO {
+
+    private Integer categoryId;
+    private String name;
+
+    private String categoryBooksTitle;
 }
