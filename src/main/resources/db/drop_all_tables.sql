@@ -2,6 +2,7 @@ drop table if exists categories cascade;
 drop table if exists authors cascade;
 drop table if exists books cascade;
 drop table if exists users cascade;
+drop table if exists employees cascade;
 drop table if exists loans cascade;
 drop table if exists reservations cascade;
 drop table if exists flyway_schema_history cascade;
