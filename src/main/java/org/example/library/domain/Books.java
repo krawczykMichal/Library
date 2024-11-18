@@ -21,6 +21,7 @@ public class Books {
     Boolean available;
     Authors author;
     Categories category;
+    CartItem cartItem;
     List<Loans> loans;
     List<Reservations> reservations;
 }

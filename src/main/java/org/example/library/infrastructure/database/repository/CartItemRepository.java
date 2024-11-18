@@ -1,10 +1,10 @@
 package org.example.library.infrastructure.database.repository;
 
 import lombok.AllArgsConstructor;
-import org.example.library.business.dao.ReservationsDao;
+import org.example.library.business.dao.CartItemDao;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @AllArgsConstructor
-public class ReservationsRepository implements ReservationsDao {
+public class CartItemRepository implements CartItemDao {
 }

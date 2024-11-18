@@ -1,4 +1,10 @@
 package org.example.library.infrastructure.database.repository;
 
-public class LoansRepository {
+import lombok.AllArgsConstructor;
+import org.example.library.business.dao.LoansDao;
+import org.springframework.stereotype.Repository;
+
+@Repository
+@AllArgsConstructor
+public class LoansRepository implements LoansDao {
 }

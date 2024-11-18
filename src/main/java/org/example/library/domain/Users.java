@@ -19,6 +19,7 @@ public class Users {
     String username;
     List<Loans> loans;
     List<Reservations> reservations;
+    Cart cart;
     User user;
     Role role;
 }

@@ -54,4 +54,7 @@ public class BooksEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
     private List<ReservationsEntity> reservations;
+
+    @OneToOne(mappedBy = "cartItem")
+    private CartItemEntity cartItem;
 }

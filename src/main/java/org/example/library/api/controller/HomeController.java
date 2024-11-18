@@ -14,4 +14,9 @@ public class HomeController {
     public String homePage() {
         return "home";
     }
+
+    @GetMapping(value = "/library/employee")
+    public String libraryEmployeePage() {
+        return "library_employee";
+    }
 }

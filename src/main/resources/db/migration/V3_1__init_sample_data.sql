@@ -395,6 +395,8 @@ values (1, 61, '2024-11-28 16:00:00'),
        (30, 90, '2024-12-29 17:30:00');
 
 
+
+
 insert into library_app_user (username, email, password, active)
 values ('mNowak', 'Mnowak@email.com', '$2a$12$J19FFc1YDRkwo6.bZqbSO.eGZ1bcx5vg0nBCG5L4/Vt3obgBB.c12', true),
        ('jKowalski', 'Jkowalski@email.com', '$2a$12$J19FFc1YDRkwo6.bZqbSO.eGZ1bcx5vg0nBCG5L4/Vt3obgBB.c12', true),
