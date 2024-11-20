@@ -8,10 +8,10 @@ import java.util.List;
 @Value
 @Builder
 @EqualsAndHashCode(of = "cartId")
-@ToString(of = {"cartId", "user", "cartItem"})
+@ToString(of = {"cartId", "userId", "cartItem"})
 public class Cart {
 
     Integer cartId;
-    Users user;
+    Integer userId;
     List<CartItem> cartItem;
 }

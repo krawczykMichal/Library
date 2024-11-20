@@ -18,6 +18,7 @@ import java.util.Optional;
 public class UsersService {
 
     private final UsersDao usersDao;
+    private final CartService cartService;
 
     @Transactional
     public void saveUser(UsersDTO usersDTO) {
