@@ -19,11 +19,5 @@ public class LoansDTO {
     private LocalDateTime returnDate;
     private Boolean returned;
 
-    private String loansUsersName;
-    private String loansUsersSurname;
-    private String loansUsersUsername;
-    @Email
-    private String loansUsersEmail;
-
-    private String loansBooksTitle;
+    private Integer loanRequestId;
 }

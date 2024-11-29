@@ -1,5 +1,7 @@
 package org.example.library.business.dao;
 
+import org.example.library.api.dto.BooksDTO;
+import org.example.library.api.dto.CartItemDTO;
 import org.example.library.domain.Cart;
 
 import java.util.Optional;

@@ -32,14 +32,9 @@ public class LoansEntity {
     private Boolean returned;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UsersEntity user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private BooksEntity book;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id")
     private EmployeesEntity employee;
+
+    @OneToOne(mappedBy = "loanRequest")
+    private LoanRequestEntity loanRequest;
 }

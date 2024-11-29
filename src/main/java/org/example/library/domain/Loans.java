@@ -15,7 +15,6 @@ public class Loans {
     LocalDateTime loanDate;
     LocalDateTime returnDate;
     Boolean returned;
-    Users user;
-    Books book;
+    LoanRequest loanRequest;
     Employees employee;
 }

@@ -61,9 +61,12 @@ public class BooksController {
             String isbn,
             Model model,
             @ModelAttribute("booksDTO")
-            BooksDTO booksDTO
+            BooksDTO booksDTO,
+            HttpSession httpSession
     ) {
        Books book = booksService.findByIsbn(isbn);
+
+       httpSession.setAttribute("isbn", isbn);
 
        cartItemService.addToCartItem(book);
 

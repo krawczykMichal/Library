@@ -1,6 +1,8 @@
 package org.example.library.infrastructure.database.repository;
 
 import lombok.AllArgsConstructor;
+import org.example.library.api.dto.BooksDTO;
+import org.example.library.api.dto.CartItemDTO;
 import org.example.library.business.dao.CartDao;
 import org.example.library.domain.Cart;
 import org.example.library.infrastructure.database.entity.CartEntity;
