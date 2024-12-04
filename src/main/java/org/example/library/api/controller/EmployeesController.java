@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
@@ -95,25 +96,39 @@ public class EmployeesController {
 
     @GetMapping(value = "/employee/cart/loanRequest/details/{loanRequestId}")
     public String loanRequestDetails(
-
+            @ModelAttribute("loanRequestDTO")
+            LoanRequestDTO loanRequestDTO,
+            @PathVariable("loanRequestId")
+            Integer loanRequestId,
+            Model model
     ) {
+        loanRequestService.findById(loanRequestId);
 
-        // @TODO zrobić to tak aby wybrać jeden loan request z listy i po wejściu w niego pracownik potwierdza wypożyczenie poprzez zapisanie do bazy danych prośby jako loan
+        model.addAttribute("loanRequestDTO", loanRequestDTO);
+
+        return "cart_loan_request_details";
     }
 
-    @PostMapping(value = "/employee/cart/loanRequest/details/")
+    @PostMapping(value = "/employee/cart/loanRequest/details/{loanRequestId}")
     public String loan(
             @ModelAttribute("loansDTO")
             LoansDTO loansDTO,
+            @PathVariable("loanRequestId")
+            Integer loanRequestId,
             Model model,
             HttpSession httpSession
     ) {
         String username = httpSession.getAttribute("username").toString();
 
         Employees employee = employeesService.findByUsername(username);
+        LoanRequest loanRequest = loanRequestService.findById(loanRequestId);
 
-        List<LoanRequest> loanRequest = loanRequestService.findAll();
 
         loansService.makeLoan(loanRequest, employee);
+
+        model.addAttribute("loansDTO", loansDTO);
+        //@TODO dostęp do wypożyczenia musi mieć użytkownik aby mógł sprawdzać do kiedy ma wypożyczone jakie książki, trzeba ustalić jak to dokładnie robić. sprawdzić bazę danych i relacje gdzie user powinien jeszcze się znaleźć i poprawić to aby prośba o wypożyczenie pojawiała się z danymi użytkownika
+
+        return "redirect:/employee/cart/loanRequest-list";
     }
 }

@@ -13,6 +13,6 @@ import java.time.LocalDateTime;
 public class LoanRequest {
 
     Integer loanRequestId;
-    Reservations reservations;
+    LoanRequestItem loanRequestItem;
     LocalDateTime requestDate;
 }

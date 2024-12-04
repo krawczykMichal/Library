@@ -9,6 +9,7 @@ import org.example.library.infrastructure.database.repository.mapper.LoanRequest
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
@@ -28,5 +29,10 @@ public class LoanRequestRepository implements LoanRequestDao {
     public List<LoanRequest> findAll() {
         List<LoanRequestEntity> all = loanRequestJpaRepository.findAll();
         return all.stream().map(loanRequestEntityMapper::mapFromLoanRequestEntity).toList();
+    }
+
+    @Override
+    public Optional<LoanRequest> findById(Integer loanRequestId) {
+        return loanRequestJpaRepository.findById(loanRequestId).map(loanRequestEntityMapper::mapFromLoanRequestEntity);
     }
 }
