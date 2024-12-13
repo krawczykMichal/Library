@@ -11,4 +11,6 @@ create table reservations
     constraint fk_library_reservation_book
         foreign key (book_id)
             references books (book_id)
+
+-- @TODO poprawić czyli przemyśleć koncepcje o wyciągnięciu rzeczy z koszyka skoro tylko w koszyku można zrobić loan i reservation i poprawić wszystkie rzeczy z tym związane
 );
