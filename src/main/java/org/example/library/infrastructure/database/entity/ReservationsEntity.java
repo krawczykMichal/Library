@@ -25,10 +25,6 @@ public class ReservationsEntity {
     private LocalDateTime reservationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private BooksEntity book;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UsersEntity user;
+    @JoinColumn(name = "cart_id")
+    private CartEntity cart;
 }

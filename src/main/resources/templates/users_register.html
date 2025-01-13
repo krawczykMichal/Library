@@ -1,0 +1,93 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <title>Library app</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <h2>If you are first time here, create your account</h2>
+</div>
+<br>
+<div class="container">
+    <div>
+        <form action="#" th:action="@{/user/register}" th:object="${usersDTO}" method="POST">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="name">Name:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="name" th:field="*{name}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="surname">Surname:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="surname" th:field="*{surname}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="email">Email:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="email" th:field="*{email}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="username">Username:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="username" th:field="*{username}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="phoneNumber">PhoneNumber:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="usersUserPassword">Password:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="password" id="usersUserPassword" th:field="*{usersUserPassword}"/>
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <input type="submit" value="Register!" class="btn btn-success">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>

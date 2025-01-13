@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ReservationsJpaRepository extends JpaRepository<ReservationsEntity, Integer> {
 
-    @Query("select res from ReservationsEntity res where res.user.userId = :userId")
+    @Query("select res from ReservationsEntity res where res.cart.user.userId = :userId")
     Optional<ReservationsEntity> findByUserId(Integer userId);
 }

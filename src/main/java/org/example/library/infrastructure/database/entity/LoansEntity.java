@@ -35,6 +35,6 @@ public class LoansEntity {
     @JoinColumn(name = "employee_id")
     private EmployeesEntity employee;
 
-    @OneToOne(mappedBy = "loanRequest")
+    @OneToOne(mappedBy = "loan")
     private LoanRequestEntity loanRequest;
 }

@@ -5,12 +5,14 @@ import org.example.library.api.dto.BooksDTO;
 import org.example.library.api.dto.CartDTO;
 import org.example.library.api.dto.CartItemDTO;
 import org.example.library.business.dao.CartDao;
+import org.example.library.domain.Books;
 import org.example.library.domain.Cart;
 import org.example.library.domain.exception.NotEnoughCopiesException;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -18,14 +20,17 @@ import java.util.Optional;
 public class CartService {
 
     private final CartDao cartDao;
+    private final CartItemService cartItemService;
 
     @Transactional
-    public void saveCart(CartDTO cartDTO, Integer userId) {
+    public Cart saveCart(CartDTO cartDTO, Integer userId) {
         if (cartDao.findByUserId(userId).isPresent()) {
             cartDao.findByUserId(userId).get();
         }
         Cart cart = registerCart(cartDTO, userId);
         cartDao.saveCart(cart);
+
+        return cart;
     }
 
     private Cart registerCart(CartDTO cartDTO, Integer userId) {
@@ -41,4 +46,17 @@ public class CartService {
         return cart.get();
     }
 
+
+    public Cart findById(Integer cartId) {
+        Optional<Cart> cart = cartDao.findById(cartId);
+        if (cart.isEmpty()) {
+            throw new NotFoundException("Could not find cart with cartId: " + cartId);
+        }
+        return cart.get();
+    }
+
+    @Transactional
+    public void addItemToCart(Cart cart, Books book) {
+        cartItemService.addToCartItem(book, cart);
+    }
 }

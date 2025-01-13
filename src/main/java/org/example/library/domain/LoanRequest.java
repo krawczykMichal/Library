@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class LoanRequest {
 
     Integer loanRequestId;
-    LoanRequestItem loanRequestItem;
+    Reservations reservation;
     LocalDateTime requestDate;
+    Cart cart;
 }

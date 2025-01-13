@@ -32,5 +32,5 @@ public class CartItemEntity {
     private CartEntity cart;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private BooksEntity books;
+    private BooksEntity book;
 }

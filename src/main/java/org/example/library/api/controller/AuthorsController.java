@@ -23,7 +23,7 @@ public class AuthorsController {
     ) {
         model.addAttribute("authorsDTO", authorsDTO);
 
-        return "addAuthor";
+        return "add_author";
     }
 
     @PostMapping(value = "/author/add")

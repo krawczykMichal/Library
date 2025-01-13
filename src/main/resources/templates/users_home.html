@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <title>Library app</title>
+</head>
+<body>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</div>
+<br>
+<div class="container">
+    <div class="row mt-3">
+        <p>You can check available books here</p>
+        <div class="col-md-6">
+            <a th:href="@{/book/list}" class="btn btn-info" role="button">Books</a>
+        </div>
+    </div>
+    <div class="row mt-3">
+        <p>or you can see your profile here</p>
+        <div class="col-md-6">
+            <a th:href="@{/user/{userId}/details(userId=${usersDTO.userId})}" class="btn btn-info" role="button">Profiles
+                details</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

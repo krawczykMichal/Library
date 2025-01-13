@@ -20,10 +20,8 @@ public class CartController {
 
     private final CartService cartService;
     private final UsersService usersService;
-    private final BooksService booksService;
     private final ReservationsService reservationsService;
     private final LoanRequestService loanRequestService;
-    private final LoansService loansService;
 
 
     @GetMapping(value = "/cart/{userId}/create")
@@ -62,9 +60,16 @@ public class CartController {
 
         userId1 = userId;
 
-        cartService.saveCart(cartDTO, userId);
+        Cart cart = cartService.saveCart(cartDTO, userId);
+
+        Integer cartId = cart.getCartId();
+
+        cartService.findById(cartId);
+
+        httpSession.setAttribute("cartId", cartId);
 
         model.addAttribute("cartDTO", cartDTO);
+        //@TODO sprawdzić czy ten create działa tylko dla nowych użytkowników czy tworzy koszyk również dla istniejących
 
         return "redirect:/user/home";
     }
@@ -84,13 +89,36 @@ public class CartController {
 
         userId1 = userId;
 
-        Cart cart = cartService.findCartByUserId(userId);
+        Integer cartId = (Integer) httpSession.getAttribute("cartId");
+
+        Cart cart = cartService.findById(cartId);
 
         List<CartItem> cartItem = cart.getCartItem();
 
         model.addAttribute("cartItem", cartItem);
+        model.addAttribute("cartDTO", cartDTO);
 
         return "cart_details";
+    }
+
+    @GetMapping(value = "/cart/{userId}/add")
+    public String addToCartPage(
+            @PathVariable Integer userId,
+            @ModelAttribute("cartDTO")
+            CartDTO cartDTO,
+            @ModelAttribute("cartItemDTO")
+            CartItemDTO cartItemDTO,
+            Model model,
+            HttpSession httpSession
+    ) {
+        String username = httpSession.getAttribute("username").toString();
+        Users userByUsername = usersService.findByUsername(username);
+
+        Integer userId1 = userByUsername.getUserId();
+
+        userId1 = userId;
+
+        return "add_to_cart";
     }
 
     @GetMapping(value = "/cart/reservation")
@@ -112,20 +140,40 @@ public class CartController {
             Model model,
             HttpSession httpSession
     ) {
-        String username = httpSession.getAttribute("username").toString();
-        Users userByUsername = usersService.findByUsername(username);
+        Integer cartId = (Integer) httpSession.getAttribute("cartId");
 
-        String isbn = httpSession.getAttribute("isbn").toString();
-        Books book = booksService.findByIsbn(isbn);
+        Cart cart = cartService.findById(cartId);
 
-        reservationsService.makeReservation(userByUsername, book);
+        reservationsService.makeReservation(cart);
 
         model.addAttribute("reservationDTO", reservationsDTO);
 
-        return "redirect:/user/home";
+        return "redirect:/cart/reservation/details/{userId}";
     }
 
-    @GetMapping(value = "/cart/loan/request")
+    @GetMapping(value = "/cart/reservation/details/{userId}")
+    public String reservationDetailsPage(
+            @PathVariable Integer userId,
+            @ModelAttribute("cartDTO")
+            CartDTO cartDTO,
+            Model model,
+            HttpSession httpSession
+    ) {
+        String username = httpSession.getAttribute("username").toString();
+        Users userByUsername = usersService.findByUsername(username);
+
+        Integer userId1 = userByUsername.getUserId();
+
+        userId1 = userId;
+
+        reservationsService.findByUserId(userId);
+
+        model.addAttribute("cartDTO", cartDTO);
+
+        return "reservation_details";
+    }
+
+    @GetMapping(value = "/cart/reservation/loan/request")
     public String loanRequestPage(
             @ModelAttribute("reservationsDTO")
             ReservationsDTO reservationsDTO,
@@ -137,7 +185,7 @@ public class CartController {
         return "cart_loan_request";
     }
 
-    @PostMapping(value = "/cart/loan/request")
+    @PostMapping(value = "/cart/reservation/loan/request")
     public String loanRequest(
             @ModelAttribute("reservationsDTO")
             ReservationsDTO reservationsDTO,
@@ -152,31 +200,47 @@ public class CartController {
 
         loanRequestService.loanRequest(reservation);
 
+
         model.addAttribute("reservationDTO", reservationsDTO);
 
         return "loan_request_success";
     }
 
-    @GetMapping(value = "/employee/cart/loan")
+    @GetMapping(value = "/cart/loan/request")
     public String loanPage(
-            @ModelAttribute("loansDTO")
-            LoansDTO loansDTO,
-            Model model
+            @ModelAttribute("CartDTO")
+            CartDTO cartDTO,
+            Model model,
+            HttpSession httpSession
     ) {
-        model.addAttribute("loansDTO", loansDTO);
+        Integer cartId = (Integer) httpSession.getAttribute("cartId");
+
+        Cart cart = cartService.findById(cartId);
+
+        model.addAttribute("cartDTO", cartDTO);
 
         return "cart_loan";
     }
 
-    @PostMapping(value = "/employee/cart/loan")
+    @PostMapping(value = "/cart/loan/request")
     public String loan(
-            @ModelAttribute("loansDTO")
-            LoansDTO loansDTO,
+            @ModelAttribute("CartDTO")
+            CartDTO cartDTO,
             Model model,
             HttpSession httpSession
     ) {
-        loansService.
+        Integer cartId = (Integer) httpSession.getAttribute("cartId");
+
+        Cart cart = cartService.findById(cartId);
+
+        loanRequestService.makeLoanRequestFromCart(cart);
+
+        model.addAttribute("cartDTO", cartDTO);
+
+        return "redirect:/user/home";
     }
+
+
 
 
 }

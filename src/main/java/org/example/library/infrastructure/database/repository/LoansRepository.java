@@ -9,6 +9,10 @@ import org.example.library.infrastructure.database.repository.jpa.LoansJpaReposi
 import org.example.library.infrastructure.database.repository.mapper.LoansEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Repository
 @AllArgsConstructor
 public class LoansRepository implements LoansDao {
@@ -21,5 +25,23 @@ public class LoansRepository implements LoansDao {
         LoansEntity toSave = loansEntityMapper.mapToLoansEntity(loan);
         LoansEntity saved = loansJpaRepository.save(toSave);
         return loansEntityMapper.mapFromLoansEntity(saved);
+    }
+
+    @Override
+    public List<Loans> findAllByUserId(Integer userId) {
+        List<LoansEntity> all = loansJpaRepository.findAll();
+        return all.stream().map(loansEntityMapper::mapFromLoansEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Loans> findAllByUserId(Integer userId, boolean returned) {
+        List<LoansEntity> all = loansJpaRepository.findAllWithReturned(userId, returned);
+        return all.stream().map(loansEntityMapper::mapFromLoansEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Loans> findById(Integer loanId) {
+        Optional<LoansEntity> loansEntity = loansJpaRepository.findById(loanId);
+        return loansEntity.map(loansEntityMapper::mapFromLoansEntity);
     }
 }

@@ -13,6 +13,5 @@ public class Reservations {
 
     Integer reservationId;
     LocalDateTime reservationDate;
-    Books book;
-    Users user;
+    Cart cart;
 }

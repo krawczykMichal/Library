@@ -32,4 +32,10 @@ public class CartRepository implements CartDao {
         return cartJpaRepository.findByUserId(userId);
     }
 
+    @Override
+    public Optional<Cart> findById(Integer cartId) {
+        cartJpaRepository.findById(cartId);
+        return cartJpaRepository.findById(cartId).map(cartEntityMapper::mapFromCartEntity);
+    }
+
 }

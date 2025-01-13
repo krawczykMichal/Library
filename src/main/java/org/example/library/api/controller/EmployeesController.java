@@ -45,7 +45,7 @@ public class EmployeesController {
 
         String username = getEmailFromAuthentication(authentication);
 
-        httpSession.setAttribute("username", username);
+        httpSession.setAttribute("usernameEmployee", username);
 
         return "library_employee_home";
     }
@@ -118,7 +118,7 @@ public class EmployeesController {
             Model model,
             HttpSession httpSession
     ) {
-        String username = httpSession.getAttribute("username").toString();
+        String username = httpSession.getAttribute("usernameEmployee").toString();
 
         Employees employee = employeesService.findByUsername(username);
         LoanRequest loanRequest = loanRequestService.findById(loanRequestId);
@@ -127,8 +127,10 @@ public class EmployeesController {
         loansService.makeLoan(loanRequest, employee);
 
         model.addAttribute("loansDTO", loansDTO);
-        //@TODO dostęp do wypożyczenia musi mieć użytkownik aby mógł sprawdzać do kiedy ma wypożyczone jakie książki, trzeba ustalić jak to dokładnie robić. sprawdzić bazę danych i relacje gdzie user powinien jeszcze się znaleźć i poprawić to aby prośba o wypożyczenie pojawiała się z danymi użytkownika
 
         return "redirect:/employee/cart/loanRequest-list";
     }
+
+
+
 }

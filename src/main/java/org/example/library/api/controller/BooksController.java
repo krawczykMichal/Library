@@ -7,6 +7,7 @@ import org.example.library.business.BooksService;
 import org.example.library.business.CartItemService;
 import org.example.library.business.CartService;
 import org.example.library.domain.Books;
+import org.example.library.domain.Cart;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +22,7 @@ import java.util.List;
 public class BooksController {
 
     private final BooksService booksService;
-    private final CartItemService cartItemService;
+    private final CartService cartService;
 
 
     @GetMapping(value = "/book/home")
@@ -49,12 +50,13 @@ public class BooksController {
             @ModelAttribute("booksDTO")
             BooksDTO booksDTO
     ) {
-       Books book = booksService.findByIsbn(isbn);
+        Books book = booksService.findByIsbn(isbn);
 
-       model.addAttribute("book", book);
+        model.addAttribute("book", book);
 
         return "book_details";
     }
+
     @PostMapping(value = "/book/{isbn}/details")
     public String bookDetails(
             @PathVariable("isbn")
@@ -64,13 +66,17 @@ public class BooksController {
             BooksDTO booksDTO,
             HttpSession httpSession
     ) {
-       Books book = booksService.findByIsbn(isbn);
+        Integer cartId = (Integer) httpSession.getAttribute("cartId");
 
-       httpSession.setAttribute("isbn", isbn);
+        Cart cart = cartService.findById(cartId);
 
-       cartItemService.addToCartItem(book);
+        Books book = booksService.findByIsbn(isbn);
 
-       model.addAttribute("book", book);
+        httpSession.setAttribute("isbn", isbn);
+
+        cartService.addItemToCart(cart, book);
+
+        model.addAttribute("book", book);
 
         return "redirect:/book/list";
     }

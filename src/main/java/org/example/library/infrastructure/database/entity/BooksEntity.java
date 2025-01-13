@@ -49,12 +49,6 @@ public class BooksEntity {
     @JoinColumn(name = "category_id")
     private CategoriesEntity category;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-    private List<LoansEntity> loans;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "book")
-    private List<ReservationsEntity> reservations;
-
-    @OneToOne(mappedBy = "cartItem")
+    @OneToOne(mappedBy = "book")
     private CartItemEntity cartItem;
 }

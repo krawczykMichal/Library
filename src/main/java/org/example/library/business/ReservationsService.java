@@ -3,6 +3,7 @@ package org.example.library.business;
 import lombok.AllArgsConstructor;
 import org.example.library.business.dao.ReservationsDao;
 import org.example.library.domain.Books;
+import org.example.library.domain.Cart;
 import org.example.library.domain.Reservations;
 import org.example.library.domain.Users;
 import org.example.library.domain.exception.NotFoundException;
@@ -19,10 +20,9 @@ public class ReservationsService {
     private final ReservationsDao reservationsDao;
 
     @Transactional
-    public void makeReservation(Users user, Books book) {
+    public void makeReservation(Cart cart) {
         Reservations reservation = Reservations.builder()
-                .user(user)
-                .book(book)
+                .cart(cart)
                 .reservationDate(LocalDateTime.now().plusDays(3L))
                 .build();
         reservationsDao.saveReservations(reservation);
@@ -35,4 +35,5 @@ public class ReservationsService {
         }
         return reservation.get();
     }
+
 }

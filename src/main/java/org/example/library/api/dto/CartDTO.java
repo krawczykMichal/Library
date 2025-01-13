@@ -14,5 +14,7 @@ public class CartDTO {
     private Integer cartId;
     private String userUsername;
     private String cartItemBookTitle;
+    private String cartItemBookAuthor;
+    private String cartItemBookIsbn;
     private Integer cartItemQuantity;
 }

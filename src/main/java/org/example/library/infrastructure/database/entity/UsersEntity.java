@@ -39,11 +39,6 @@ public class UsersEntity {
     private String phoneNumber;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<LoansEntity> loans;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<ReservationsEntity> reservations;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    private CartEntity cart;
+    private List<LoanRequestEntity> loanRequests;
+    
 }
