@@ -15,24 +15,24 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+            <a th:href="@{/admin/home}" class="btn btn-info" role="button">Home</a>
         </div>
     </div>
 </div>
 <br>
-<div th:object="${user}">
+<div th:object="${employeesDTO}">
     <p>name: <span th:text="*{name}"></span></p>
     <p>surname: <span th:text="*{surname}"></span></p>
     <p>username: <span th:text="*{username}"></span></p>
     <p>email: <span th:text="*{email}"></span></p>
-    <p>phone: <span th:text="*{phoneNumber}"></span></p>
+    <p>employee number: <span  th:text="*{employeeNumber}"></span></p>
 </div>
 
 <div>
-    <a th:href="@{/user/{userId}/update(userId=${user.userId})}" class="btn btn-info" role="button">Update profile</a>
+    <a th:href="@{/admin/employee/{employeeNumber}/update(employeeNumber=${employeesDTO.employeeNumber})}" class="btn btn-info" role="button">Update profile</a>
 </div>
 <br>
-<form th:action="@{/user/{userid}/delete(userId=${user.userId})}" method="post">
+<form th:action="@{/admin/employee/{employeeNumber}/delete(employeeNumber=${employeesDTO.employeeNumber})}" method="post">
     <input type="hidden" name="_method" value="delete" />
     <button type="submit">Delete profile</button>
 </form>

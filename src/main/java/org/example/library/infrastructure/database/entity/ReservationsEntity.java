@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "reservationsId")
-@ToString(of = {"reservationsId", "reservationDate"})
+@ToString(of = {"reservationsId", "reservationMakeDate", "reservationHoldToDate"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +21,11 @@ public class ReservationsEntity {
     @Column(name = "reservations_id")
     private Integer reservationsId;
 
-    @Column(name = "reservation_date")
-    private LocalDateTime reservationDate;
+    @Column(name = "reservation_make_date")
+    private LocalDateTime reservationMakeDate;
+
+    @Column(name = "reservation_hold_to_date")
+    private LocalDateTime reservationHoldToDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")

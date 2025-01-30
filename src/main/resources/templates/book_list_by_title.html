@@ -45,35 +45,33 @@
     </div>
 </div>
 <br>
-<h3>Cart details</h3>
-
-<p th:text="${cartDTO.userUsername}">Username: </p>
+<h3>Books list</h3>
 
 <table border="0">
     <thead>
     <tr>
+        <th>Title</th>
         <th>Category</th>
         <th>Author</th>
         <th>Isbn</th>
         <th>Publisher</th>
+        <th>Available</th>
     </tr>
     </thead>
     <tbody>
-
-    <tr th:each="cartItems : ${cart.cartItem}">
-        <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}" ></td>
-        <td th:text="${cartItems.book.isbn}"></td>
-        <td th:text="${cartItems.quantity}"></td>
+    <tr th:each="books : ${booksList}">
+        <td th:text="${books.title}"></td>
+        <td th:text="${books.category}"></td>
+        <td th:text="${books.author.name + ' ' + books.author.surname}" ></td>
+        <td th:text="${books.isbn}"></td>
+        <td th:text="${books.publisher}"></td>
+        <td th:text="${books.available}"></td>
         <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Details</a>
+            <a th:href="@{/book/{isbn}/details(isbn=${books.isbn})}" class="btn btn-info" role="button">Details</a>
         </td>
     </tr>
     </tbody>
 </table>
-<button>
-    <a th:href="@{/cart/make-reservation}">Make reservation</a>
-</button>
 
 </body>
 </html>

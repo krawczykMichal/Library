@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
 @Controller
 @AllArgsConstructor
 public class CartController {
@@ -22,57 +20,57 @@ public class CartController {
     private final UsersService usersService;
     private final ReservationsService reservationsService;
     private final LoanRequestService loanRequestService;
+    private final BooksService booksService;
 
 
-    @GetMapping(value = "/cart/{userId}/create")
-    public String createCartPage(
-            @PathVariable Integer userId,
-            @ModelAttribute("cartDTO")
-            CartDTO cartDTO,
-            Model model,
-            HttpSession httpSession
-    ) {
-
-        String username = httpSession.getAttribute("username").toString();
-        Users userByUsername = usersService.findByUsername(username);
-
-        Integer userId1 = userByUsername.getUserId();
-
-        userId1 = userId;
-
-        model.addAttribute("cartDTO", cartDTO);
-
-        return "cart_create";
-    }
-
-    @PostMapping(value = "/cart/{userId}/create")
-    public String createCart(
-            @PathVariable Integer userId,
-            @ModelAttribute("cartDTO")
-            CartDTO cartDTO,
-            Model model,
-            HttpSession httpSession
-    ) {
-        String username = httpSession.getAttribute("username").toString();
-        Users userByUsername = usersService.findByUsername(username);
-
-        Integer userId1 = userByUsername.getUserId();
-
-        userId1 = userId;
-
-        Cart cart = cartService.saveCart(cartDTO, userId);
-
-        Integer cartId = cart.getCartId();
-
-        cartService.findById(cartId);
-
-        httpSession.setAttribute("cartId", cartId);
-
-        model.addAttribute("cartDTO", cartDTO);
-        //@TODO sprawdzić czy ten create działa tylko dla nowych użytkowników czy tworzy koszyk również dla istniejących
-
-        return "redirect:/user/home";
-    }
+//    @GetMapping(value = "/cart/{userId}/create")
+//    public String createCartPage(
+//            @PathVariable Integer userId,
+//            @ModelAttribute("cartDTO")
+//            CartDTO cartDTO,
+//            Model model,
+//            HttpSession httpSession
+//    ) {
+//
+//        String username = httpSession.getAttribute("username").toString();
+//        Users userByUsername = usersService.findByUsername(username);
+//
+//        Integer userId1 = userByUsername.getUserId();
+//
+//        userId1 = userId;
+//
+//        model.addAttribute("cartDTO", cartDTO);
+//
+//        return "cart_create";
+//    }
+//
+//    @PostMapping(value = "/cart/{userId}/create")
+//    public String createCart(
+//            @PathVariable Integer userId,
+//            @ModelAttribute("cartDTO")
+//            CartDTO cartDTO,
+//            Model model,
+//            HttpSession httpSession
+//    ) {
+//        String username = httpSession.getAttribute("username").toString();
+//        Users userByUsername = usersService.findByUsername(username);
+//
+//        Integer userId1 = userByUsername.getUserId();
+//
+//        userId1 = userId;
+//
+//        Cart cart = cartService.saveCart(userId);
+//
+//        Integer cartId = cart.getCartId();
+//
+//        cartService.findById(cartId);
+//
+//        httpSession.setAttribute("cartId", cartId);
+//
+//        model.addAttribute("cartDTO", cartDTO);
+//
+//        return "redirect:/user/home";
+//    }
 
     @GetMapping(value = "/cart/{userId}/details")
     public String cartDetailsPage(
@@ -93,17 +91,16 @@ public class CartController {
 
         Cart cart = cartService.findById(cartId);
 
-        List<CartItem> cartItem = cart.getCartItem();
 
-        model.addAttribute("cartItem", cartItem);
+        model.addAttribute("cart", cart);
         model.addAttribute("cartDTO", cartDTO);
 
         return "cart_details";
     }
 
-    @GetMapping(value = "/cart/{userId}/add")
+    @PostMapping(value = "/cart/{isbn}/add")
     public String addToCartPage(
-            @PathVariable Integer userId,
+            @PathVariable String isbn,
             @ModelAttribute("cartDTO")
             CartDTO cartDTO,
             @ModelAttribute("cartItemDTO")
@@ -114,30 +111,40 @@ public class CartController {
         String username = httpSession.getAttribute("username").toString();
         Users userByUsername = usersService.findByUsername(username);
 
-        Integer userId1 = userByUsername.getUserId();
+        Integer userId = userByUsername.getUserId();
 
-        userId1 = userId;
+        Cart cartByUserId = cartService.findCartByUserId(userId);
 
-        return "add_to_cart";
+        Books byIsbn = booksService.findByIsbn(isbn);
+
+        cartService.addItemToCart(cartByUserId, byIsbn);
+
+        return "redirect:/book/list";
     }
 
-    @GetMapping(value = "/cart/reservation")
+    @GetMapping(value = "/cart/make-reservation")
     public String reservationPage(
-            @ModelAttribute("reservationsDTO")
-            ReservationsDTO reservationsDTO,
-            Model model
+            @ModelAttribute("reservations")
+            Reservations reservations,
+            Model model,
+            HttpSession httpSession
     ) {
+        String username = httpSession.getAttribute("username").toString();
+        Users userByUsername = usersService.findByUsername(username);
 
-        model.addAttribute("reservationsDTO", reservationsDTO);
+        Integer userId = userByUsername.getUserId();
 
-        return "cart_reservation";
+        Cart cartByUserId = cartService.findCartByUserId(userId);
+
+        model.addAttribute("cart", cartByUserId);
+        model.addAttribute("username", username);
+        model.addAttribute("reservations", reservations);
+
+        return "cart_make_reservation";
     }
 
-    @PostMapping(value = "/cart/reservation")
+    @PostMapping(value = "/cart/make-reservation")
     public String reservation(
-            @ModelAttribute("reservationsDTO")
-            ReservationsDTO reservationsDTO,
-            Model model,
             HttpSession httpSession
     ) {
         Integer cartId = (Integer) httpSession.getAttribute("cartId");
@@ -145,8 +152,6 @@ public class CartController {
         Cart cart = cartService.findById(cartId);
 
         reservationsService.makeReservation(cart);
-
-        model.addAttribute("reservationDTO", reservationsDTO);
 
         return "redirect:/cart/reservation/details/{userId}";
     }
@@ -170,7 +175,7 @@ public class CartController {
 
         model.addAttribute("cartDTO", cartDTO);
 
-        return "reservation_details";
+        return "reservation_history";
     }
 
     @GetMapping(value = "/cart/reservation/loan/request")

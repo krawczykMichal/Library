@@ -14,9 +14,11 @@ import java.time.LocalDateTime;
 public class ReservationsDTO {
 
     private Integer reservationId;
-    private LocalDateTime reservationDate;;
+    private LocalDateTime reservationDate;
 
     private String reservationsBooksTitle;
+    private String reservationsBooksAuthor;
+    private String reservationsBooksCopies;
 
     private String reservationsUsersName;
     private String reservationsUsersSurname;

@@ -20,7 +20,7 @@ public class CartItemService {
                 .cart(cart)
                 .book(book)
                 .title(book.getTitle())
-                .quantity(1).build();
+                .quantity(4).build();
         cartItemDao.saveCartItem(cartItem);
     }
 }

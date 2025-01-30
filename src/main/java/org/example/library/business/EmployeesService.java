@@ -1,5 +1,6 @@
 package org.example.library.business;
 
+import jakarta.transaction.TransactionScoped;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.EmployeesDTO;
 import org.example.library.business.dao.EmployeesDao;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -47,5 +49,38 @@ public class EmployeesService {
             throw new NotFoundException("Could not find employee with username: " + username);
         }
         return employee.get();
+    }
+
+
+    public List<Employees> findAll() {
+        return employeesDao.findAll();
+    }
+
+    public Employees findByEmployeeNumber(String employeeNumber) {
+        Optional<Employees> employees = employeesDao.findByEmployeeNumber(employeeNumber);
+        if (employees.isEmpty()) {
+            throw new NotFoundException("Could not find employee with username: " + employeeNumber);
+        }
+
+        return employees.get();
+    }
+
+    @Transactional
+    public void updateEmployee(String employeeNumber, EmployeesDTO employeesDTO) {
+        Employees byEmployeeNumber = findByEmployeeNumber(employeeNumber);
+
+        Employees employee = byEmployeeNumber.withName(employeesDTO.getName())
+                .withSurname(employeesDTO.getSurname())
+                .withUsername(employeesDTO.getUsername())
+                .withEmail(employeesDTO.getEmail())
+                .withEmployeeNumber(employeesDTO.getEmployeeNumber());
+
+        employeesDao.saveEmployee(employee);
+    }
+
+    @Transactional
+    public void deleteByEmployeeNumber(String employeeNumber) {
+        Employees byEmployeeNumber = findByEmployeeNumber(employeeNumber);
+        employeesDao.deleteByEmployeeNumber(byEmployeeNumber);
     }
 }

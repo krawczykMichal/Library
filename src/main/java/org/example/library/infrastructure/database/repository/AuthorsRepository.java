@@ -8,6 +8,10 @@ import org.example.library.infrastructure.database.repository.jpa.AuthorsJpaRepo
 import org.example.library.infrastructure.database.repository.mapper.AuthorsEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Repository
 @AllArgsConstructor
 public class AuthorsRepository implements AuthorsDao {
@@ -21,5 +25,20 @@ public class AuthorsRepository implements AuthorsDao {
         AuthorsEntity toSave = authorsEntityMapper.mapToAuthorsEntity(author);
         AuthorsEntity saved = authorsJpaRepository.save(toSave);
         return authorsEntityMapper.mapFromAuthorsEntity(saved);
+    }
+
+    @Override
+    public Optional<Authors> findById(Integer authorId) {
+        return authorsJpaRepository.findById(authorId).map(authorsEntityMapper::mapFromAuthorsEntity);
+    }
+
+    @Override
+    public List<Authors> findAll() {
+        return authorsJpaRepository.findAll().stream().map(authorsEntityMapper::mapFromAuthorsEntity).toList();
+    }
+
+    @Override
+    public Optional<Authors> findByAuthorCode(String booksAuthorCode) {
+        return authorsJpaRepository.findByAuthorCode(booksAuthorCode).map(authorsEntityMapper::mapFromAuthorsEntity);
     }
 }

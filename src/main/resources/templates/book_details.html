@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <title>Library app</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+        </div>
+    </div>
+</div>
+<br>
+<div th:object="${book}">
+    <p>title: <span th:text="*{title}"></span></p>
+    <p>category: <span th:text="*{category}"></span></p>
+    <p>author: <span th:text="*{author.name + ' ' + author.surname}"></span></p>
+    <p>isbn: <span th:text="*{isbn}"></span></p>
+    <p>publisher: <span th:text="*{publisher}"></span></p>
+    <p>available: <span th:text="*{available}"></span></p>
+
+    <form th:action="@{/cart/{isbn}/add(isbn=${book.isbn})}" method="POST">
+        <button type="submit">Add to cart</button>
+    </form>
+</div>
+
+
+</body>
+</html>

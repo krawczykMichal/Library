@@ -8,10 +8,11 @@ import java.time.LocalDateTime;
 @Value
 @Builder
 @EqualsAndHashCode(of = "reservationId")
-@ToString(of = {"reservationId", "reservationDate"})
+@ToString(of = {"reservationId", "reservationMakeDate", "reservationHoldToDate"})
 public class Reservations {
 
     Integer reservationId;
-    LocalDateTime reservationDate;
+    LocalDateTime reservationMakeDate;
+    LocalDateTime reservationHoldToDate;
     Cart cart;
 }

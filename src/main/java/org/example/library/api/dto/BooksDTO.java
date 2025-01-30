@@ -23,6 +23,7 @@ public class BooksDTO {
 
     private String booksAuthorName;
     private String booksAuthorSurname;
+    private String booksAuthorCode;
 
     private String booksCategoriesName;
 

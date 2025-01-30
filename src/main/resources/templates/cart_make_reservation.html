@@ -47,33 +47,31 @@
 <br>
 <h3>Cart details</h3>
 
-<p th:text="${cartDTO.userUsername}">Username: </p>
+<p th:text="${username}">Username: </p>
 
 <table border="0">
     <thead>
     <tr>
-        <th>Category</th>
+        <th>Title</th>
         <th>Author</th>
-        <th>Isbn</th>
-        <th>Publisher</th>
+        <th>Copies</th>
     </tr>
     </thead>
     <tbody>
 
     <tr th:each="cartItems : ${cart.cartItem}">
         <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}" ></td>
-        <td th:text="${cartItems.book.isbn}"></td>
-        <td th:text="${cartItems.quantity}"></td>
-        <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Details</a>
-        </td>
+        <td th:text="${cartItems.book.author}"></td>
+        <td th:number="${cartItems.quantity}"></td>
     </tr>
     </tbody>
 </table>
-<button>
-    <a th:href="@{/cart/make-reservation}">Make reservation</a>
-</button>
+<br>
+<p th:text="${reservations.reservationHoldToDate}">Reservation will be hold to: </p>
+<form th:action="@{/cart/make-reservation}" method="POST">
+    <button type="submit">Make Reservation</button>
+</form>
+
 
 </body>
 </html>

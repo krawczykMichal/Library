@@ -8,7 +8,9 @@ import org.example.library.infrastructure.database.repository.jpa.EmployeesJpaRe
 import org.example.library.infrastructure.database.repository.mapper.EmployeesEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -27,6 +29,22 @@ public class EmployeesRepository implements EmployeesDao {
 
     @Override
     public Optional<Employees> findByUsername(String username) {
-       return employeesJpaRepository.findByUsername(username).map(employeesEntityMapper::mapFromEmployeesEntity);
+        return employeesJpaRepository.findByUsername(username).map(employeesEntityMapper::mapFromEmployeesEntity);
+    }
+
+    @Override
+    public List<Employees> findAll() {
+        return employeesJpaRepository.findAll().stream().map(employeesEntityMapper::mapFromEmployeesEntity).collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Employees> findByEmployeeNumber(String employeeNumber) {
+        return employeesJpaRepository.findByEmployeeNumber(employeeNumber).map(employeesEntityMapper::mapFromEmployeesEntity);
+    }
+
+    @Override
+    public void deleteByEmployeeNumber(Employees byEmployeeNumber) {
+        EmployeesEntity employeesEntity = employeesEntityMapper.mapToEmployeesEntity(byEmployeeNumber);
+        employeesJpaRepository.delete(employeesEntity);
     }
 }

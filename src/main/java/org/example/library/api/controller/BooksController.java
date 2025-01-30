@@ -3,17 +3,17 @@ package org.example.library.api.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.BooksDTO;
+import org.example.library.business.AuthorsService;
 import org.example.library.business.BooksService;
-import org.example.library.business.CartItemService;
 import org.example.library.business.CartService;
+import org.example.library.business.CategoriesService;
+import org.example.library.domain.Authors;
 import org.example.library.domain.Books;
 import org.example.library.domain.Cart;
+import org.example.library.domain.Categories;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,13 +23,47 @@ public class BooksController {
 
     private final BooksService booksService;
     private final CartService cartService;
+    private final CategoriesService categoriesService;
+    private final AuthorsService authorsService;
 
 
-    @GetMapping(value = "/book/home")
+    @GetMapping(value = "/employee/book/home")
     public String home(
+    ) {
+        return "employee_book_home";
+    }
+
+    @GetMapping(value = "/employee/book/add")
+    public String addBookPage(
+            @ModelAttribute("booksDTO")
+            BooksDTO bookDTO,
             Model model
     ) {
-        return "book_home";
+        model.addAttribute("booksDTO", bookDTO);
+
+        return "employee_book_add";
+    }
+
+    @PostMapping(value = "/employee/book/add")
+    public String addBook(
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO,
+            Model model,
+            HttpSession httpSession
+    ) {
+
+        List<Categories> categories = categoriesService.findAll();
+        List<Authors> authors = authorsService.findAll();
+
+        booksService.saveBook(booksDTO);
+
+        httpSession.setAttribute("book", booksDTO);
+
+        model.addAttribute("booksDTO", booksDTO);
+        model.addAttribute("categories", categories);
+        model.addAttribute("authors", authors);
+
+        return "redirect:/book/home";
     }
 
     @GetMapping(value = "/book/list")
@@ -40,6 +74,21 @@ public class BooksController {
 
         model.addAttribute("booksList", booksList);
         return "book_list";
+    }
+
+    @GetMapping(value = "/book/list/by/title/{title}")
+    public String bookListByTitle(
+            @PathVariable("title")
+            String title,
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO,
+            Model model
+    ) {
+        List<Books> booksListByTitle = booksService.findByTitleInclude(title);
+
+        model.addAttribute("booksListByTitle", booksListByTitle);
+
+        return "book_list_by_title";
     }
 
     @GetMapping(value = "/book/{isbn}/details")
@@ -79,34 +128,6 @@ public class BooksController {
         model.addAttribute("book", book);
 
         return "redirect:/book/list";
-    }
-
-
-    @GetMapping(value = "/book/add")
-    public String addBookPage(
-            @ModelAttribute("booksDTO")
-            BooksDTO bookDTO,
-            Model model
-    ) {
-        model.addAttribute("booksDTO", bookDTO);
-
-        return "book_add";
-    }
-
-    @PostMapping(value = "/book/add")
-    public String addBook(
-            @ModelAttribute("booksDTO")
-            BooksDTO booksDTO,
-            Model model,
-            HttpSession httpSession
-    ) {
-        booksService.saveBook(booksDTO);
-
-        httpSession.setAttribute("book", booksDTO);
-
-        model.addAttribute("booksDTO", booksDTO);
-
-        return "redirect:/book/home";
     }
 
 

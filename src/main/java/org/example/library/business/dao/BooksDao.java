@@ -12,4 +12,6 @@ public interface BooksDao {
     Books saveBook(Books book);
 
     Optional<Books> findByIsbn(String isbn);
+
+    List<Books> findByTitleInclude(String title);
 }

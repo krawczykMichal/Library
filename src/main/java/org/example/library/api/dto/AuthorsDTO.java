@@ -14,6 +14,7 @@ public class AuthorsDTO {
     private Integer authorId;
     private String name;
     private String surname;
+    private String authorCode;
     private String authorBooksTitle;
     private Integer authorBooksCopies;
     private Boolean authorBooksAvailable;

@@ -12,4 +12,7 @@ public interface EmployeesJpaRepository extends JpaRepository<EmployeesEntity, I
 
     @Query("select emp from EmployeesEntity emp where emp.username = :username")
     Optional<EmployeesEntity> findByUsername(String username);
+
+    @Query("select emp from EmployeesEntity emp where emp.employeeNumber = :employeeNumber")
+    Optional<EmployeesEntity> findByEmployeeNumber(String employeeNumber);
 }

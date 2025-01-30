@@ -8,7 +8,7 @@ import java.util.Set;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "authorId")
-@ToString(of = {"authorId", "name", "surname"})
+@ToString(of = {"authorId", "name", "surname", "authorCode"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +26,9 @@ public class AuthorsEntity {
 
     @Column(name = "surname")
     private String surname;
+
+    @Column(name = "author_code")
+    private String authorCode;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
     private Set<BooksEntity> books;

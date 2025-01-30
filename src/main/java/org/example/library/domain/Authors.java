@@ -14,5 +14,6 @@ public class Authors {
     Integer authorId;
     String name;
     String surname;
+    String authorCode;
     Set<Books> books;
 }

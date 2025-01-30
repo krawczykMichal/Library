@@ -23,17 +23,17 @@ public class CartService {
     private final CartItemService cartItemService;
 
     @Transactional
-    public Cart saveCart(CartDTO cartDTO, Integer userId) {
+    public Cart saveCart(Integer userId) {
         if (cartDao.findByUserId(userId).isPresent()) {
             cartDao.findByUserId(userId).get();
         }
-        Cart cart = registerCart(cartDTO, userId);
+        Cart cart = registerCart(userId);
         cartDao.saveCart(cart);
 
         return cart;
     }
 
-    private Cart registerCart(CartDTO cartDTO, Integer userId) {
+    private Cart registerCart(Integer userId) {
         return Cart.builder()
                 .userId(userId).build();
     }

@@ -11,30 +11,28 @@
 </head>
 
 <body>
+
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <form th:action="@{/logout}" method="post">
-                <button type="submit">Logout</button>
-            </form>
+            <a th:href="@{/admin/home}" class="btn btn-info" role="button">Home</a>
         </div>
     </div>
 </div>
 <br>
-<div class="container">
-    <br/>
-    <h2>Add new employee</h2>
-    <div class="row mt-3">
-        <div class="col-md-4">
-            <a th:href="@{/admin/employee/create}" class="btn btn-info" role="button">Register profile</a>
-        </div>
-    </div>
+<form action="#" th:action="@{/author/update/{authorId}(authorId=${author.authorId})}" th:object="${author}" method="POST">
+    <input type="hidden" name="_method" value="patch"/>
     <br>
-    <h2>List employees</h2>
-    <div>
-        <a th:href="@{//admin/employee/list}" class="btn btn-info" role="button">Employee list</a>
-    </div>
-</div>
-</body>
+    <label for="name">Name:</label>
+    <input type="text" id="name" th:field="*{name}"/>
+    <br>
+    <label for="surname">Surname:</label>
+    <input type="text" id="surname" th:field="*{surname}"/>
+    <br>
+    <br>
 
+    <button type="submit">Update Profile</button>
+</form>
+
+</body>
 </html>

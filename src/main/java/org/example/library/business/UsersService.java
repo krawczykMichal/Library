@@ -21,9 +21,11 @@ public class UsersService {
     private final CartService cartService;
 
     @Transactional
-    public void saveUser(UsersDTO usersDTO) {
+    public Users saveUser(UsersDTO usersDTO) {
         Users user = registerUser(usersDTO);
         usersDao.saveUser(user);
+
+        return user;
     }
 
     private Users registerUser(UsersDTO usersDTO) {

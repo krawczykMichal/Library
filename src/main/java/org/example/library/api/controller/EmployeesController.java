@@ -3,22 +3,22 @@ package org.example.library.api.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.library.api.dto.BooksDTO;
 import org.example.library.api.dto.EmployeesDTO;
 import org.example.library.api.dto.LoanRequestDTO;
 import org.example.library.api.dto.LoansDTO;
+import org.example.library.business.BooksService;
 import org.example.library.business.EmployeesService;
 import org.example.library.business.LoanRequestService;
 import org.example.library.business.LoansService;
+import org.example.library.domain.Books;
 import org.example.library.domain.Employees;
 import org.example.library.domain.LoanRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -30,6 +30,7 @@ public class EmployeesController {
     private final EmployeesService employeesService;
     private final LoansService loansService;
     private final LoanRequestService loanRequestService;
+    private final BooksService booksService;
 
 
     @GetMapping(value = "/employee/home")
@@ -54,31 +55,6 @@ public class EmployeesController {
         Object principal = authentication.getPrincipal();
 
         return ((UserDetails) principal).getUsername();
-    }
-
-    @GetMapping(value = "/admin/employee/create")
-    public String createPage(
-            @ModelAttribute("employeesDTO")
-            EmployeesDTO employeesDTO,
-            Model model
-    ) {
-        model.addAttribute("employeesDTO", employeesDTO);
-
-        return "admin_employee_create";
-    }
-
-    @PostMapping(value = "/admin/employee/create")
-    public String create(
-            @ModelAttribute("employeesDTO")
-            EmployeesDTO employeesDTO,
-            Model model,
-            HttpSession httpSession
-    ) {
-        employeesService.saveEmployee(employeesDTO);
-
-        model.addAttribute("employeesDTO", employeesDTO);
-
-        return "admin_home";
     }
 
     @GetMapping(value = "/employee/cart/loanRequest-list")
@@ -131,6 +107,45 @@ public class EmployeesController {
         return "redirect:/employee/cart/loanRequest-list";
     }
 
+    @GetMapping(value = "/employee/book/list")
+    public String bookPage(
+            Model model
+    ) {
+        List<Books> booksList = booksService.findAll();
 
+        model.addAttribute("booksList", booksList);
+        return "employee_book_list";
+    }
+
+    @GetMapping(value = "/employee/book/{isbn}/details")
+    public String bookDetails(
+            @PathVariable("isbn")
+            String isbn,
+            Model model,
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO
+    ) {
+        booksService.findByIsbn(isbn);
+
+        model.addAttribute("booksDTO", booksDTO);
+
+        return "employee_book_details";
+    }
+
+    @PatchMapping(value = "/employee/book/{isbn}/details/update")
+    public String update(
+            @PathVariable("isbn")
+            String isbn,
+            Model model,
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO
+    ) {
+
+        booksService.updateBook(isbn, booksDTO);
+
+        model.addAttribute("booksDTO", booksDTO);
+
+        return "redirect:/employee/home";
+    }
 
 }

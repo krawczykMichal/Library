@@ -13,6 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 public class BooksService {
 
+    private final CategoriesService categoriesService;
+    private final AuthorsService authorsService;
+
     private final BooksDao booksDao;
 
     public List<Books> findAll() {
@@ -32,7 +35,9 @@ public class BooksService {
                 .publisher(booksDTO.getPublisher())
                 .publishedDate(booksDTO.getPublishedDate())
                 .copies(booksDTO.getCopies())
-                .available(true).build();
+                .available(true)
+                .category(categoriesService.findByName(booksDTO.getBooksCategoriesName()))
+                .author(authorsService.findByAuthorCode(booksDTO.getBooksAuthorCode())).build();
     }
 
     @Transactional
@@ -42,5 +47,21 @@ public class BooksService {
         }
         //@TODO poprawić to tak aby zamiast wyjątków i wyrzucania z aplikacji pojawiały się informacje na stronie która dalej działa np; nie możemy znaleźć książki o takich danych, spróbuj ponownie później
         return booksDao.findByIsbn(isbn).get();
+    }
+
+    @Transactional
+    public void updateBook(String isbn, BooksDTO booksDTO) {
+        Books byIsbn = findByIsbn(isbn);
+
+        Books updatedBook = byIsbn.withTitle(booksDTO.getTitle())
+                .withPublisher(booksDTO.getPublisher())
+                .withIsbn(booksDTO.getIsbn())
+                .withCopies(booksDTO.getCopies());
+
+        booksDao.saveBook(updatedBook);
+    }
+
+    public List<Books> findByTitleInclude(String title) {
+        return booksDao.findByTitleInclude(title);
     }
 }

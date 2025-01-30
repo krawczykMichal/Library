@@ -35,4 +35,9 @@ public class BooksRepository implements BooksDao {
     public Optional<Books> findByIsbn(String isbn) {
         return booksJpaRepository.findByIsbn(isbn).map(booksEntityMapper::mapFromBooksEntity);
     }
+
+    @Override
+    public List<Books> findByTitleInclude(String title) {
+        return booksJpaRepository.findByTitleInclude(title);
+    }
 }
