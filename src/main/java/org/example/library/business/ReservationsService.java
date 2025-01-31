@@ -37,13 +37,9 @@ public class ReservationsService {
     }
 
 
-    public Reservations findByUserId(Integer userId) {
-        Optional<Reservations> reservation = reservationsDao.findByUserId(userId);
-        if (reservation.isEmpty()) {
-            throw new NotFoundException("Could not find reservation: " + reservation);
-        }
+    public List<Reservations> findByUserId(Integer userId) {
 
-        return reservation.get();
+        return reservationsDao.findByUserId(userId);
     }
 
 
@@ -53,5 +49,10 @@ public class ReservationsService {
             throw new NotFoundException("Could not find reservation: " + reservation);
         }
         return reservation.get();
+    }
+
+    public List<Reservations> findALl() {
+
+        return reservationsDao.findAll();
     }
 }

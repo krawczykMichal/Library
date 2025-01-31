@@ -25,12 +25,12 @@ public class LoanRequestEntity {
     private LocalDateTime requestDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "book_id")
-    private BooksEntity book;
+    @JoinColumn(name = "reservation_id")
+    private ReservationsEntity reservation;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private UsersEntity user;
+    @JoinColumn(name = "cart_id")
+    private CartEntity cart;
 
     @OneToOne(fetch = FetchType.LAZY)
     private LoansEntity loan;

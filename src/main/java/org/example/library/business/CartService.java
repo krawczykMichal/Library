@@ -7,6 +7,7 @@ import org.example.library.api.dto.CartItemDTO;
 import org.example.library.business.dao.CartDao;
 import org.example.library.domain.Books;
 import org.example.library.domain.Cart;
+import org.example.library.domain.Users;
 import org.example.library.domain.exception.NotEnoughCopiesException;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,19 +24,19 @@ public class CartService {
     private final CartItemService cartItemService;
 
     @Transactional
-    public Cart saveCart(Integer userId) {
-        if (cartDao.findByUserId(userId).isPresent()) {
-            cartDao.findByUserId(userId).get();
+    public Cart saveCart(Users user) {
+        if (cartDao.findByUserId(user.getUserId()).isPresent()) {
+            cartDao.findByUserId(user.getUserId()).get();
         }
-        Cart cart = registerCart(userId);
+        Cart cart = registerCart(user);
         cartDao.saveCart(cart);
 
         return cart;
     }
 
-    private Cart registerCart(Integer userId) {
+    private Cart registerCart(Users user) {
         return Cart.builder()
-                .userId(userId).build();
+                .user(user).build();
     }
 
     public Cart findCartByUserId(Integer userId) {

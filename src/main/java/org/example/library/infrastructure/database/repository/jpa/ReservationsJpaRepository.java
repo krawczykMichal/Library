@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface ReservationsJpaRepository extends JpaRepository<ReservationsEntity, Integer> {
 
     @Query("select res from ReservationsEntity res where res.cart.user.userId = :userId")
-    Optional<ReservationsEntity> findByUserId(Integer userId);
+    List<ReservationsEntity> findByUserId(Integer userId);
 
     @Query("select res from ReservationsEntity res where res.cart.user.userId = :userId")
     List<Reservations> findAllByUserId(Integer userId);

@@ -11,7 +11,9 @@ public interface ReservationsDao {
 
     List<Reservations> findAllByUserId(Integer userId);
 
-    Optional<Reservations> findByUserId(Integer userId);
+    List<Reservations> findByUserId(Integer userId);
 
     Optional<Reservations> findById(Integer reservationId);
+
+    List<Reservations> findAll();
 }

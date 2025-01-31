@@ -41,4 +41,8 @@ public class LoansService {
         Optional<Loans> loans = loansDao.findById(loanId);
         return loans.get();
     }
+
+    public List<Loans> findAll() {
+        return loansDao.findAll();
+    }
 }

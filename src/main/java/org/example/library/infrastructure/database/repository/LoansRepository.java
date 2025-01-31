@@ -44,4 +44,9 @@ public class LoansRepository implements LoansDao {
         Optional<LoansEntity> loansEntity = loansJpaRepository.findById(loanId);
         return loansEntity.map(loansEntityMapper::mapFromLoansEntity);
     }
+
+    @Override
+    public List<Loans> findAll() {
+        return loansJpaRepository.findAll().stream().map(loansEntityMapper::mapFromLoansEntity).toList();
+    }
 }

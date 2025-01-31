@@ -2,6 +2,7 @@ package org.example.library.business.dao;
 
 import org.example.library.domain.Users;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface UsersDao {
@@ -13,4 +14,7 @@ public interface UsersDao {
     Optional<Users> findById(Integer userId);
 
     void deleteById(Integer userId);
+
+    List<Users> findAll();
+
 }

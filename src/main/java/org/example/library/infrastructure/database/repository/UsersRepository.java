@@ -8,7 +8,9 @@ import org.example.library.infrastructure.database.repository.jpa.UsersJpaReposi
 import org.example.library.infrastructure.database.repository.mapper.UsersEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @AllArgsConstructor
@@ -38,5 +40,10 @@ public class UsersRepository implements UsersDao {
     @Override
     public void deleteById(Integer userId) {
         usersJpaRepository.deleteById(userId);
+    }
+
+    @Override
+    public List<Users> findAll() {
+        return usersJpaRepository.findAll().stream().map(usersEntityMapper::mapFromUsersEntity).toList();
     }
 }

@@ -56,6 +56,7 @@
         <th>Author</th>
         <th>Isbn</th>
         <th>Publisher</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
@@ -66,7 +67,7 @@
         <td th:text="${cartItems.book.isbn}"></td>
         <td th:text="${cartItems.quantity}"></td>
         <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Details</a>
+            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Book details</a>
         </td>
     </tr>
     </tbody>

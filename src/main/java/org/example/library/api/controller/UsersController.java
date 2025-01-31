@@ -32,7 +32,7 @@ public class UsersController {
     private final CartService cartService;
     private final ReservationsService reservationsService;
 
-
+// @TODO sprawdzić wszystkie templates dla tego kontrolera
     @GetMapping(value = "/user/home")
     public String userHome(
             Authentication authentication,
@@ -84,9 +84,8 @@ public class UsersController {
     ) {
         Users user = usersService.saveUser(usersDTO);
 
-        Integer userId = user.getUserId();
 
-        Cart cart = cartService.saveCart(userId);
+        Cart cart = cartService.saveCart(user);
         Integer cartId = cart.getCartId();
 
         //@TODO sprawdzić czy ten cart tworzy się razem z utworzeniem nowego użytkownika
@@ -188,7 +187,7 @@ public class UsersController {
 
         model.addAttribute("cartDTO", cartDTO);
 
-        return "reservation_history";
+        return "reservation_to_loan_details";
     }
 
     @GetMapping(value = "/user/reservation/history/details/{reservationId}")

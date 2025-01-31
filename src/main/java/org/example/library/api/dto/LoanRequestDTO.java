@@ -17,6 +17,8 @@ public class LoanRequestDTO {
     private Integer loanRequestId;
     private LocalDateTime requestDate;
 
+    private Integer loanRequestReservationsId;
+
     private String loanRequestUsersName;
     private String loanRequestUsersSurname;
     private String loanRequestUsersUsername;

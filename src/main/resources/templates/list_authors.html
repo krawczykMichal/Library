@@ -7,7 +7,7 @@
           rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
-    <title>To Do List</title>
+    <title>Library</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <style>
         table {
@@ -40,40 +40,32 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/book/list}" class="btn btn-info" role="button">Book home</a>
+            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Book home</a>
         </div>
     </div>
 </div>
 <br>
-<h3>Cart details</h3>
-
-<p th:text="${cartDTO.userUsername}">Username: </p>
+<h3>Author list</h3>
 
 <table border="0">
     <thead>
+
     <tr>
-        <th>Category</th>
-        <th>Author</th>
-        <th>Isbn</th>
-        <th>Publisher</th>
+        <th>Name</th>
+        <th>Surname</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
-
-    <tr th:each="cartItems : ${cart.cartItem}">
-        <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}" ></td>
-        <td th:text="${cartItems.book.isbn}"></td>
-        <td th:text="${cartItems.quantity}"></td>
+    <tr th:each="author : ${authors}">
+        <td th:text="${author.name}"></td>
+        <td th:text="${author.surname}"></td>
         <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Details</a>
+            <a th:href="@{/author/update/{authorCode}(authorCode=${author.authorCode})}" class="btn btn-info" role="button">Details</a>
         </td>
     </tr>
     </tbody>
 </table>
-<button>
-    <a th:href="@{/cart/make-reservation}">Make reservation</a>
-</button>
 
 </body>
 </html>

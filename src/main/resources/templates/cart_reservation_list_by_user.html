@@ -7,7 +7,7 @@
         rel="stylesheet"
         integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
         crossorigin="anonymous">
-  <title>To Do List</title>
+  <title>Library</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
   <style>
     table {
@@ -40,7 +40,7 @@
 <div class="container">
   <div class="row mt-3">
     <div class="col-md-4">
-      <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
+      <a th:href="@{/book/list}" class="btn btn-info" role="button">Book home</a>
     </div>
   </div>
 </div>
@@ -49,25 +49,19 @@
 
 <table border="0">
   <thead>
+
   <tr>
-    <th>Title</th>
-    <th>Category</th>
-    <th>Author</th>
-    <th>Isbn</th>
-    <th>Publisher</th>
-    <th>Available</th>
+    <th>Id</th>
+    <th>Reservation Date</th>
+    <th></th>
   </tr>
   </thead>
   <tbody>
-  <tr th:each="books : ${booksList}">
-    <td th:text="${books.title}"></td>
-    <td th:text="${books.category}"></td>
-    <td th:text="${books.author.name + ' ' + books.author.surname}" ></td>
-    <td th:text="${books.isbn}"></td>
-    <td th:text="${books.publisher}"></td>
-    <td th:text="${books.available}"></td>
+  <tr th:each="reservation : ${reservationsList}">
+    <td th:text="${reservation.reservationId}"></td>
+    <td th:text="${reservation.reservationMakeDate}"></td>
     <td>
-      <a th:href="@{/book/{isbn}/details(isbn=${books.isbn})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/cart/reservation/details/{reservationId}(reservationId=${reservation.reservationId})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>

@@ -14,10 +14,18 @@
 <div class="container">
   <h1>Library</h1>
   <br/>
-  <h2></h2>
-  <div class="row mt-3">
-    <div class="col-md-4">
-      <a th:href="@{/book/home}" class="btn btn-info" role="button">Book service</a>
+  <div class="row mt-4">
+    <div class="col-md-3">
+      <a th:href="@{/employee/book/home}" class="btn btn-info" role="button">Book service</a>
+    </div>
+    <div class="col-md-3">
+      <a th:href="@{/employee/reservations-list}" class="btn btn-info" role="button">Reservations</a>
+    </div>
+    <div class="col-md-3">
+      <a th:href="@{/employee/cart/loanRequest-list}" class="btn btn-info" role="button">Loan requests</a>
+    </div>
+    <div class="col-md-3">
+      <a th:href="@{/employee/users-list}" class="btn btn-info" role="button">Users</a>
     </div>
   </div>
 

@@ -44,14 +44,6 @@ public class AuthorsService {
         return employeeNumber.toString();
     }
 
-    public Authors findById(Integer authorId) {
-        Optional<Authors> author = authorsDao.findById(authorId);
-        if (author.isEmpty()) {
-            throw new NotFoundException("Could not find author: " + author);
-        }
-        return author.get();
-    }
-
     @Transactional
     public void updateAuthor(Authors author, AuthorsDTO authorsDTO) {
 
@@ -66,6 +58,10 @@ public class AuthorsService {
     }
 
     public Authors findByAuthorCode(String booksAuthorCode) {
-        return authorsDao.findByAuthorCode(booksAuthorCode).get();
+        Optional<Authors> author = authorsDao.findByAuthorCode(booksAuthorCode);
+        if (author.isEmpty()) {
+            throw new NotFoundException("Can't find author with author code " + booksAuthorCode);
+        }
+        return author.get();
     }
 }

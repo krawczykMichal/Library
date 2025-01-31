@@ -45,39 +45,43 @@
     </div>
 </div>
 <br>
-<h3>Books list</h3>
+<h3>Reservation to loan</h3>
 
-<form th:action="@{/book/list/by/title/{title}(title=${title})}" method="get">
-    <!--    @TODO sprawdzić czy działa wyświetlanie tego co wyszukiwane -->
-    <input type="text" name="keyword" placeholder="Wpisz tytuł książki..." required>
-    <button type="submit">Szukaj</button>
-</form>
+<div class="container">
+    <div>
+        <form action="#" th:action="@{/cart/reservation/loan/request/{reservationId}(reservationId=${loanRequestDTO.loanRequestReservationsId})}" th:object="${loanRequestDTO}" method="POST">
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <label for="name">Name:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="name" th:field="*{name}"/>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="surname">Surname:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="text" id="surname" th:field="*{surname}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <input type="submit" value="Register!" class="btn btn-success">
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
-<table border="0">
-    <thead>
-    <tr>
-        <th>Title</th>
-        <th>Category</th>
-        <th>Author</th>
-        <th>Isbn</th>
-        <th>Publisher</th>
-        <th>Available</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="books : ${booksListByTitle}">
-        <td th:text="${books.title}"></td>
-        <td th:text="${books.category}"></td>
-        <td th:text="${books.author.name + ' ' + books.author.surname}" ></td>
-        <td th:text="${books.isbn}"></td>
-        <td th:text="${books.publisher}"></td>
-        <td th:text="${books.available}"></td>
-        <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${books.isbn})}" class="btn btn-info" role="button">Details</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+<button>
+    <a th:href="@{/cart/reservation/loan/request/{reservationId}(reservationId=${reservation.reservationId})}">Loan</a>
+</button>
 
 </body>
 </html>

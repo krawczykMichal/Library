@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -86,5 +87,9 @@ public class UsersService {
     @Transactional
     public void deleteById(Integer userId) {
         usersDao.deleteById(userId);
+    }
+
+    public List<Users> findAll() {
+        return usersDao.findAll();
     }
 }

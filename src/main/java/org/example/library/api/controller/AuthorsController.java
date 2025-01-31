@@ -8,6 +8,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @AllArgsConstructor
 public class AuthorsController {
@@ -38,28 +40,41 @@ public class AuthorsController {
         return "redirect:/library/employee/home";
     }
 
-    @GetMapping(value = "/author/update/{authorId}")
+    @GetMapping(value = "/author/list")
+    public String listAuthors(
+            Model model,
+            @ModelAttribute("authorsDTO")
+            AuthorsDTO authorsDTO
+    ) {
+        List<Authors> all = authorsService.findAll();
+
+        model.addAttribute("authors", all);
+
+        return "list_authors";
+    }
+
+    @GetMapping(value = "/author/update/{authorCode}")
     public String updateAuthorPage(
-            @PathVariable("authorId")
-            Integer authorId,
+            @PathVariable("authorCode")
+            String authorCode,
             Model model
     ) {
-        Authors author = authorsService.findById(authorId);
+        Authors author = authorsService.findByAuthorCode(authorCode);
 
         model.addAttribute("author", author);
 
         return "update_author";
     }
 
-    @PatchMapping(value = "/author/update/{authorId}")
+    @PatchMapping(value = "/author/update/{authorCode}")
     public String updateAuthor(
-            @PathVariable("authorId")
-            Integer authorId,
+            @PathVariable("authorCode")
+            String authorCode,
             @ModelAttribute("authorsDTO")
             AuthorsDTO authorsDTO,
             Model model
     ) {
-        Authors author = authorsService.findById(authorId);
+        Authors author = authorsService.findByAuthorCode(authorCode);
         authorsService.updateAuthor(author, authorsDTO);
 
         model.addAttribute("author", author);

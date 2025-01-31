@@ -20,7 +20,7 @@ public class LoanRequestService {
     private final LoanRequestDao loanRequestDao;
 
     @Transactional
-    public void loanRequest(Reservations reservation) {
+    public void makeLoanRequestFromReservation(Reservations reservation) {
         LoanRequest loanRequest = LoanRequest.builder()
                 .reservation(reservation)
                 .requestDate(LocalDateTime.now())
@@ -49,5 +49,9 @@ public class LoanRequestService {
                 .build();
         loanRequestDao.saveLoanRequest(loanRequest);
 
+    }
+
+    public List<LoanRequest> findByUserId(Integer userId) {
+        return loanRequestDao.findByUserId(userId);
     }
 }

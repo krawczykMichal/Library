@@ -35,4 +35,9 @@ public class LoanRequestRepository implements LoanRequestDao {
     public Optional<LoanRequest> findById(Integer loanRequestId) {
         return loanRequestJpaRepository.findById(loanRequestId).map(loanRequestEntityMapper::mapFromLoanRequestEntity);
     }
+
+    @Override
+    public List<LoanRequest> findByUserId(Integer userId) {
+        return loanRequestJpaRepository.findByUserId(userId).stream().map(loanRequestEntityMapper::mapFromLoanRequestEntity).toList();
+    }
 }

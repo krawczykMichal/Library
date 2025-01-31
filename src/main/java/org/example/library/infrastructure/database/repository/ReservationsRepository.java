@@ -33,12 +33,17 @@ public class ReservationsRepository implements ReservationsDao {
     }
 
     @Override
-    public Optional<Reservations> findByUserId(Integer userId) {
-        return reservationsJpaRepository.findByUserId(userId).map(reservationsEntityMapper::mapFromReservationsEntity);
+    public List<Reservations> findByUserId(Integer userId) {
+        return reservationsJpaRepository.findByUserId(userId).stream().map(reservationsEntityMapper::mapFromReservationsEntity).toList();
     }
 
     @Override
     public Optional<Reservations> findById(Integer reservationId) {
         return reservationsJpaRepository.findById(reservationId).map(reservationsEntityMapper::mapFromReservationsEntity);
+    }
+
+    @Override
+    public List<Reservations> findAll() {
+        return reservationsJpaRepository.findAll().stream().map(reservationsEntityMapper::mapFromReservationsEntity).toList();
     }
 }

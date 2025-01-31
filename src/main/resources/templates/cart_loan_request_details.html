@@ -1,10 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <title>Library app</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse; /* Łączy granice komórek */
+            margin: 20px 0; /* Marginesy */
+        }
+
+        th, td {
+            border: 1px solid #ddd; /* Kolor i grubość linii */
+            padding: 8px; /* Padding wewnątrz komórek */
+            text-align: left; /* Wyrównanie tekstu */
+        }
+
+        th {
+            background-color: #f2f2f2; /* Kolor tła nagłówka */
+            font-weight: bold; /* Grubszy tekst */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9; /* Kolor tła dla parzystych wierszy */
+        }
+
+        tr:hover {
+            background-color: #f1f1f1; /* Kolor tła przy najechaniu na wiersz */
+        }
+    </style>
 </head>
+
 <body>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+        </div>
+    </div>
+</div>
+<br>
+<h3>Loan request details:</h3>
+<div th:object="${loanRequestById}">
+    <p>User: <span th:text="*{reservation.cart.user.name + ' ' + reservation.cart.user.surname}"></span></p>
+    <p>Request date: <span th:text="*{requestDate}"></span></p>
+</div>
+<table border="0">
+    <thead>
+
+    <tr>
+        <th>Category</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Isbn</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="item : ${loanRequestById.reservation.cart.cartItem}">
+        <td th:text="${item.book.category}" ></td>
+        <td th:text="${item.book.title}"></td>
+        <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
+        <td th:text="${item.book.isbn}"></td>
+        <td th:text="${item.quantity}"></td>
+    </tr>
+    </tbody>
+</table>
+
 
 </body>
 </html>

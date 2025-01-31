@@ -14,4 +14,7 @@ public interface LoansDao {
     List<Loans> findAllByUserId(Integer userId, boolean returned);
 
     Optional<Loans> findById(Integer loanId);
+
+    List<Loans> findAll();
+
 }
