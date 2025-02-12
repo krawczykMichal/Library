@@ -4,6 +4,7 @@ import lombok.*;
 
 import java.awt.print.Book;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @With
 @Value
@@ -13,7 +14,9 @@ import java.time.LocalDateTime;
 public class LoanRequest {
 
     Integer loanRequestId;
+    String loanRequestNumber;
     Reservations reservation;
     LocalDateTime requestDate;
     Cart cart;
+    List<LoanRequestItem> loanRequestItems;
 }

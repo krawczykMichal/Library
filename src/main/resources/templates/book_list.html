@@ -62,12 +62,13 @@
         <th>Isbn</th>
         <th>Publisher</th>
         <th>Available</th>
+        <th></th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="books : ${booksList}">
         <td th:text="${books.title}"></td>
-        <td th:text="${books.category}"></td>
+        <td th:text="${books.category.name}"></td>
         <td th:text="${books.author.name + ' ' + books.author.surname}" ></td>
         <td th:text="${books.isbn}"></td>
         <td th:text="${books.publisher}"></td>

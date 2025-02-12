@@ -74,7 +74,7 @@ public class CartController {
 //        return "redirect:/user/home";
 //    }
 
-    @GetMapping(value = "/cart/{userId}/details")
+    @GetMapping(value = "/user/cart/{userId}/details")
     public String cartDetailsPage(
             @PathVariable Integer userId,
             @ModelAttribute("cartDTO")
@@ -89,9 +89,12 @@ public class CartController {
 
         userId1 = userId;
 
-        Integer cartId = (Integer) httpSession.getAttribute("cartId");
 
-        Cart cart = cartService.findById(cartId);
+        Cart cart = cartService.findCartByUserId(userId);
+        if (cart == null) {
+            cartService.saveCart(userByUsername);
+            cartService.findCartByUserId(userId);
+        }
 
 
         model.addAttribute("cart", cart);
@@ -100,7 +103,7 @@ public class CartController {
         return "cart_details";
     }
 
-    @PostMapping(value = "/cart/{isbn}/add")
+    @PostMapping(value = "/user/cart/{isbn}/add")
     public String addToCartPage(
             @PathVariable String isbn,
             @ModelAttribute("cartDTO")
@@ -124,7 +127,7 @@ public class CartController {
         return "redirect:/book/list";
     }
 
-    @GetMapping(value = "/cart/make-reservation")
+    @GetMapping(value = "/user/cart/make-reservation")
     public String reservationPage(
             @ModelAttribute("reservations")
             Reservations reservations,
@@ -138,6 +141,7 @@ public class CartController {
 
         Cart cartByUserId = cartService.findCartByUserId(userId);
 
+
         model.addAttribute("cart", cartByUserId);
         model.addAttribute("username", username);
         model.addAttribute("reservations", reservations);
@@ -145,20 +149,21 @@ public class CartController {
         return "cart_make_reservation";
     }
 
-    @PostMapping(value = "/cart/make-reservation")
+    @PostMapping(value = "/user/cart/make-reservation")
     public String reservation(
             HttpSession httpSession
     ) {
         Integer cartId = (Integer) httpSession.getAttribute("cartId");
 
         Cart cart = cartService.findById(cartId);
+        List<CartItem> cartItems = cart.getCartItem();
 
-        reservationsService.makeReservation(cart);
+        reservationsService.makeReservation(cart, cartItems);
 
-        return "redirect:/cart/reservation/details/{userId}";
+        return "redirect:/user/cart/reservation/details/{userId}";
     }
 
-    @GetMapping(value = "/cart/reservation/list/{userId}")
+    @GetMapping(value = "/employee/cart/reservation/list/{userId}")
     public String reservationListPage(
             @PathVariable Integer userId,
             @ModelAttribute("cartDTO")
@@ -180,20 +185,20 @@ public class CartController {
         return "cart_reservation_list_by_user";
     }
 
-    @GetMapping(value = "/cart/reservation/details/{reservationId}")
+    @GetMapping(value = "/user/cart/reservation/details/{reservationNumber}")
     public String reservationDetailsPage(
-            @PathVariable("reservationId")
-            Integer reservationId,
+            @PathVariable("reservationNumber")
+            String reservationNumber,
             @ModelAttribute("cartDTO")
             CartDTO cartDTO,
             Model model
     ) {
 
-        Reservations reservation = reservationsService.findById(reservationId);
+        Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
 
         model.addAttribute("reservation", reservation);
 
-        return "reservation_to_loan_details";
+        return "users_reservations_details";
     }
 //
 //    @GetMapping(value = "/cart/reservation/loan/request/{reservationId}")
@@ -214,21 +219,19 @@ public class CartController {
 //        return "cart_loan_request_from_reservation";
 //    }
 
-    @PostMapping(value = "/cart/reservation/loan/request/{reservationId}")
+    @PostMapping(value = "/user/cart/reservation/loan/request/{reservationNumber}")
     public String loanRequest(
-            @PathVariable("reservationId")
-            Integer reservationId,
+            @PathVariable("reservationNumber")
+            String reservationNumber,
             @ModelAttribute("reservationsDTO")
             ReservationsDTO reservationsDTO,
             Model model,
             HttpSession httpSession
     ) {
-        Reservations reservation = reservationsService.findById(reservationId);
-        Integer reservationId1 = reservation.getReservationId();
+        Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
+        List<ReservationItem> reservationItemList = reservation.getReservationItem();
 
-        reservationId1 = reservationId;
-
-        loanRequestService.makeLoanRequestFromReservation(reservation);
+        loanRequestService.makeLoanRequestFromReservation(reservation, reservationItemList);
 
 
         model.addAttribute("reservationDTO", reservationsDTO);
@@ -236,7 +239,7 @@ public class CartController {
         return "loan_request_from_reservation_success";
     }
 
-    @GetMapping(value = "/cart/loan/request")
+    @GetMapping(value = "/user/cart/loan/request")
     public String loanPage(
             @ModelAttribute("cartDTO")
             CartDTO cartDTO,
@@ -253,7 +256,7 @@ public class CartController {
         return "loan_from_cart";
     }
 
-    @PostMapping(value = "/cart/loan/request")
+    @PostMapping(value = "/user/cart/loan/request")
     public String loan(
             @ModelAttribute("CartDTO")
             CartDTO cartDTO,
@@ -263,8 +266,9 @@ public class CartController {
         Integer cartId = (Integer) httpSession.getAttribute("cartId");
 
         Cart cart = cartService.findById(cartId);
+        List<CartItem> cartItemList = cart.getCartItem();
 
-        loanRequestService.makeLoanRequestFromCart(cart);
+        loanRequestService.makeLoanRequestFromCart(cart, cartItemList);
 
         model.addAttribute("cartDTO", cartDTO);
 

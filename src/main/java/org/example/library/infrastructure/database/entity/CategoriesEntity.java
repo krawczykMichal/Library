@@ -3,12 +3,13 @@ package org.example.library.infrastructure.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = "categoriesId")
-@ToString(of = {"categoriesId", "name"})
+@EqualsAndHashCode(of = "categoryId")
+@ToString(of = {"categoryId", "name"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,12 +19,14 @@ public class CategoriesEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "categories_id")
-    private Integer categoriesId;
+    @Column(name = "category_id")
+    private Integer categoryId;
 
     @Column(name = "name")
     private String name;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private Set<BooksEntity> books;
+    private List<BooksEntity> books;
+
+
 }

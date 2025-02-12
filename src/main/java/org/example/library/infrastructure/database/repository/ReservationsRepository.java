@@ -28,7 +28,7 @@ public class ReservationsRepository implements ReservationsDao {
 
     @Override
     public List<Reservations> findAllByUserId(Integer userId) {
-        return reservationsJpaRepository.findAllByUserId(userId);
+        return reservationsJpaRepository.findAllByUserId(userId).stream().map(reservationsEntityMapper::mapFromReservationsEntity).toList();
 
     }
 
@@ -45,5 +45,20 @@ public class ReservationsRepository implements ReservationsDao {
     @Override
     public List<Reservations> findAll() {
         return reservationsJpaRepository.findAll().stream().map(reservationsEntityMapper::mapFromReservationsEntity).toList();
+    }
+
+    @Override
+    public void deleteById(Integer reservationId) {
+        reservationsJpaRepository.deleteById(reservationId);
+    }
+
+    @Override
+    public Optional<Reservations> findByReservationNumber(String reservationNumber) {
+        return reservationsJpaRepository.findByReservationNumber(reservationNumber).map(reservationsEntityMapper::mapFromReservationsEntity);
+    }
+
+    @Override
+    public void deleteByCartUserId(Integer userId) {
+        reservationsJpaRepository.deleteByCartUserId(userId);
     }
 }

@@ -31,6 +31,7 @@ public class CartItemEntity {
     @JoinColumn(name = "cart_id")
     private CartEntity cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private BooksEntity book;
+    @ManyToOne
+    @JoinColumn(name = "book_id", nullable = false)
+    private BooksEntity books;
 }

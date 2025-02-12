@@ -33,7 +33,7 @@ public class BooksEntity {
     private String publisher;
 
     @Column(name = "published_date")
-    private Date publishedDate;
+    private Integer publishedDate;
 
     @Column(name = "copies")
     private Integer copies;
@@ -49,6 +49,6 @@ public class BooksEntity {
     @JoinColumn(name = "category_id")
     private CategoriesEntity category;
 
-    @OneToOne(mappedBy = "book")
-    private CartItemEntity cartItem;
+    @OneToMany(mappedBy = "books", fetch = FetchType.LAZY)
+    private List<CartItemEntity> cartItems;
 }

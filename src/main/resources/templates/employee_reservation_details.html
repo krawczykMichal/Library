@@ -73,6 +73,10 @@
     </tr>
     </tbody>
 </table>
+<form th:action="@{/user/reservation/history/details/{reservationId}/delete(reservationId=${reservation.reservationId})}" method="post">
+    <input type="hidden" name="_method" value="delete" />
+    <button type="submit">Cancel reservation</button>
+</form>
 
 </body>
 </html>

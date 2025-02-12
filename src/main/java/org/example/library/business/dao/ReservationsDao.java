@@ -16,4 +16,11 @@ public interface ReservationsDao {
     Optional<Reservations> findById(Integer reservationId);
 
     List<Reservations> findAll();
+
+    void deleteById(Integer reservationId);
+
+    Optional<Reservations> findByReservationNumber(String reservationNumber);
+
+    void deleteByCartUserId(Integer userId);
+
 }

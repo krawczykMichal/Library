@@ -2,6 +2,9 @@ package org.example.library.infrastructure.security;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.library.infrastructure.security.entity.RoleEntity;
+import org.example.library.infrastructure.security.entity.UserEntity;
+import org.example.library.infrastructure.security.repository.jpa.UserJpaRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -20,13 +23,13 @@ import java.util.stream.Collectors;
 @Service
 public class LibraryUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        UserEntity user = userRepository.findByUsername(username);
+        UserEntity user = userJpaRepository.findByUsername(username);
         log.info("loaded user {} with role {}", username, user.getRoles());
 
         if (user == null) {
@@ -34,6 +37,7 @@ public class LibraryUserDetailsService implements UserDetailsService {
         }
 
         List<GrantedAuthority> authorities = getUserAuthority(user.getRoles());
+        System.out.println("user roles: " + user.getRoles());
         return buildUserForAuthentication(user, authorities);
     }
 

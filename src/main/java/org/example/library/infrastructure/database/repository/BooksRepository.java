@@ -6,6 +6,7 @@ import org.example.library.domain.Books;
 import org.example.library.infrastructure.database.entity.BooksEntity;
 import org.example.library.infrastructure.database.repository.jpa.BooksJpaRepository;
 import org.example.library.infrastructure.database.repository.mapper.BooksEntityMapper;
+import org.example.library.infrastructure.database.repository.mapper.BooksEntityMapperClass;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,9 +20,11 @@ public class BooksRepository implements BooksDao {
 
     private final BooksEntityMapper booksEntityMapper;
 
+    private final BooksEntityMapperClass booksEntityMapperClass;
+
     @Override
     public List<Books> findAll() {
-        return booksJpaRepository.findAll().stream().map(booksEntityMapper::mapFromBooksEntity).toList();
+        return booksJpaRepository.findAll().stream().map(booksEntityMapperClass::mapFromBooksEntity).toList();
     }
 
     @Override

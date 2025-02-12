@@ -17,7 +17,7 @@ public class BooksDTO {
     private String title;
     private String isbn;
     private String publisher;
-    private Date publishedDate;
+    private Integer publishedDate;
     private Integer copies;
     private Boolean available;
 

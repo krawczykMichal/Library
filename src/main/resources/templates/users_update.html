@@ -21,7 +21,7 @@
 </div>
 <br>
 <form action="#" th:action="@{/user/{userId}/update(userId=${user.userId})}" th:object="${userDTO}" method="POST">
-    <input type="hidden" name="_method" value="patch"/>
+    <input type="hidden" name="_method" value="PATCH"/>
     <br>
     <label for="name">Name:</label>
     <input type="text" id="name" th:field="*{name}"/>

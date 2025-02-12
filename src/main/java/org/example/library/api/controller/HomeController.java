@@ -15,7 +15,7 @@ public class HomeController {
         return "home";
     }
 
-    @GetMapping(value = "/library/employee")
+    @GetMapping(value = "/employee/login")
     public String libraryEmployeePage() {
         return "library_employee";
     }

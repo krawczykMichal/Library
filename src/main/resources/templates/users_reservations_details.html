@@ -52,29 +52,24 @@
 <table border="0">
     <thead>
     <tr>
-        <th>Category</th>
-        <th>Author</th>
-        <th>Isbn</th>
-        <th>Publisher</th>
+        <th>Reservation number</th>
+        <th>Reservation make date</th>
+        <th>Reservation hold to date</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
 
-    <tr th:each="cartItems : ${reservation.cart.cartItem}">
-        <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}" ></td>
-        <td th:text="${cartItems.book.isbn}"></td>
-        <td th:text="${cartItems.quantity}"></td>
+    <tr th:each="reservation : ${reservationsList}">
+        <td th:text="${reservation.reservationNumber}"></td>
+        <td th:text="${reservation.reservationMakeDate}"></td>
+        <td th:text="${reservation.reservationHoldToDate}" ></td>
         <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Book details</a>
+            <a th:href="@{/user/reservation/history/details/{reservationId}(reservationId=${reservation.reservationId})}" class="btn btn-info" role="button">Reservation details</a>
         </td>
     </tr>
     </tbody>
 </table>
-<form th:action="@{/cart/reservation/loan/request/{reservationId}(reservationId=${reservation.reservationId})}" method="post">
-    <button type="submit" class="btn btn-primary">Loan</button>
-</form>
 
 </body>
 </html>

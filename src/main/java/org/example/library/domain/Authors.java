@@ -2,6 +2,7 @@ package org.example.library.domain;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @With
@@ -15,5 +16,5 @@ public class Authors {
     String name;
     String surname;
     String authorCode;
-    Set<Books> books;
+    List<Books> books;
 }

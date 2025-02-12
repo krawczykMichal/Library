@@ -32,8 +32,8 @@
     <a th:href="@{/user/{userId}/update(userId=${user.userId})}" class="btn btn-info" role="button">Update profile</a>
 </div>
 <br>
-<form th:action="@{/user/{userid}/delete(userId=${user.userId})}" method="post">
-    <input type="hidden" name="_method" value="delete" />
+<form th:action="@{/user/{userId}/delete(userId=${user.userId})}" method="POST">
+    <input type="hidden" name="_method" value="DELETE" />
     <button type="submit">Delete profile</button>
 </form>
 </body>

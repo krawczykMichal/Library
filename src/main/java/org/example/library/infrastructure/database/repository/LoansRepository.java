@@ -7,6 +7,7 @@ import org.example.library.infrastructure.database.entity.LoansEntity;
 import org.example.library.infrastructure.database.repository.jpa.LoanRequestJpaRepository;
 import org.example.library.infrastructure.database.repository.jpa.LoansJpaRepository;
 import org.example.library.infrastructure.database.repository.mapper.LoansEntityMapper;
+import org.example.library.infrastructure.database.repository.mapper.LoansEntityMapperClass;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class LoansRepository implements LoansDao {
 
     private final LoansJpaRepository loansJpaRepository;
     private final LoansEntityMapper loansEntityMapper;
+    private final LoansEntityMapperClass loansEntityMapperClass;
 
     @Override
     public Loans save(Loans loan) {
@@ -29,24 +31,34 @@ public class LoansRepository implements LoansDao {
 
     @Override
     public List<Loans> findAllByUserId(Integer userId) {
-        List<LoansEntity> all = loansJpaRepository.findAll();
-        return all.stream().map(loansEntityMapper::mapFromLoansEntity).collect(Collectors.toList());
+        List<LoansEntity> all = loansJpaRepository.findAllByUserId(userId);
+        return all.stream().map(loansEntityMapperClass::mapFromLoansEntityForReservations).collect(Collectors.toList());
     }
 
     @Override
     public List<Loans> findAllByUserId(Integer userId, boolean returned) {
         List<LoansEntity> all = loansJpaRepository.findAllWithReturned(userId, returned);
-        return all.stream().map(loansEntityMapper::mapFromLoansEntity).collect(Collectors.toList());
+        return all.stream().map(loansEntityMapperClass::mapFromLoansEntityForReservations).collect(Collectors.toList());
     }
 
     @Override
     public Optional<Loans> findById(Integer loanId) {
         Optional<LoansEntity> loansEntity = loansJpaRepository.findById(loanId);
-        return loansEntity.map(loansEntityMapper::mapFromLoansEntity);
+        return loansEntity.map(loansEntityMapperClass::mapFromLoansEntityForReservations);
     }
 
     @Override
     public List<Loans> findAll() {
         return loansJpaRepository.findAll().stream().map(loansEntityMapper::mapFromLoansEntity).toList();
+    }
+
+    @Override
+    public Optional<Loans> findByLoanNumber(String loanNumber) {
+        return loansJpaRepository.findByLoanNumber(loanNumber).map(loansEntityMapper::mapFromLoansEntity);
+    }
+
+    @Override
+    public void deleteByUserId(Integer userId) {
+        loansJpaRepository.deleteByUserId(userId);
     }
 }

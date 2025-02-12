@@ -3,6 +3,7 @@ package org.example.library.infrastructure.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -31,5 +32,5 @@ public class AuthorsEntity {
     private String authorCode;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    private Set<BooksEntity> books;
+    private List<BooksEntity> books;
 }

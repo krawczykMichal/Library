@@ -16,7 +16,7 @@ public class Books {
     String title;
     String isbn;
     String publisher;
-    Date publishedDate;
+    Integer publishedDate;
     Integer copies;
     Boolean available;
     Authors author;

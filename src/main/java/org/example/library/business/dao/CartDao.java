@@ -13,4 +13,6 @@ public interface CartDao {
     Optional<Cart> findByUserId(Integer userId);
 
     Optional<Cart> findById(Integer cartId);
+
+    void deleteByUserId(Integer userId);
 }

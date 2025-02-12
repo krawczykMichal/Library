@@ -14,4 +14,6 @@ public interface LoanRequestDao {
     Optional<LoanRequest> findById(Integer loanRequestId);
 
     List<LoanRequest> findByUserId(Integer userId);
+
+    void deleteByCartUserId(Integer userId);
 }

@@ -40,4 +40,9 @@ public class LoanRequestRepository implements LoanRequestDao {
     public List<LoanRequest> findByUserId(Integer userId) {
         return loanRequestJpaRepository.findByUserId(userId).stream().map(loanRequestEntityMapper::mapFromLoanRequestEntity).toList();
     }
+
+    @Override
+    public void deleteByCartUserId(Integer userId) {
+        loanRequestJpaRepository.deleteByCartUserId(userId);
+    }
 }

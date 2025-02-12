@@ -2,9 +2,9 @@ package org.example.library.infrastructure.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +22,9 @@ public class LoansEntity {
     @Column(name = "loan_id")
     private Integer loanId;
 
+    @Column(name = "loan_number")
+    private String loanNumber;
+
     @Column(name = "loan_date")
     private LocalDateTime loanDate;
 
@@ -35,6 +38,14 @@ public class LoansEntity {
     @JoinColumn(name = "employee_id")
     private EmployeesEntity employee;
 
-    @OneToOne(mappedBy = "loan")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UsersEntity user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
+    private List<LoanItemEntity> loanItems;
+
+    @OneToOne
+    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
     private LoanRequestEntity loanRequest;
 }

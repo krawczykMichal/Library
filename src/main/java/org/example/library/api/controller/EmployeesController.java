@@ -144,13 +144,18 @@ public class EmployeesController {
             Model model,
             HttpSession httpSession
     ) {
-        String username = httpSession.getAttribute("usernameEmployee").toString();
+        String employeeUsername = httpSession.getAttribute("usernameEmployee").toString();
+        String userUsername = httpSession.getAttribute("username").toString();
 
-        Employees employee = employeesService.findByUsername(username);
+        Users user = usersService.findByUsername(userUsername);
+
+
+        Employees employee = employeesService.findByUsername(employeeUsername);
         LoanRequest loanRequest = loanRequestService.findById(loanRequestId);
+        List<LoanRequestItem> loanRequestItemList = loanRequest.getLoanRequestItems();
 
 
-        loansService.makeLoan(loanRequest, employee);
+        loansService.makeLoan(loanRequest, loanRequestItemList, employee, user);
 
         model.addAttribute("loansDTO", loansDTO);
 
@@ -172,16 +177,16 @@ public class EmployeesController {
         return "employee_loan_list";
     }
 
-    @GetMapping(value = "/employee/loan/details/{loanId}")
+    @GetMapping(value = "/employee/loan/details/{loanNumber}")
     public String loanDetailsForEmployee(
-            @PathVariable("loanId")
-            Integer loanId,
+            @PathVariable("loanNumber")
+            String loanNumber,
             @ModelAttribute("loansDTO")
             LoansDTO loansDTO,
             Model model
     ) {
 
-        Loans loan = loansService.findById(loanId);
+        Loans loan = loansService.findByLoanNumber(loanNumber);
 
         model.addAttribute("loan", loan);
         model.addAttribute("loansDTO", loansDTO);

@@ -8,6 +8,8 @@ import org.example.library.domain.CartItem;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class CartItemService {
@@ -22,5 +24,9 @@ public class CartItemService {
                 .title(book.getTitle())
                 .quantity(4).build();
         cartItemDao.saveCartItem(cartItem);
+    }
+
+    public List<CartItem> findByCartId(Integer cartId) {
+        return cartItemDao.findByCartId(cartId);
     }
 }

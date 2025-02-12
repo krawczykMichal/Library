@@ -13,13 +13,16 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "loan_request")
+@Table(name = "loans_request")
 public class LoanRequestEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "loan_request_id")
     private Integer loanRequestId;
+
+    @Column(name = "loan_request_number")
+    private String loanRequestNumber;
 
     @Column(name = "request_date")
     private LocalDateTime requestDate;
@@ -32,6 +35,4 @@ public class LoanRequestEntity {
     @JoinColumn(name = "cart_id")
     private CartEntity cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private LoansEntity loan;
 }

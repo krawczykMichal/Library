@@ -4,16 +4,10 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.library.api.dto.CartDTO;
-import org.example.library.api.dto.LoansDTO;
 import org.example.library.api.dto.UsersDTO;
-import org.example.library.business.CartService;
-import org.example.library.business.LoansService;
-import org.example.library.business.ReservationsService;
-import org.example.library.business.UsersService;
-import org.example.library.domain.Cart;
-import org.example.library.domain.Loans;
-import org.example.library.domain.Reservations;
-import org.example.library.domain.Users;
+import org.example.library.business.*;
+import org.example.library.domain.*;
+import org.example.library.infrastructure.security.business.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -31,6 +25,9 @@ public class UsersController {
     private final LoansService loansService;
     private final CartService cartService;
     private final ReservationsService reservationsService;
+    private final CartItemService cartItemService;
+    private final LoanItemService loanItemService;
+    private final UserService userService;
 
 // @TODO sprawdzić wszystkie templates dla tego kontrolera
     @GetMapping(value = "/user/home")
@@ -53,6 +50,7 @@ public class UsersController {
         httpSession.setAttribute("username", username);
         httpSession.setAttribute("user", userByUsername);
         model.addAttribute("usersDTO", usersDTO);
+        model.addAttribute("user", userByUsername);
 
         return "users_home";
     }
@@ -83,14 +81,12 @@ public class UsersController {
             HttpSession httpSession
     ) {
         Users user = usersService.saveUser(usersDTO);
+        String username = user.getUsername();
+        Users user1 = usersService.findByUsername(username);
+        cartService.saveCart(user1);
+        usersService.assignRoleToUser(username);
 
 
-        Cart cart = cartService.saveCart(user);
-        Integer cartId = cart.getCartId();
-
-        //@TODO sprawdzić czy ten cart tworzy się razem z utworzeniem nowego użytkownika
-
-        httpSession.setAttribute("cartId", cartId);
         httpSession.setAttribute("userEmail", usersDTO.getEmail());
 
         return "redirect:/user/home";
@@ -160,10 +156,13 @@ public class UsersController {
 
     @DeleteMapping("/user/{userId}/delete")
     public String userDelete(
-            @PathVariable Integer userId
+            @PathVariable("userId") Integer userId
     ) {
-        usersService.deleteById(userId);
-        //@TODO tu powinien nastąpić logout ze strony i wyjście do home
+        System.out.println("userId: " + userId);
+        Users byId = usersService.findById(userId);
+        Integer id = byId.getUserId();
+        usersService.deleteById(id);
+        //@TODO zrobić tak że logowanie na nieistniejącego użytkownika nie rzuca błędu a prosi o ponowne wpisanie danych do logowania
 
         return "redirect:/";
     }
@@ -183,19 +182,21 @@ public class UsersController {
 
         userId1 = userId;
 
-        reservationsService.findByUserId(userId);
+        List<Reservations> reservationsList = reservationsService.findByUserId(userId);
 
         model.addAttribute("cartDTO", cartDTO);
+        model.addAttribute("reservationsList", reservationsList);
 
-        return "reservation_to_loan_details";
+
+        return "users_reservations_details";
     }
 
-    @GetMapping(value = "/user/reservation/history/details/{reservationId}")
+    @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
     public String userReservationHistoryDetails(
-            @PathVariable Integer reservationId,
+            @PathVariable String reservationNumber,
             Model model
     ) {
-        Reservations reservation = reservationsService.findById(reservationId);
+        Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
 
         model.addAttribute("reservation", reservation);
 
@@ -203,10 +204,19 @@ public class UsersController {
 
     }
 
+    @DeleteMapping(value = "/user/reservation/history/details/{reservationId}/delete")
+    public String userReservationHistoryDelete(
+            @PathVariable("reservationId")
+            Integer reservationId
+    ) {
+        reservationsService.deleteById(reservationId);
+
+        return "redirect:/user/reservation/history/{userId}";
+    }
+
     @GetMapping(value = "/user/loan/history/{userId}")
     public String userLoanHistory(
             @PathVariable Integer userId,
-            @RequestParam(value = "returned", defaultValue = "all") String returned,
             Model model,
             HttpSession httpSession
     ) {
@@ -217,34 +227,37 @@ public class UsersController {
 
         userId1 = userId;
 
-        List<Loans> allLoans;
-
-        if (returned.equals("false")) {
-            allLoans = loansService.findAllByUserId(userId, false);
-        } else if (returned.equals("true")) {
-            allLoans = loansService.findAllByUserId(userId, true);
-        } else {
-            allLoans = loansService.findAllByUserId(userId);
-        }
+        List<Loans> allLoans = loansService.findAllByUserId(userId);
 
         model.addAttribute("allLoans", allLoans);
 
-        return "user_loan_history";
+        return "user_loan_list";
     }
 
-    @GetMapping(value = "/user/loan/history/{loanId}/details")
+    @GetMapping(value = "/user/loan/history/{loanNumber}/details")
     public String userLoanHistoryDetails(
-            @PathVariable Integer loanId,
-            @ModelAttribute("loanDTO")
-            LoansDTO loansDTO,
-            Model model
+            @PathVariable("loanNumber") String loanNumber,
+            Model model,
+            HttpSession httpSession
     ) {
-        loansService.findById(loanId);
 
-        model.addAttribute("loansDTO", loansDTO);
+        httpSession.getAttribute("username");
+        Users user = usersService.findByUsername(httpSession.getAttribute("username").toString());
+        Integer userId = user.getUserId();
 
-        return "user_loan_history_details";
+        Loans loan = loansService.findByLoanNumber(loanNumber);
+        Integer loanId = loan.getLoanId();
+        List<LoanItem> loanItemList = loanItemService.findAllByLoanId(loanId);
+
+        System.out.println("loan: " + loan);
+        System.out.println("loanItemList: " + loanItemList);
+        model.addAttribute("loan", loan);
+        model.addAttribute("loanItemList", loanItemList);
+//        model.addAttribute("cartItem", cartItem);
+
+        return "user_loan_details";
     }
+
 //@TODO kontunuować dodawanie funkcjonlności dla użytkownika i pracownika dotycząćych historii rezerwacji, dostępu do danych użytkownika, patrzenia czy nie spóźnia się z oddaniem, itd
 
     private Integer getUserId(HttpSession httpSession) {

@@ -58,10 +58,10 @@
   </thead>
   <tbody>
   <tr th:each="reservation : ${reservationsList}">
-    <td th:text="${reservation.reservationId}"></td>
+    <td th:text="${reservation.reservationNumber}"></td>
     <td th:text="${reservation.reservationMakeDate}"></td>
     <td>
-      <a th:href="@{/cart/reservation/details/{reservationId}(reservationId=${reservation.reservationId})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/user/cart/reservation/details/{reservationNumber}(reservationNumber=${reservation.reservationNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>

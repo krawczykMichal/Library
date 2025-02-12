@@ -8,6 +8,8 @@ import org.example.library.infrastructure.database.repository.jpa.CartItemJpaRep
 import org.example.library.infrastructure.database.repository.mapper.CartItemEntityMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @AllArgsConstructor
 public class CartItemRepository implements CartItemDao {
@@ -20,5 +22,10 @@ public class CartItemRepository implements CartItemDao {
         CartItemEntity toSave = cartItemEntityMapper.mapToCartItemEntity(cartItem);
         CartItemEntity saved = cartItemJpaRepository.save(toSave);
         return cartItemEntityMapper.mapFromCartItemEntity(saved);
+    }
+
+    @Override
+    public List<CartItem> findByCartId(Integer cartId) {
+        return cartItemJpaRepository.findByCartId(cartId).stream().map(cartItemEntityMapper::mapFromCartItemEntity).toList();
     }
 }

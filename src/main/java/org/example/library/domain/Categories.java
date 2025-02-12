@@ -2,6 +2,7 @@ package org.example.library.domain;
 
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @With
@@ -13,5 +14,5 @@ public class Categories {
 
     Integer categoryId;
     String name;
-    Set<Books> books;
+    List<Books> books;
 }

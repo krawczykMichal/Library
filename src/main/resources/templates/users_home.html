@@ -31,14 +31,13 @@
     <div class="row mt-3">
         <p>You can check your borrowed history here</p>
         <div class="col-md-6">
-            <a th:href="@{/user/loan/history/{userId}(userId=${usersDTO.userId})}" class="btn btn-info" role="button">Borrowed books history</a>
+            <a th:href="@{/user/loan/history/{userId}(userId=${user.userId})}" class="btn btn-info" role="button">Borrowed books history</a>
         </div>
     </div>
     <div class="row mt-3">
         <p>or you can see your profile here</p>
         <div class="col-md-6">
-            <a th:href="@{/user/{userId}/details(userId=${usersDTO.userId})}" class="btn btn-info" role="button">Profiles
-                details</a>
+            <a th:href="@{/user/{userId}/details(userId=${user.userId})}" class="btn btn-info" role="button">Profile details</a>
         </div>
     </div>
 </div>

@@ -107,7 +107,7 @@ public class BooksController {
     }
 
     @PostMapping(value = "/book/{isbn}/details")
-    public String bookDetails(
+    public String addBookToCart(
             @PathVariable("isbn")
             String isbn,
             Model model,
