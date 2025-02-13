@@ -31,11 +31,13 @@ public class ReservationsEntity {
     @Column(name = "reservation_hold_to_date")
     private LocalDateTime reservationHoldToDate;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private CartEntity cart;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservation")
     private List<LoanRequestEntity> loanRequests;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservation")
+    private List<ReservationItemEntity> reservationItems;
 }

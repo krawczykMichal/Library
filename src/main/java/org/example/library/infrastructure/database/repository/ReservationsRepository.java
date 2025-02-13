@@ -6,6 +6,7 @@ import org.example.library.domain.Reservations;
 import org.example.library.infrastructure.database.entity.ReservationsEntity;
 import org.example.library.infrastructure.database.repository.jpa.ReservationsJpaRepository;
 import org.example.library.infrastructure.database.repository.mapper.ReservationsEntityMapper;
+import org.example.library.infrastructure.database.repository.mapper.ReservationsEntityMapperClass;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public class ReservationsRepository implements ReservationsDao {
 
     private final ReservationsJpaRepository reservationsJpaRepository;
     private final ReservationsEntityMapper reservationsEntityMapper;
+
+    private final ReservationsEntityMapperClass reservationsEntityMapperClass;
 
     @Override
     public Reservations saveReservations(Reservations reservation) {
@@ -54,7 +57,7 @@ public class ReservationsRepository implements ReservationsDao {
 
     @Override
     public Optional<Reservations> findByReservationNumber(String reservationNumber) {
-        return reservationsJpaRepository.findByReservationNumber(reservationNumber).map(reservationsEntityMapper::mapFromReservationsEntity);
+        return reservationsJpaRepository.findByReservationNumber(reservationNumber).map(reservationsEntityMapperClass::mapFromReservationsEntity);
     }
 
     @Override

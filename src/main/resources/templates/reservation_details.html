@@ -64,8 +64,8 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${reservation.cart.cartItem}">
-        <td th:text="${item.book.category}" ></td>
+    <tr th:each="item : ${reservation.reservationItem}">
+        <td th:text="${item.book.category.name}" ></td>
         <td th:text="${item.book.title}"></td>
         <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
         <td th:text="${item.book.isbn}"></td>

@@ -198,7 +198,7 @@ public class CartController {
 
         model.addAttribute("reservation", reservation);
 
-        return "users_reservations_details";
+        return "users_reservations_list";
     }
 //
 //    @GetMapping(value = "/cart/reservation/loan/request/{reservationId}")

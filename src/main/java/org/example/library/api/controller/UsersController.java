@@ -29,7 +29,6 @@ public class UsersController {
     private final LoanItemService loanItemService;
     private final UserService userService;
 
-// @TODO sprawdzić wszystkie templates dla tego kontrolera
     @GetMapping(value = "/user/home")
     public String userHome(
             Authentication authentication,
@@ -69,7 +68,6 @@ public class UsersController {
     ) {
         model.addAttribute("usersDTO", usersDTO);
 
-
         return "users_register";
     }
 
@@ -77,7 +75,6 @@ public class UsersController {
     public String userRegister(
             @ModelAttribute("usersDTO")
             UsersDTO usersDTO,
-            Model model,
             HttpSession httpSession
     ) {
         Users user = usersService.saveUser(usersDTO);
@@ -85,7 +82,6 @@ public class UsersController {
         Users user1 = usersService.findByUsername(username);
         cartService.saveCart(user1);
         usersService.assignRoleToUser(username);
-
 
         httpSession.setAttribute("userEmail", usersDTO.getEmail());
 
@@ -167,8 +163,9 @@ public class UsersController {
         return "redirect:/";
     }
 
-    @GetMapping(value = "/user/reservation/history/{userId}")
-    public String userReservationHistory(
+
+    @GetMapping(value = "/user/reservation/list/{userId}")
+    public String userReservationList(
             @PathVariable Integer userId,
             @ModelAttribute("cartDTO")
             CartDTO cartDTO,
@@ -187,8 +184,7 @@ public class UsersController {
         model.addAttribute("cartDTO", cartDTO);
         model.addAttribute("reservationsList", reservationsList);
 
-
-        return "users_reservations_details";
+        return "users_reservations_list";
     }
 
     @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
@@ -197,11 +193,13 @@ public class UsersController {
             Model model
     ) {
         Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
+        System.out.println("reservation: " + reservation);
+        List<ReservationItem> reservationItemList = reservation.getReservationItem();
+        System.out.println("reservationItemList: " + reservationItemList);
 
         model.addAttribute("reservation", reservation);
 
         return "reservation_details";
-
     }
 
     @DeleteMapping(value = "/user/reservation/history/details/{reservationId}/delete")
