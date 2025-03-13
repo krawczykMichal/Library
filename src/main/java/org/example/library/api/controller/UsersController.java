@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.library.api.dto.CartDTO;
+import org.example.library.api.dto.LoanRequestDTO;
 import org.example.library.api.dto.UsersDTO;
 import org.example.library.business.*;
 import org.example.library.domain.*;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -28,6 +30,9 @@ public class UsersController {
     private final CartItemService cartItemService;
     private final LoanItemService loanItemService;
     private final UserService userService;
+    private final ReservationsHistoryService reservationsHistoryService;
+    private final LoansHistoryService loansHistoryService;
+    private final LoanRequestService loanRequestService;
 
     @GetMapping(value = "/user/home")
     public String userHome(
@@ -187,8 +192,8 @@ public class UsersController {
         return "users_reservations_list";
     }
 
-    @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
-    public String userReservationHistoryDetails(
+    @GetMapping(value = "/user/reservation/details/{reservationNumber}")
+    public String userReservationDetails(
             @PathVariable String reservationNumber,
             Model model
     ) {
@@ -202,28 +207,101 @@ public class UsersController {
         return "reservation_details";
     }
 
-    @DeleteMapping(value = "/user/reservation/history/details/{reservationId}/delete")
+
+    @DeleteMapping(value = "/user/reservation/details/{reservationId}/delete")
+    public String userReservationDelete(
+            @PathVariable("reservationId")
+            Integer reservationId
+    ) {
+        reservationsService.cancelReservation(reservationId);
+
+        return "redirect:/user/reservation/list/{userId}";
+    }
+
+    @PostMapping(value = "/user/loan/request/make/{reservationNumber}")
+    public String makeRequest(
+            @PathVariable("reservationNumber")
+            String reservationNumber,
+            Model model,
+            @ModelAttribute("loanRequestDTO")
+            LoanRequestDTO loanRequestDTO,
+            HttpSession httpSession
+    ) {
+        Integer userId = getUserId(httpSession);
+        Users user = usersService.findById(userId);
+        Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
+        loanRequestService.makeLoanRequestFromReservation(reservation, user);
+        reservationsService.deleteByReservationNumber(reservationNumber);
+
+
+        return "redirect:/user/loan/request/list";
+    }
+
+    @GetMapping(value = "/user/loan/request/list")
+    public String userLoanRequestList(
+            HttpSession httpSession,
+            Model model,
+            @ModelAttribute("loanRequestDTO")
+            LoanRequestDTO loanRequestDTO
+    ) {
+        Integer userId = getUserId(httpSession);
+        List<LoanRequest> loanRequestList = loanRequestService.findByUserId(userId);
+        model.addAttribute("loanRequestDTO", loanRequestDTO);
+        model.addAttribute("loanRequestList", loanRequestList);
+
+        return "loan_request_list";
+    }
+
+    @GetMapping(value = "/user/reservation/history/list/{userId}")
+    public String userReservationHistoryList(
+            @PathVariable Integer userId,
+            @ModelAttribute("cartDTO")
+            CartDTO cartDTO,
+            Model model,
+            HttpSession httpSession
+    ) {
+        userId = getUserId(httpSession);
+
+        List<ReservationsHistory> reservationsHistoryList = reservationsHistoryService.findAllByUserId(userId);
+
+        model.addAttribute("reservationsHistoryList", reservationsHistoryList);
+
+        return "users_reservation_history_list";
+    }
+
+    @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
+    public String userReservationHistoryDetails(
+            @PathVariable String reservationNumber,
+            Model model
+    ) {
+
+        ReservationsHistory reservationsHistory = reservationsHistoryService.findByReservationNumber(reservationNumber);
+
+        List<ReservationsHistoryItem> reservationsHistoryItemList = reservationsHistory.getReservationHistoryItems();
+
+        model.addAttribute("reservationsHistory", reservationsHistory);
+        model.addAttribute("reservationsHistoryItemList", reservationsHistoryItemList);
+
+        return "users_reservation_history_details";
+    }
+
+    @DeleteMapping(value = "/user/reservation/details/{reservationId}/delete")
     public String userReservationHistoryDelete(
             @PathVariable("reservationId")
             Integer reservationId
     ) {
-        reservationsService.deleteById(reservationId);
+        reservationsService.cancelReservation(reservationId);
 
         return "redirect:/user/reservation/history/{userId}";
     }
 
-    @GetMapping(value = "/user/loan/history/{userId}")
-    public String userLoanHistory(
+    @GetMapping(value = "/user/loan/list/{userId}")
+    public String userLoanList(
             @PathVariable Integer userId,
             Model model,
             HttpSession httpSession
     ) {
-        String username = httpSession.getAttribute("username").toString();
-        Users userByUsername = usersService.findByUsername(username);
-
-        Integer userId1 = userByUsername.getUserId();
-
-        userId1 = userId;
+        userId = getUserId(httpSession);
 
         List<Loans> allLoans = loansService.findAllByUserId(userId);
 
@@ -232,16 +310,11 @@ public class UsersController {
         return "user_loan_list";
     }
 
-    @GetMapping(value = "/user/loan/history/{loanNumber}/details")
-    public String userLoanHistoryDetails(
+    @GetMapping(value = "/user/loan/{loanNumber}/details")
+    public String userLoanDetails(
             @PathVariable("loanNumber") String loanNumber,
-            Model model,
-            HttpSession httpSession
+            Model model
     ) {
-
-        httpSession.getAttribute("username");
-        Users user = usersService.findByUsername(httpSession.getAttribute("username").toString());
-        Integer userId = user.getUserId();
 
         Loans loan = loansService.findByLoanNumber(loanNumber);
         Integer loanId = loan.getLoanId();
@@ -254,6 +327,41 @@ public class UsersController {
 //        model.addAttribute("cartItem", cartItem);
 
         return "user_loan_details";
+    }
+
+//    @GetMapping(value = "/user/loan/{loanNumber}/details/returned")
+//    public String userLoanDetailsAfterReturn(
+//            @PathVariable("loanNumber") String loanNumber,
+//            Model model
+//    ) {
+//
+//        Loans loan = loansService.findByLoanNumber(loanNumber);
+//        Integer loanId = loan.getLoanId();
+//        List<LoanItem> loanItemList = loanItemService.findAllByLoanId(loanId);
+//
+//        System.out.println("loan: " + loan);
+//        System.out.println("loanItemList: " + loanItemList);
+//        model.addAttribute("loan", loan);
+//        model.addAttribute("loanItemList", loanItemList);
+
+    /// /        model.addAttribute("cartItem", cartItem);
+//
+//        return "user_loan_details_after_return";
+//    }
+    @PatchMapping(value = "/user/loan/{loanNumber}/return")
+    public String userLoanReturn(
+            @PathVariable("loanNumber") String loanNumber,
+            Model model,
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
+    ) {
+        Integer userId = getUserId(httpSession);
+        loansService.returnLoan(loanNumber);
+        System.out.println("loanNumber: " + loanNumber);
+
+        redirectAttributes.addAttribute("userId", userId);
+
+        return "redirect:/user/loan/list/{userId}";
     }
 
 //@TODO kontunuować dodawanie funkcjonlności dla użytkownika i pracownika dotycząćych historii rezerwacji, dostępu do danych użytkownika, patrzenia czy nie spóźnia się z oddaniem, itd

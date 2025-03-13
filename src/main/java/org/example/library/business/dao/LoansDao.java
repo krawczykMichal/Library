@@ -15,9 +15,13 @@ public interface LoansDao {
 
     Optional<Loans> findById(Integer loanId);
 
-    List<Loans> findAll();
+    List<Loans> findAllForEmployee();
 
     Optional<Loans> findByLoanNumber(String loanNumber);
 
     void deleteByUserId(Integer userId);
+
+    int returnLoan(String loanNumber);
+
+    void deleteByReservationId(Integer reservationId);
 }

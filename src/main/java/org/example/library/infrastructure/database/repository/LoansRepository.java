@@ -48,8 +48,8 @@ public class LoansRepository implements LoansDao {
     }
 
     @Override
-    public List<Loans> findAll() {
-        return loansJpaRepository.findAll().stream().map(loansEntityMapper::mapFromLoansEntity).toList();
+    public List<Loans> findAllForEmployee() {
+        return loansJpaRepository.findAllForEmployee().stream().map(loansEntityMapper::mapFromLoansEntity).toList();
     }
 
     @Override
@@ -60,5 +60,18 @@ public class LoansRepository implements LoansDao {
     @Override
     public void deleteByUserId(Integer userId) {
         loansJpaRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public int returnLoan(String loanNumber) {
+
+        int i = loansJpaRepository.returnLoan(loanNumber);
+        System.out.println("LoansRepository.returnLoan: " + i);
+        return i;
+    }
+
+    @Override
+    public void deleteByReservationId(Integer reservationId) {
+        loansJpaRepository.deleteByReservationId(reservationId);
     }
 }

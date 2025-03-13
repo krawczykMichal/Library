@@ -23,4 +23,5 @@ public interface ReservationsDao {
 
     void deleteByCartUserId(Integer userId);
 
+    void deleteByReservationNumber(String reservationNumber);
 }

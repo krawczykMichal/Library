@@ -2,6 +2,8 @@ server:
   port: 8190
   servlet:
     context-path: /library-app
+    session:
+      timeout: 30m
 
 #api:
 #  cepik:

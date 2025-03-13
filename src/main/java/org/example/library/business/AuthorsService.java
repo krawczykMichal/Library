@@ -33,7 +33,7 @@ public class AuthorsService {
                 .authorCode(createAuthorCode()).build();
     }
 
-    private String createAuthorCode() {
+    protected String createAuthorCode() {
         SecureRandom random = new SecureRandom();
         StringBuilder employeeNumber = new StringBuilder();
 

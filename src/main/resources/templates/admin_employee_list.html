@@ -54,6 +54,7 @@
     <th>Surname</th>
     <th>Email</th>
     <th>Username</th>
+    <th>Employee number</th>
     <th></th>
   </tr>
   </thead>
@@ -63,8 +64,9 @@
     <td th:text="${employees.surname}"></td>
     <td th:text="${employees.email}" ></td>
     <td th:text="${employees.username}"></td>
+    <td th:text="${employees.employeeNumber}"></td>
     <td>
-      <a th:href="@{/admin/employee/{emplooyeeNumber}/details(employeeNumber=${employees.employeeNumber})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/admin/employee/{employeeNumber}/details(employeeNumber=${employees.employeeNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>

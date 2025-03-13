@@ -16,6 +16,13 @@
 </div>
 <br>
 <div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/admin/home}" class="btn btn-info" role="button">Home</a>
+        </div>
+    </div>
+</div>
+<div class="container">
     <div>
         <form action="#" th:action="@{/admin/employee/create}" th:object="${employeesDTO}" method="POST">
             <div class="row mt-3">

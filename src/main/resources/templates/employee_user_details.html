@@ -62,6 +62,7 @@
   <thead>
 
   <tr>
+    <th>Reservation number</th>
     <th>Reservation make date</th>
     <th>Reservation hold to date</th>
     <th></th>
@@ -69,10 +70,11 @@
   </thead>
   <tbody>
   <tr th:each="reservation : ${reservationsByUserId}">
+    <td th:text="${reservation.reservationNumber}"></td>
     <td th:text="${reservation.reservationMakeDate}"></td>
     <td th:text="${reservation.reservationHoldToDate}" ></td>
     <td>
-      <a th:href="@{/employee/reservation/details/{reservationId}(reservationId=${reservation.reservationId})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/employee/reservation/details/{reservationNumber}(reservationNumber=${reservation.reservationNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>
@@ -85,14 +87,16 @@
 
   <tr>
     <th>Loan request date</th>
+    <th>Loan request number</th>
     <th></th>
   </tr>
   </thead>
   <tbody>
   <tr th:each="loanRequest : ${loanRequestListByUserId}">
     <td th:text="${loanRequest.requestDate}"></td>
+    <td th:text="${loanRequest.loanRequestNumber}"></td>
     <td>
-      <a th:href="@{/employee/cart/loanRequest/details/{loanRequestId}(loanRequestId=${loanRequest.loanRequestId})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/employee/cart/loanRequest/details/{loanRequestNumber}(loanRequestNumber=${loanRequest.loanRequestNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>
@@ -118,7 +122,7 @@
     <td th:text="${loan.returnDate}"></td>
     <td th:text="${loan.returned}"></td>
     <td>
-      <a th:href="@{/employee/loan/details/{loanId}(loanId=${loan.loanId})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/employee/loan/details/{loanNumber}(loanNumber=${loan.loanNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>

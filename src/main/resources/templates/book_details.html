@@ -15,22 +15,18 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+            <a th:href="@{/book/list}" class="btn btn-info" role="button">Book list</a>
         </div>
     </div>
 </div>
 <br>
 <div th:object="${book}">
     <p>title: <span th:text="*{title}"></span></p>
-    <p>category: <span th:text="*{category}"></span></p>
+    <p>category: <span th:text="*{category.name}"></span></p>
     <p>author: <span th:text="*{author.name + ' ' + author.surname}"></span></p>
     <p>isbn: <span th:text="*{isbn}"></span></p>
     <p>publisher: <span th:text="*{publisher}"></span></p>
     <p>available: <span th:text="*{available}"></span></p>
-
-    <form th:action="@{/cart/{isbn}/add(isbn=${book.isbn})}" method="POST">
-        <button type="submit">Add to cart</button>
-    </form>
 </div>
 
 

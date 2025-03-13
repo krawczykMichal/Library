@@ -15,4 +15,9 @@ public class ReservationItemRepository implements ReservationItemDao {
     public void deleteByReservationCartUserId(Integer userId) {
         reservationItemJpaRepository.deleteByReservationCartUserId(userId);
     }
+
+    @Override
+    public void deleteByReservationNumber(String reservationNumber) {
+        reservationItemJpaRepository.deleteByReservationNumber(reservationNumber);
+    }
 }

@@ -2,6 +2,7 @@ package org.example.library.business;
 
 import lombok.AllArgsConstructor;
 import org.example.library.business.dao.LoanRequestDao;
+import org.example.library.business.dao.LoanRequestItemDao;
 import org.example.library.domain.*;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
@@ -18,16 +19,18 @@ import java.util.Optional;
 public class LoanRequestService {
 
     private final LoanRequestDao loanRequestDao;
+    private final LoanRequestItemDao loanRequestItemDao;
 
     @Transactional
-    public void makeLoanRequestFromReservation(Reservations reservation, List<ReservationItem> reservationItemList) {
+    public void makeLoanRequestFromReservation(Reservations reservation, Users userByUsername) {
+        List<ReservationItem> reservationItemList = reservation.getReservationItem();
         LoanRequest loanRequest = LoanRequest.builder()
                 .loanRequestNumber(createLoanRequestNumber())
-                .reservation(reservation)
                 .loanRequestItems(makeLoamRequestItemListFromReservation(reservationItemList))
                 .requestDate(LocalDateTime.now())
                 .build();
-        loanRequestDao.saveLoanRequest(loanRequest);
+        LoanRequest loanRequest1 = loanRequest.withUser(userByUsername).withReservation(reservation);
+        loanRequestDao.saveLoanRequestFromReservation(loanRequest1);
     }
 
     private String createLoanRequestNumber() {
@@ -73,12 +76,13 @@ public class LoanRequestService {
 
     @Transactional
     public void makeLoanRequestFromCart(Cart cart, List<CartItem> cartItemList) {
+        Users user = cart.getUser();
         LoanRequest loanRequest = LoanRequest.builder()
-                .cart(cart)
                 .loanRequestItems(makeLoamRequestItemListFromCart(cartItemList))
                 .requestDate(LocalDateTime.now())
                 .build();
-        loanRequestDao.saveLoanRequest(loanRequest);
+        LoanRequest loanRequest1 = loanRequest.withUser(user).withCart(cart);
+        loanRequestDao.saveLoanRequestFromCart(loanRequest1);
 
     }
 
@@ -102,4 +106,19 @@ public class LoanRequestService {
     public List<LoanRequest> findByUserId(Integer userId) {
         return loanRequestDao.findByUserId(userId);
     }
+
+    public LoanRequest findByLoanRequestNumber(String loanRequestNumber) {
+        Optional<LoanRequest> loanRequest = loanRequestDao.findByLoanRequestNumber(loanRequestNumber);
+        if (loanRequest.isEmpty()) {
+            throw new NotFoundException("Could not find loan request with loanRequestNumber: " + loanRequestNumber);
+        }
+        return loanRequest.get();
+    }
+
+    @Transactional
+    public void deleteLoanRequest(LoanRequest loanRequest) {
+        loanRequestItemDao.deleteByLoanRequestId(loanRequest.getLoanRequestId());
+        loanRequestDao.deleteByLoanRequestNumber(loanRequest.getLoanRequestNumber());
+    }
+
 }

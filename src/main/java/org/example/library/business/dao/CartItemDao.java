@@ -6,7 +6,10 @@ import java.util.List;
 
 public interface CartItemDao {
 
+
     CartItem saveCartItem(CartItem cartItem);
 
     List<CartItem> findByCartId(Integer cartId);
+
+    void clearCartAfterReservationOrLoan(Integer cartId);
 }

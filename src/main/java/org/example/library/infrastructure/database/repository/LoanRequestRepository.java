@@ -6,6 +6,7 @@ import org.example.library.domain.LoanRequest;
 import org.example.library.infrastructure.database.entity.LoanRequestEntity;
 import org.example.library.infrastructure.database.repository.jpa.LoanRequestJpaRepository;
 import org.example.library.infrastructure.database.repository.mapper.LoanRequestEntityMapper;
+import org.example.library.infrastructure.database.repository.mapper.LoanRequestEntityMapperClass;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,10 +20,15 @@ public class LoanRequestRepository implements LoanRequestDao {
     private final LoanRequestEntityMapper loanRequestEntityMapper;
 
     @Override
-    public LoanRequest saveLoanRequest(LoanRequest loanRequest) {
+    public LoanRequest saveLoanRequestFromReservation(LoanRequest loanRequest) {
         LoanRequestEntity toSave = loanRequestEntityMapper.mapToLoanRequestEntity(loanRequest);
         LoanRequestEntity saved = loanRequestJpaRepository.save(toSave);
         return loanRequestEntityMapper.mapFromLoanRequestEntity(saved);
+    }
+
+    @Override
+    public LoanRequest saveLoanRequestFromCart(LoanRequest loanRequest) {
+        return null;
     }
 
     @Override
@@ -44,5 +50,20 @@ public class LoanRequestRepository implements LoanRequestDao {
     @Override
     public void deleteByCartUserId(Integer userId) {
         loanRequestJpaRepository.deleteByCartUserId(userId);
+    }
+
+    @Override
+    public Optional<LoanRequest> findByLoanRequestNumber(String loanRequestNumber) {
+        return loanRequestJpaRepository.findByLoanRequestNumber(loanRequestNumber).map(loanRequestEntityMapper::mapFromLoanRequestEntity);
+    }
+
+    @Override
+    public void deleteByLoanRequestNumber(String loanRequestNumber) {
+        loanRequestJpaRepository.deleteByLoanRequestNumber(loanRequestNumber);
+    }
+
+    @Override
+    public void deleteByReservationId(Integer reservationId) {
+        loanRequestJpaRepository.deleteByReservationId(reservationId);
     }
 }

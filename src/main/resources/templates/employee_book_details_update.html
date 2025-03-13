@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+          crossorigin="anonymous">
+    <title>Library app</title>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
+        </div>
+    </div>
+</div>
+<br>
+<form action="#" th:action="@{/emplooyee/book/{isbn}/details/update(isbn=${booksDTO.isbn})}"
+      th:object="${booksDTO}" method="POST">
+    <input type="hidden" name="_method" value="patch"/>
+    <br>
+    <label for="name">Title:</label>
+    <input type="text" id="name" th:field="*{title}"/>
+    <br>
+    <label for="isbn">Isbn:</label>
+    <input type="text" id="isbn" th:field="*{isbn}"/>
+    <br>
+    <label for="publisher">publisher:</label>
+    <input type="text" id="publisher" th:field="*{publisher}"/>
+    <br>
+    <label for="copies">Copies:</label>
+    <input type="number" id="copies" th:field="*{copies}"/>
+    <br>
+    <br>
+    <button type="submit">Update book</button>
+</form>
+
+</body>
+</html>

@@ -60,15 +60,20 @@
         <th>Author</th>
         <th>Isbn</th>
         <th>Quantity</th>
+        <th th:if="${!loan.returned}"></th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="item : ${loanItemList}">
         <td th:text="${item.book.category.name}" ></td>
-        <td th:text="${item.book.title}"></td>
+        <td th:text="${item.title}"></td>
         <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
         <td th:text="${item.book.isbn}"></td>
         <td th:text="${item.quantity}"></td>
+        <td th:if="${!loan.returned}"><form th:action="@{/user/loan/{loanNumber}/return(loanNumber=${loan.loanNumber})}" method="POST">
+            <input type="hidden" name="_method" value="PATCH"/>
+            <button type="submit">return</button>
+        </form></td>
     </tr>
     </tbody>
 </table>

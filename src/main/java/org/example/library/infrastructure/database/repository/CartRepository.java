@@ -31,7 +31,7 @@ public class CartRepository implements CartDao {
 
     @Override
     public Optional<Cart> findByUserId(Integer userId) {
-        return cartJpaRepository.findByUserId(userId).map(cartEntityMapper::mapFromCartEntity);
+        return cartJpaRepository.findByUserId(userId).map(cartEntityMapperClass::mapFromCartEntity);
     }
 
     @Override

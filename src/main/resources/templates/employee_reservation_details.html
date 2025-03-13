@@ -40,7 +40,7 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/emplolyee/home}" class="btn btn-info" role="button">Home</a>
+            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
         </div>
     </div>
 </div>
@@ -61,11 +61,12 @@
         <th>Author</th>
         <th>Isbn</th>
         <th>Quantity</th>
+
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${reservation.cart.cartItem}">
-        <td th:text="${item.book.category}" ></td>
+    <tr th:each="item : ${reservation.reservationItem}">
+        <td th:text="${item.book.category.name}" ></td>
         <td th:text="${item.book.title}"></td>
         <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
         <td th:text="${item.book.isbn}"></td>
@@ -73,7 +74,7 @@
     </tr>
     </tbody>
 </table>
-<form th:action="@{/user/reservation/history/details/{reservationId}/delete(reservationId=${reservation.reservationId})}" method="post">
+<form th:action="@{/employee/reservation/details/{reservationId}/delete(reservationId=${reservation.reservationId})}" method="post">
     <input type="hidden" name="_method" value="delete" />
     <button type="submit">Cancel reservation</button>
 </form>

@@ -7,7 +7,9 @@ import org.example.library.api.dto.EmployeesDTO;
 import org.example.library.api.dto.UsersDTO;
 import org.example.library.business.EmployeesService;
 import org.example.library.domain.Employees;
+import org.example.library.domain.User;
 import org.example.library.domain.Users;
+import org.example.library.infrastructure.security.business.dao.UserDao;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -22,6 +24,7 @@ import java.util.List;
 public class AdminController {
 
     private final EmployeesService employeesService;
+    private final UserDao userDao;
 
 
     @GetMapping(value = "/admin/home")
@@ -40,10 +43,10 @@ public class AdminController {
 
         String username = getUsernameFromAuthentication(authentication);
 
-        Employees serviceByUsername = employeesService.findByUsername(username);
+        User user = userDao.findByUsername(username);
 
         httpSession.setAttribute("username", username);
-        httpSession.setAttribute("user", serviceByUsername);
+        httpSession.setAttribute("user", user);
         model.addAttribute("employeeDTO", employeeDTO);
 
         return "admin_home";

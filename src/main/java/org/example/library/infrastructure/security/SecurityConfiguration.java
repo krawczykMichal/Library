@@ -20,6 +20,13 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
+    private final CustomAuthenticationSuccessHandler successHandler;
+
+    public SecurityConfiguration(CustomAuthenticationSuccessHandler successHandler) {
+        this.successHandler = successHandler;
+    }
+
+
     @Autowired
     private LibraryUserDetailsService libraryUserDetailsService;
 
@@ -62,9 +69,9 @@ public class SecurityConfiguration {
                         .requestMatchers("/employee/**","/author/**").hasAnyAuthority("EMPLOYEE", "ADMIN")
                         .requestMatchers("/admin/**" ).hasAuthority( "ADMIN").anyRequest().authenticated()
                 )
-                .formLogin(formLogin ->
-                        formLogin
-                                .defaultSuccessUrl("/user/home"))
+                .formLogin(form -> form
+                        .successHandler(successHandler) // Używamy naszego handlera
+                        .permitAll())
                 .logout(logout -> logout
                         .logoutSuccessUrl("/")
                         .invalidateHttpSession(true)

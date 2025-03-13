@@ -18,5 +18,6 @@ public class LoanRequest {
     Reservations reservation;
     LocalDateTime requestDate;
     Cart cart;
+    Users user;
     List<LoanRequestItem> loanRequestItems;
 }

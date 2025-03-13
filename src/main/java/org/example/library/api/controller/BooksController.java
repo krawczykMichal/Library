@@ -3,14 +3,8 @@ package org.example.library.api.controller;
 import jakarta.servlet.http.HttpSession;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.BooksDTO;
-import org.example.library.business.AuthorsService;
-import org.example.library.business.BooksService;
-import org.example.library.business.CartService;
-import org.example.library.business.CategoriesService;
-import org.example.library.domain.Authors;
-import org.example.library.domain.Books;
-import org.example.library.domain.Cart;
-import org.example.library.domain.Categories;
+import org.example.library.business.*;
+import org.example.library.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +19,7 @@ public class BooksController {
     private final CartService cartService;
     private final CategoriesService categoriesService;
     private final AuthorsService authorsService;
+    private final UsersService usersService;
 
 
     @GetMapping(value = "/employee/book/home")
@@ -39,6 +34,12 @@ public class BooksController {
             BooksDTO bookDTO,
             Model model
     ) {
+
+        List<Categories> categories = categoriesService.findAll();
+        List<Authors> authors = authorsService.findAll();
+
+        model.addAttribute("categories", categories);
+        model.addAttribute("authors", authors);
         model.addAttribute("booksDTO", bookDTO);
 
         return "employee_book_add";
@@ -68,11 +69,15 @@ public class BooksController {
 
     @GetMapping(value = "/book/list")
     public String bookList(
-            Model model
+            Model model,
+            HttpSession httpSession
     ) {
+        String username = httpSession.getAttribute("username").toString();
         List<Books> booksList = booksService.findAll();
 
+        Users user = usersService.findByUsername(username);
         model.addAttribute("booksList", booksList);
+        model.addAttribute("user", user);
         return "book_list";
     }
 
@@ -104,6 +109,21 @@ public class BooksController {
         model.addAttribute("book", book);
 
         return "book_details";
+    }
+
+    @GetMapping(value = "/book/{isbn}/cart/details")
+    public String bookDetailsInCartPage(
+            @PathVariable("isbn")
+            String isbn,
+            Model model,
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO
+    ) {
+        Books book = booksService.findByIsbn(isbn);
+
+        model.addAttribute("book", book);
+
+        return "book_in_cart_details";
     }
 
     @PostMapping(value = "/book/{isbn}/details")

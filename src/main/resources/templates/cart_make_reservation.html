@@ -61,8 +61,8 @@
 
     <tr th:each="cartItems : ${cart.cartItem}">
         <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}"></td>
-        <td th:number="${cartItems.quantity}"></td>
+        <td th:text="${cartItems.book.author.name + ' ' + cartItems.book.author.surname}"></td>
+        <td th:text="${cartItems.quantity}"></td>
     </tr>
     </tbody>
 </table>

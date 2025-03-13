@@ -3,8 +3,6 @@ package org.example.library.infrastructure.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Getter
 @Setter
 @EqualsAndHashCode(of = "cartItemId")
@@ -33,5 +31,5 @@ public class CartItemEntity {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private BooksEntity books;
+    private BooksEntity book;
 }

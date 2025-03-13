@@ -7,7 +7,9 @@ import java.util.Optional;
 
 public interface LoanRequestDao {
 
-    LoanRequest saveLoanRequest(LoanRequest loanRequest);
+    LoanRequest saveLoanRequestFromReservation(LoanRequest loanRequest);
+
+    LoanRequest saveLoanRequestFromCart(LoanRequest loanRequest);
 
     List<LoanRequest> findAll();
 
@@ -16,4 +18,10 @@ public interface LoanRequestDao {
     List<LoanRequest> findByUserId(Integer userId);
 
     void deleteByCartUserId(Integer userId);
+
+    Optional<LoanRequest> findByLoanRequestNumber(String loanRequestNumber);
+
+    void deleteByLoanRequestNumber(String loanRequestNumber);
+
+    void deleteByReservationId(Integer reservationId);
 }

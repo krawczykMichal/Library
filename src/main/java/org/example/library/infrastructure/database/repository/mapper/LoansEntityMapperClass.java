@@ -111,7 +111,7 @@ public class LoansEntityMapperClass {
                 .map(entities -> CartItem.builder()
                         .cartItemId(entities.getCartItemId())
                         .title(entities.getTitle())
-                        .book(mapFromBooksEntity(entities.getBooks()))
+                        .book(mapFromBooksEntity(entities.getBook()))
                         .quantity(entities.getQuantity())
                         .build()
                 )

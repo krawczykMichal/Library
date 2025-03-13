@@ -1,7 +1,7 @@
 package org.example.library.business;
 
 import lombok.AllArgsConstructor;
-import org.example.library.business.dao.ReservationsDao;
+import org.example.library.business.dao.*;
 import org.example.library.domain.Cart;
 import org.example.library.domain.CartItem;
 import org.example.library.domain.ReservationItem;
@@ -21,6 +21,12 @@ import java.util.Optional;
 public class ReservationsService {
 
     private final ReservationsDao reservationsDao;
+    private final ReservationsHistoryDao reservationsHistoryDao;
+    private final ReservationItemDao reservationItemDao;
+    private final LoanRequestItemDao loanRequestItemDao;
+    private final LoanRequestDao loanRequestDao;
+    private final LoansDao loansDao;
+    private final LoanItemDao loanItemDao;
 
     @Transactional
     public void makeReservation(Cart cart, List<CartItem> cartItems) {
@@ -99,8 +105,22 @@ public class ReservationsService {
     }
 
     @Transactional
-    public void deleteById(Integer reservationId) {
+    public void cancelReservation(Integer reservationId) {
+        Reservations byId = findById(reservationId);
+        String reservationNumber = byId.getReservationNumber();
+//        loanItemDao.deleteByReservationId(reservationId);
+//        loansDao.deleteByReservationId(reservationId);
+//        loanRequestItemDao.deleteByReservationId(reservationId);
+//        loanRequestDao.deleteByReservationId(reservationId);
+        reservationItemDao.deleteByReservationNumber(reservationNumber);
         reservationsDao.deleteById(reservationId);
     }
 
+    @Transactional
+    public void deleteByReservationNumber(String reservationNumber) {
+        Reservations reservation = findByReservationNumber(reservationNumber);
+        reservationsHistoryDao.saveReservationsHistory(reservation);
+        reservationItemDao.deleteByReservationNumber(reservationNumber);
+        reservationsDao.deleteByReservationNumber(reservationNumber);
+    }
 }

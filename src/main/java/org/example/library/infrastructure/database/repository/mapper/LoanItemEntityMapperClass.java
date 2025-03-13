@@ -29,6 +29,9 @@ public class LoanItemEntityMapperClass {
                 .bookId(booksEntity.getBookId())
                 .category(mapFromCategoriesEntity(booksEntity.getCategory()))
                 .author(mapFromAuthorsEntity(booksEntity.getAuthor()))
+                .title(booksEntity.getTitle())
+                .copies(booksEntity.getCopies())
+                .publisher(booksEntity.getPublisher())
                 .isbn(booksEntity.getIsbn())
                 .build();
     }

@@ -1,8 +1,8 @@
 package org.example.library.infrastructure.database.repository.jpa;
 
-import io.micrometer.common.KeyValues;
 import org.example.library.infrastructure.database.entity.CartItemEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +13,8 @@ public interface CartItemJpaRepository extends JpaRepository<CartItemEntity, Int
 
     @Query("select ci from CartItemEntity ci where ci.cart.cartId = :cartId")
     List<CartItemEntity> findByCartId(Integer cartId);
+
+    @Modifying
+    @Query("delete from CartItemEntity ci where ci.cart.cartId = :cartId")
+    void clearCartAfterReservationOrLoan(Integer cartId);
 }

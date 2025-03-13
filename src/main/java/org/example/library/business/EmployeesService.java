@@ -59,7 +59,7 @@ public class EmployeesService {
     public Employees findByEmployeeNumber(String employeeNumber) {
         Optional<Employees> employees = employeesDao.findByEmployeeNumber(employeeNumber);
         if (employees.isEmpty()) {
-            throw new NotFoundException("Could not find employee with username: " + employeeNumber);
+            throw new NotFoundException("Could not find employee with employeeNumber: " + employeeNumber);
         }
 
         return employees.get();

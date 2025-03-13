@@ -27,4 +27,14 @@ public class LoanItemRepository implements LoanItemDao {
     public void deleteByLoanUserId(Integer userId) {
         loanItemJpaRepository.deleteByLoanUserId(userId);
     }
+
+    @Override
+    public void deleteByReservationId(Integer reservationId) {
+        loanItemJpaRepository.deleteByReservationId(reservationId);
+    }
+
+    @Override
+    public List<LoanItem> findByLoanNumber(String loanNumber) {
+        return loanItemJpaRepository.findByLoanNumber(loanNumber).stream().map(loanItemEntityMapperClass::mapFromLoanItemEntity).toList();
+    }
 }

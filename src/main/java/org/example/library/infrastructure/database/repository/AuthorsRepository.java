@@ -5,6 +5,7 @@ import org.example.library.business.dao.AuthorsDao;
 import org.example.library.domain.Authors;
 import org.example.library.infrastructure.database.entity.AuthorsEntity;
 import org.example.library.infrastructure.database.repository.jpa.AuthorsJpaRepository;
+import org.example.library.infrastructure.database.repository.mapper.AuthorEntityMapperClass;
 import org.example.library.infrastructure.database.repository.mapper.AuthorsEntityMapper;
 import org.springframework.stereotype.Repository;
 
@@ -19,6 +20,7 @@ public class AuthorsRepository implements AuthorsDao {
     private final AuthorsJpaRepository authorsJpaRepository;
 
     private final AuthorsEntityMapper authorsEntityMapper;
+    private final AuthorEntityMapperClass authorEntityMapperClass;
 
     @Override
     public Authors saveAuthor(Authors author) {
@@ -29,16 +31,16 @@ public class AuthorsRepository implements AuthorsDao {
 
     @Override
     public Optional<Authors> findById(Integer authorId) {
-        return authorsJpaRepository.findById(authorId).map(authorsEntityMapper::mapFromAuthorsEntity);
+        return authorsJpaRepository.findById(authorId).map(authorEntityMapperClass::mapFromAuthorsEntity);
     }
 
     @Override
     public List<Authors> findAll() {
-        return authorsJpaRepository.findAll().stream().map(authorsEntityMapper::mapFromAuthorsEntity).toList();
+        return authorsJpaRepository.findAll().stream().map(authorEntityMapperClass::mapFromAuthorsEntity).toList();
     }
 
     @Override
     public Optional<Authors> findByAuthorCode(String booksAuthorCode) {
-        return authorsJpaRepository.findByAuthorCode(booksAuthorCode).map(authorsEntityMapper::mapFromAuthorsEntity);
+        return authorsJpaRepository.findByAuthorCode(booksAuthorCode).map(authorEntityMapperClass::mapFromAuthorsEntity);
     }
 }

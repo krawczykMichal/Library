@@ -25,6 +25,8 @@ public class EmployeesController {
     private final BooksService booksService;
     private final UsersService usersService;
     private final ReservationsService reservationsService;
+    private final LoanRequestItemService loanRequestItemService;
+    private final LoanItemService loanItemService;
 
 
     @GetMapping(value = "/employee/home")
@@ -51,7 +53,7 @@ public class EmployeesController {
         return ((UserDetails) principal).getUsername();
     }
 
-    @GetMapping(value = "/employee/users-list")
+    @GetMapping(value = "/employee/users/list")
     public String usersList(
             @ModelAttribute("usersDTO")
             UsersDTO usersDTO,
@@ -87,17 +89,27 @@ public class EmployeesController {
         return "employee_user_details";
     }
 
-    @GetMapping(value = "/employee/reservation/details/{reservationId}")
+    @GetMapping(value = "/employee/reservations/list")
+    public String reservationsList(
+            Model model
+    ) {
+        List<Reservations> reservationsList = reservationsService.findALl();
+
+        model.addAttribute("reservationsList", reservationsList);
+
+        return "employee_reservations_list";
+    }
+
+    @GetMapping(value = "/employee/reservation/details/{reservationNumber}")
     public String reservationDetailsForEmployee(
-            @PathVariable("reservationId")
-            Integer reservationId,
+            @PathVariable("reservationNumber")
+            String reservationNumber,
             @ModelAttribute("reservationsDTO")
             ReservationsDTO reservationsDTO,
             Model model
     ) {
 
-        Reservations reservation = reservationsService.findById(reservationId);
-        
+        Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
 
         model.addAttribute("reservation", reservation);
         model.addAttribute("reservationsDTO", reservationsDTO);
@@ -105,7 +117,18 @@ public class EmployeesController {
         return "employee_reservation_details";
     }
 
-    @GetMapping(value = "/employee/cart/loanRequest-list")
+    @DeleteMapping(value = "/employee/reservation/details/{reservationId}/delete")
+    public String userReservationHistoryDelete(
+            @PathVariable("reservationId")
+            Integer reservationId
+    ) {
+        reservationsService.cancelReservation(reservationId);
+
+        return "redirect:/employee/reservations/list";
+    }
+
+
+    @GetMapping(value = "/employee/cart/loan/request/list")
     public String loanPage(
             @ModelAttribute("loanRequestDTO")
             LoanRequestDTO loanRequestDTO,
@@ -119,28 +142,31 @@ public class EmployeesController {
         return "cart_loan_list";
     }
 
-    @GetMapping(value = "/employee/cart/loanRequest/details/{loanRequestId}")
+    @GetMapping(value = "/employee/cart/loanRequest/details/{loanRequestNumber}")
     public String loanRequestDetails(
             @ModelAttribute("loanRequestDTO")
             LoanRequestDTO loanRequestDTO,
-            @PathVariable("loanRequestId")
-            Integer loanRequestId,
+            @PathVariable("loanRequestNumber")
+            String loanRequestNumber,
             Model model
     ) {
-        LoanRequest loanRequestById = loanRequestService.findById(loanRequestId);
+        LoanRequest loanRequest = loanRequestService.findByLoanRequestNumber(loanRequestNumber);
+        List<LoanRequestItem> loanRequestItem = loanRequestItemService.findByLoanRequestNumber(loanRequestNumber);
+        System.out.println("loanRequestItem: " + loanRequestItem);
 
         model.addAttribute("loanRequestDTO", loanRequestDTO);
-        model.addAttribute("loanRequestById", loanRequestById);
+        model.addAttribute("loanRequest", loanRequest);
+        model.addAttribute("loanRequestItem", loanRequestItem);
 
         return "cart_loan_request_details";
     }
 
-    @PostMapping(value = "/employee/cart/loanRequest/details/{loanRequestId}")
+    @PostMapping(value = "/employee/cart/loanRequest/details/{loanRequestNumber}")
     public String loan(
             @ModelAttribute("loansDTO")
             LoansDTO loansDTO,
-            @PathVariable("loanRequestId")
-            Integer loanRequestId,
+            @PathVariable("loanRequestNumber")
+            String loanRequestNumber,
             Model model,
             HttpSession httpSession
     ) {
@@ -151,25 +177,26 @@ public class EmployeesController {
 
 
         Employees employee = employeesService.findByUsername(employeeUsername);
-        LoanRequest loanRequest = loanRequestService.findById(loanRequestId);
+        LoanRequest loanRequest = loanRequestService.findByLoanRequestNumber(loanRequestNumber);
         List<LoanRequestItem> loanRequestItemList = loanRequest.getLoanRequestItems();
 
 
         loansService.makeLoan(loanRequest, loanRequestItemList, employee, user);
+        loanRequestService.deleteLoanRequest(loanRequest);
 
         model.addAttribute("loansDTO", loansDTO);
 
-        return "redirect:/employee/cart/loanRequest-list";
+        return "redirect:/employee/cart/loan/request/list";
     }
 
-    @GetMapping(value = "/employee/loan-list")
+    @GetMapping(value = "/employee/loan/list")
     public String loanList(
             @ModelAttribute("loansDTO")
             LoansDTO loansDTO,
             Model model
     ) {
 
-        List<Loans> loansList = loansService.findAll();
+        List<Loans> loansList = loansService.findAllForEmployee();
 
         model.addAttribute("loansDTO", loansDTO);
         model.addAttribute("loansList", loansList);
@@ -187,8 +214,12 @@ public class EmployeesController {
     ) {
 
         Loans loan = loansService.findByLoanNumber(loanNumber);
+        System.out.println("loan: " + loan);
+        List<LoanItem> loanItems = loanItemService.findByLoanNumber(loanNumber);
+        System.out.println("loanItem: " + loanItems);
 
         model.addAttribute("loan", loan);
+        model.addAttribute("loanItems", loanItems);
         model.addAttribute("loansDTO", loansDTO);
 
         return "employee_loan_details";
@@ -212,11 +243,26 @@ public class EmployeesController {
             @ModelAttribute("booksDTO")
             BooksDTO booksDTO
     ) {
-        booksService.findByIsbn(isbn);
+        Books book = booksService.findByIsbn(isbn);
+
+        model.addAttribute("book", book);
+
+        return "employee_book_details";
+    }
+
+    @GetMapping(value = "/employee/book/{isbn}/details/update")
+    public String bookDetailsUpdate(
+            @PathVariable("isbn")
+            String isbn,
+            Model model,
+            @ModelAttribute("booksDTO")
+            BooksDTO booksDTO
+    ) {
+        Books book = booksService.findByIsbn(isbn);
 
         model.addAttribute("booksDTO", booksDTO);
 
-        return "employee_book_details";
+        return "employee_book_details_update";
     }
 
     @PatchMapping(value = "/employee/book/{isbn}/details/update")

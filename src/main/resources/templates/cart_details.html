@@ -63,11 +63,11 @@
 
     <tr th:each="cartItems : ${cart.cartItem}">
         <td th:text="${cartItems.book.title}"></td>
-        <td th:text="${cartItems.book.author}" ></td>
+        <td th:text="${cartItems.book.author.name  + ' ' + cartItems.book.author.surname}"></td>
         <td th:text="${cartItems.book.isbn}"></td>
         <td th:text="${cartItems.quantity}"></td>
         <td>
-            <a th:href="@{/book/{isbn}/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Book details</a>
+            <a th:href="@{/book/{isbn}/cart/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Book details</a>
         </td>
     </tr>
     </tbody>

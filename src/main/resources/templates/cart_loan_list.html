@@ -56,21 +56,19 @@
     <thead>
 
     <tr>
-        <th>User</th>
+        <th>Username</th>
+        <th>Loan request number</th>
         <th>Request Date</th>
-        <th>Reservation make date</th>
-        <th>Reservation id</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="loanRequest : ${loanRequestList}">
         <td th:text="${loanRequest.cart.user.username}"></td>
+        <td th:text="${loanRequest.loanRequestNumber}"></td>
         <td th:text="${loanRequest.requestDate}" ></td>
-        <td th:text="${loanRequest.reservation.reservationMakeDate}"></td>
-        <td th:text="${loanRequest.reservation.reservationId}"></td>
         <td>
-            <a th:href="@{/employee/cart/loanRequest/details/{loanRequestId}(loanRequestId=${loanRequest.loanRequestId})}" class="btn btn-info" role="button">Details</a>
+            <a th:href="@{/employee/cart/loanRequest/details/{loanRequestNumber}(loanRequestNumber=${loanRequest.loanRequestNumber})}" class="btn btn-info" role="button">Details</a>
         </td>
     </tr>
     </tbody>

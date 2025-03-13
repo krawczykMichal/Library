@@ -70,7 +70,7 @@
         <td th:text="${loan.returnDate}"></td>
         <td th:text="${loan.employee.employeeNumber}"></td>
         <td>
-            <a th:href="@{/employee/loan/details/{loanId}(loanId=${loan.loanId})}" class="btn btn-info" role="button">Details</a>
+            <a th:href="@{/employee/loan/details/{loanNumber}(loanNumber=${loan.loanNumber})}" class="btn btn-info" role="button">Details</a>
         </td>
     </tr>
     </tbody>

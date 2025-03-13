@@ -5,6 +5,7 @@ import org.example.library.api.dto.BooksDTO;
 import org.example.library.api.dto.CartDTO;
 import org.example.library.api.dto.CartItemDTO;
 import org.example.library.business.dao.CartDao;
+import org.example.library.business.dao.CartItemDao;
 import org.example.library.domain.Books;
 import org.example.library.domain.Cart;
 import org.example.library.domain.Users;
@@ -22,6 +23,7 @@ public class CartService {
 
     private final CartDao cartDao;
     private final CartItemService cartItemService;
+    private final CartItemDao cartItemDao;
 
     @Transactional
     public Cart saveCart(Users user) {
@@ -61,4 +63,7 @@ public class CartService {
         cartItemService.addToCartItem(book, cart);
     }
 
+    public void clearCart(Integer cartId) {
+        cartItemDao.clearCartAfterReservationOrLoan(cartId);
+    }
 }

@@ -2,8 +2,10 @@ package org.example.library.infrastructure.database.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.example.library.domain.LoanRequestItem;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,5 +36,12 @@ public class LoanRequestEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cart_id")
     private CartEntity cart;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UsersEntity user;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "loanRequest")
+    private List<LoanRequestItemEntity> loanRequestItems;
 
 }

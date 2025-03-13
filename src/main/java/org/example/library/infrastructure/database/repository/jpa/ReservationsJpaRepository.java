@@ -27,4 +27,8 @@ public interface ReservationsJpaRepository extends JpaRepository<ReservationsEnt
     @Modifying
     @Query("delete from ReservationsEntity res where res.cart.user.userId = :userId")
     void deleteByCartUserId(Integer userId);
+
+    @Modifying
+    @Query("delete from ReservationsEntity res where res.reservationNumber = :reservationNumber")
+    void deleteByReservationNumber(String reservationNumber);
 }

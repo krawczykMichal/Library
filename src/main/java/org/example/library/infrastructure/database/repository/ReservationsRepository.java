@@ -64,4 +64,9 @@ public class ReservationsRepository implements ReservationsDao {
     public void deleteByCartUserId(Integer userId) {
         reservationsJpaRepository.deleteByCartUserId(userId);
     }
+
+    @Override
+    public void deleteByReservationNumber(String reservationNumber) {
+        reservationsJpaRepository.deleteByReservationNumber(reservationNumber);
+    }
 }

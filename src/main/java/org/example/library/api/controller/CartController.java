@@ -23,6 +23,7 @@ public class CartController {
     private final ReservationsService reservationsService;
     private final LoanRequestService loanRequestService;
     private final BooksService booksService;
+    private final CartItemService cartItemService;
 
 
 //    @GetMapping(value = "/cart/{userId}/create")
@@ -121,6 +122,7 @@ public class CartController {
         Cart cartByUserId = cartService.findCartByUserId(userId);
 
         Books byIsbn = booksService.findByIsbn(isbn);
+        Integer bookId = byIsbn.getBookId();
 
         cartService.addItemToCart(cartByUserId, byIsbn);
 
@@ -140,6 +142,8 @@ public class CartController {
         Integer userId = userByUsername.getUserId();
 
         Cart cartByUserId = cartService.findCartByUserId(userId);
+        List<CartItem> cartItem = cartByUserId.getCartItem();
+        System.out.println("cartItem: " + cartItem);
 
 
         model.addAttribute("cart", cartByUserId);
@@ -159,8 +163,8 @@ public class CartController {
         List<CartItem> cartItems = cart.getCartItem();
 
         reservationsService.makeReservation(cart, cartItems);
-
-        return "redirect:/user/cart/reservation/details/{userId}";
+        cartItemService.clearCartAfterReservationOrLoan(cart.getCartId());
+        return "redirect:/home";
     }
 
     @GetMapping(value = "/employee/cart/reservation/list/{userId}")
@@ -228,12 +232,12 @@ public class CartController {
             Model model,
             HttpSession httpSession
     ) {
+        String username = httpSession.getAttribute("username").toString();
+        Users userByUsername = usersService.findByUsername(username);
         Reservations reservation = reservationsService.findByReservationNumber(reservationNumber);
-        List<ReservationItem> reservationItemList = reservation.getReservationItem();
 
-        loanRequestService.makeLoanRequestFromReservation(reservation, reservationItemList);
-
-
+        loanRequestService.makeLoanRequestFromReservation(reservation, userByUsername);
+        reservationsService.deleteByReservationNumber(reservationNumber);
         model.addAttribute("reservationDTO", reservationsDTO);
 
         return "loan_request_from_reservation_success";
@@ -269,6 +273,9 @@ public class CartController {
         List<CartItem> cartItemList = cart.getCartItem();
 
         loanRequestService.makeLoanRequestFromCart(cart, cartItemList);
+        cartService.clearCart(cart.getCartId());
+        // @TODO usunąć loanRequestItem po tym jak loanRequest przechodzi w loan, tak w sumie to sprawdzić czy można usunąć cały loanRequest kiedy zamieni się on w loan
+
 
         model.addAttribute("cartDTO", cartDTO);
 

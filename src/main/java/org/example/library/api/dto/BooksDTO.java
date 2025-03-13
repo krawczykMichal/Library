@@ -27,6 +27,6 @@ public class BooksDTO {
 
     private String booksCategoriesName;
 
-
+    private String fullAuthorName;
 
 }

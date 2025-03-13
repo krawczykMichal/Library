@@ -30,7 +30,7 @@ public class CartEntityMapperClass {
                 .map(entities -> CartItem.builder()
                         .cartItemId(entities.getCartItemId())
                         .title(entities.getTitle())
-                        .book(mapFromBooksEntity(entities.getBooks()))
+                        .book(mapFromBooksEntity(entities.getBook()))
                         .quantity(entities.getQuantity())
                         .build()
                 )
@@ -51,6 +51,7 @@ public class CartEntityMapperClass {
                 .available(booksEntity.getAvailable())
                 .publisher(booksEntity.getPublisher())
                 .publishedDate(booksEntity.getPublishedDate())
+                .copies(booksEntity.getCopies())
                 .build();
     }
 
@@ -111,7 +112,7 @@ public class CartEntityMapperClass {
 
         return cartItem.stream().map(entities -> CartItemEntity.builder()
                 .cartItemId(entities.getCartItemId())
-                .books(mapToBooksEntity(entities.getBook()))
+                .book(mapToBooksEntity(entities.getBook()))
                 .title(entities.getTitle())
                 .quantity(entities.getQuantity())
                 .build()).toList();

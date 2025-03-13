@@ -12,6 +12,15 @@
 
 <body>
 <div class="container">
+  <div class="row mt-3">
+    <div class="col-md-4">
+      <form th:action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+      </form>
+    </div>
+  </div>
+</div>
+<div class="container">
   <h1>Library</h1>
   <br/>
   <div class="row mt-4">
@@ -19,13 +28,19 @@
       <a th:href="@{/employee/book/home}" class="btn btn-info" role="button">Book service</a>
     </div>
     <div class="col-md-3">
-      <a th:href="@{/employee/reservations-list}" class="btn btn-info" role="button">Reservations</a>
+      <a th:href="@{/employee/reservations/list}" class="btn btn-info" role="button">Reservations</a>
     </div>
     <div class="col-md-3">
-      <a th:href="@{/employee/cart/loanRequest-list}" class="btn btn-info" role="button">Loan requests</a>
+      <a th:href="@{/employee/cart/loan/request/list}" class="btn btn-info" role="button">Loan requests</a>
     </div>
     <div class="col-md-3">
-      <a th:href="@{/employee/users-list}" class="btn btn-info" role="button">Users</a>
+      <a th:href="@{/employee/users/list}" class="btn btn-info" role="button">Users</a>
+    </div>
+    <div class="col-md-3">
+      <a th:href="@{/employee/category/home}" class="btn btn-info" role="button">Category</a>
+    </div>
+    <div class="col-md-3">
+      <a th:href="@{/employee/author/home}" class="btn btn-info" role="button">Author</a>
     </div>
   </div>
 

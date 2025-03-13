@@ -4,7 +4,6 @@ package org.example.library.infrastructure.database.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -49,6 +48,6 @@ public class BooksEntity {
     @JoinColumn(name = "category_id")
     private CategoriesEntity category;
 
-    @OneToMany(mappedBy = "books", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<CartItemEntity> cartItems;
 }

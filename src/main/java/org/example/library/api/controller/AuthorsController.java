@@ -16,7 +16,13 @@ public class AuthorsController {
 
     private final AuthorsService authorsService;
 
-    @GetMapping(value = "/author/add")
+    @GetMapping(value = "/employee/author/home")
+    public String home() {
+
+        return "employee_author_home";
+    }
+
+    @GetMapping(value = "/employee/author/add")
     public String addAuthorPage(
             @ModelAttribute("authorsDTO")
             AuthorsDTO authorsDTO,
@@ -27,7 +33,7 @@ public class AuthorsController {
         return "add_author";
     }
 
-    @PostMapping(value = "/author/add")
+    @PostMapping(value = "/employee/author/add")
     public String addAuthor(
             @ModelAttribute("authorsDTO")
             AuthorsDTO authorsDTO,
@@ -40,7 +46,7 @@ public class AuthorsController {
         return "redirect:/library/employee/home";
     }
 
-    @GetMapping(value = "/author/list")
+    @GetMapping(value = "/employee/author/list")
     public String listAuthors(
             Model model,
             @ModelAttribute("authorsDTO")
@@ -53,7 +59,7 @@ public class AuthorsController {
         return "list_authors";
     }
 
-    @GetMapping(value = "/author/update/{authorCode}")
+    @GetMapping(value = "/employee/author/update/{authorCode}")
     public String updateAuthorPage(
             @PathVariable("authorCode")
             String authorCode,
@@ -66,7 +72,7 @@ public class AuthorsController {
         return "update_author";
     }
 
-    @PatchMapping(value = "/author/update/{authorCode}")
+    @PatchMapping(value = "/employee/author/update/{authorCode}")
     public String updateAuthor(
             @PathVariable("authorCode")
             String authorCode,

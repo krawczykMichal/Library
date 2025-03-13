@@ -63,8 +63,8 @@ public class LoansService {
         return loans.get();
     }
 
-    public List<Loans> findAll() {
-        return loansDao.findAll();
+    public List<Loans> findAllForEmployee() {
+        return loansDao.findAllForEmployee();
     }
 
     public Loans findByLoanNumber(String loanNumber) {
@@ -73,5 +73,12 @@ public class LoansService {
             throw new NotFoundException("Cannot find loan with loanNumber " + loanNumber);
         }
         return loans.get();
+    }
+
+    @Transactional
+    public void returnLoan(String loanNumber) {
+        int loans = loansDao.returnLoan(loanNumber);
+        System.out.println("Loans: " + loans);
+        System.out.println("Returned loan number " + loanNumber);
     }
 }

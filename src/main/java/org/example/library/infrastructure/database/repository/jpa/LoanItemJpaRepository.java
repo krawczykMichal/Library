@@ -18,4 +18,11 @@ public interface LoanItemJpaRepository extends JpaRepository<LoanItemEntity, Int
     @Modifying
     @Query("delete from LoanItemEntity li where li.loan.user.userId = :userId")
     void deleteByLoanUserId(Integer userId);
+
+    @Modifying
+    @Query("delete from LoanItemEntity li where li.loan.loanRequest.reservation.reservationsId = :reservationId")
+    void deleteByReservationId(Integer reservationId);
+
+    @Query("select li from LoanItemEntity li where li.loan.loanNumber = :loanNumber")
+    List<LoanItemEntity> findByLoanNumber(String loanNumber);
 }

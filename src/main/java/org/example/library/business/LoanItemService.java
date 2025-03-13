@@ -15,4 +15,8 @@ public class LoanItemService {
     public List<LoanItem> findAllByLoanId(Integer loanId) {
         return loanItemDao.findAllByLoanId(loanId);
     }
+
+    public List<LoanItem> findByLoanNumber(String loanNumber) {
+        return loanItemDao.findByLoanNumber(loanNumber);
+    }
 }

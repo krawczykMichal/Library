@@ -20,6 +20,7 @@ public class Users {
     List<Loans> loans;
     List<Reservations> reservations;
     Cart cart;
+    List<ReservationsHistory> reservationsHistoryList;
     User user;
     Role role;
 }

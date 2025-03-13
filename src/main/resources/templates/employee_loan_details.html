@@ -41,16 +41,16 @@
 <div class="container">
   <div class="row mt-3">
     <div class="col-md-4">
-      <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+      <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
     </div>
   </div>
 </div>
 <br>
 <h3>Loan request details:</h3>
 <div th:object="${loan}">
-  <p>User: <span th:text="*{loanRequest.reservation.cart.user.name + ' ' + loanRequest.reservation.cart.user.surname}"></span></p>
-  <p>Loan date: <span th:text="*{loanDate}"></span></p>
-  <p>Return date: <span th:text="*{returnDate}"></span></p>
+  <p>User: <span th:text="*{loanRequest.user.name + ' ' + loanRequest.user.surname}"></span></p>
+  <p>Loan date: <span th:text="${#temporals.format(loan.loanDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+  <p>Return date: <span th:text="${#temporals.format(loan.returnDate, 'yyyy-MM-dd HH:mm')}"></span></p>
 </div>
 <table border="0">
   <thead>
@@ -64,8 +64,8 @@
   </tr>
   </thead>
   <tbody>
-  <tr th:each="item : ${loan.loanRequest.cart.cartItem}">
-    <td th:text="${item.book.category}" ></td>
+  <tr th:each="item : ${loanItems}">
+    <td th:text="${item.book.category.name}" ></td>
     <td th:text="${item.book.title}"></td>
     <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
     <td th:text="${item.book.isbn}"></td>

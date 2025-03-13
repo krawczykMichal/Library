@@ -3,7 +3,9 @@ package org.example.library.business;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.BooksDTO;
 import org.example.library.business.dao.BooksDao;
+import org.example.library.domain.Authors;
 import org.example.library.domain.Books;
+import org.example.library.domain.Categories;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,15 +31,17 @@ public class BooksService {
     }
 
     private Books registerBook(BooksDTO booksDTO) {
-        return Books.builder()
+        Authors author = authorsService.findByAuthorCode(booksDTO.getBooksAuthorCode());
+        Categories category = categoriesService.findByName(booksDTO.getBooksCategoriesName());
+
+        Books books = Books.builder()
                 .title(booksDTO.getTitle())
                 .isbn(booksDTO.getIsbn())
                 .publisher(booksDTO.getPublisher())
                 .publishedDate(booksDTO.getPublishedDate())
                 .copies(booksDTO.getCopies())
-                .available(true)
-                .category(categoriesService.findByName(booksDTO.getBooksCategoriesName()))
-                .author(authorsService.findByAuthorCode(booksDTO.getBooksAuthorCode())).build();
+                .available(true).build();
+        return books.withAuthor(author).withCategory(category);
     }
 
     @Transactional

@@ -55,15 +55,15 @@
                         <br>
                         <br>
                         <div class="col-md-6">
-                            <label for="publishedDate">Published date:</label>
+                            <label for="publishedDate">Published year:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="date" id="publishedDate" th:field="*{publishedDate}"/>
+                            <input type="number" id="publishedDate" th:field="*{publishedDate}"/>
                         </div>
                         <br>
                         <br>
                         <div class="col-md-6">
-                            <label for="copies">Copiers:</label>
+                            <label for="copies">Copies:</label>
                         </div>
                         <div class="col-md-3">
                             <input type="number" id="copies" th:field="*{copies}"/>
@@ -71,16 +71,23 @@
                         <br>
                         <br>
                         <label for="author">Author:</label>
-                        <select id="author" th:field="*{booksAuthorName + ' ' + booksAuthorSurname}">
-                            <option th:each="author : ${booksDTO}" th:value="${booksDTO.booksAuthorName + ' ' + booksDTO.booksAuthorSurname}" th:text="${author}"></option>
+                        <select id="author" th:field="*{booksAuthorCode}">
+                            <option value="">-- Select Author --</option>
+                            <option th:each="author : ${authors}"
+                                    th:value="${author.authorCode}"
+                                    th:text="${author.name + ' ' + author.surname}">
+                            </option>
                         </select>
                         <br>
                         <br>
                         <label for="category">Category:</label>
                         <select id="category" th:field="*{booksCategoriesName}">
-                            <option th:each="category : ${booksDTO}" th:value="${booksDTO.booksCategoriesName}" th:text="${category}"></option>
+                            <option value="">-- Select Category --</option>
+                            <option th:each="category : ${categories}"
+                                    th:value="${category.name}"
+                                    th:text="${category.name}">
+                            </option>
                         </select>
-<!--                        @TODO sprawdzić czy option działa dla category i dla author-->
                         <br>
                         <br>
                     </div>

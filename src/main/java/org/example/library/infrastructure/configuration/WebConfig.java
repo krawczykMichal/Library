@@ -1,5 +1,6 @@
 package org.example.library.infrastructure.configuration;
 
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.filter.HiddenHttpMethodFilter;
@@ -8,7 +9,7 @@ import org.springframework.web.filter.HiddenHttpMethodFilter;
 public class WebConfig {
 
     @Bean
-    public HiddenHttpMethodFilter hiddenHttpMethodFilter() {
-        return new HiddenHttpMethodFilter();
+    public FilterRegistrationBean<HiddenHttpMethodFilter> hiddenHttpMethodFilter() {
+        return new FilterRegistrationBean<>(new HiddenHttpMethodFilter());
     }
 }
