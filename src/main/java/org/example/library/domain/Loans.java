@@ -17,8 +17,6 @@ public class Loans {
     LocalDateTime loanDate;
     LocalDateTime returnDate;
     Boolean returned;
-    LoanRequest loanRequest;
-    Employees employee;
     Users user;
     List<LoanItem> loanItem;
 }

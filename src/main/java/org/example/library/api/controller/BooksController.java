@@ -20,6 +20,7 @@ public class BooksController {
     private final CategoriesService categoriesService;
     private final AuthorsService authorsService;
     private final UsersService usersService;
+    private final CartItemService cartItemService;
 
 
     @GetMapping(value = "/employee/book/home")
@@ -64,7 +65,7 @@ public class BooksController {
         model.addAttribute("categories", categories);
         model.addAttribute("authors", authors);
 
-        return "redirect:/book/home";
+        return "redirect:/employee/book/home";
     }
 
     @GetMapping(value = "/book/list")
@@ -109,45 +110,6 @@ public class BooksController {
         model.addAttribute("book", book);
 
         return "book_details";
-    }
-
-    @GetMapping(value = "/book/{isbn}/cart/details")
-    public String bookDetailsInCartPage(
-            @PathVariable("isbn")
-            String isbn,
-            Model model,
-            @ModelAttribute("booksDTO")
-            BooksDTO booksDTO
-    ) {
-        Books book = booksService.findByIsbn(isbn);
-
-        model.addAttribute("book", book);
-
-        return "book_in_cart_details";
-    }
-
-    @PostMapping(value = "/book/{isbn}/details")
-    public String addBookToCart(
-            @PathVariable("isbn")
-            String isbn,
-            Model model,
-            @ModelAttribute("booksDTO")
-            BooksDTO booksDTO,
-            HttpSession httpSession
-    ) {
-        Integer cartId = (Integer) httpSession.getAttribute("cartId");
-
-        Cart cart = cartService.findById(cartId);
-
-        Books book = booksService.findByIsbn(isbn);
-
-        httpSession.setAttribute("isbn", isbn);
-
-        cartService.addItemToCart(cart, book);
-
-        model.addAttribute("book", book);
-
-        return "redirect:/book/list";
     }
 
 

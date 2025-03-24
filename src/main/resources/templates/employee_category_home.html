@@ -11,28 +11,30 @@
 </head>
 
 <body>
-
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit">Logout</button>
+            </form>
         </div>
     </div>
 </div>
 <br>
-<form action="#" th:action="@{/employee/author/update/{authorCode}(authorCode=${author.authorCode})}" th:object="${author}" method="POST">
-    <input type="hidden" name="_method" value="patch"/>
+<div class="container">
+    <br/>
+    <h2>Category list</h2>
+    <div class="row mt-3">
+        <div class="col-md-4">
+            <a th:href="@{/employee/category/list}" class="btn btn-info" role="button">List</a>
+        </div>
+    </div>
     <br>
-    <label for="name">Name:</label>
-    <input type="text" id="name" th:field="*{name}"/>
-    <br>
-    <label for="surname">Surname:</label>
-    <input type="text" id="surname" th:field="*{surname}"/>
-    <br>
-    <br>
-
-    <button type="submit">Update Profile</button>
-</form>
-
+    <h2>Add new category</h2>
+    <div>
+        <a th:href="@{/employee/category/add}" class="btn btn-info" role="button">Add</a>
+    </div>
+</div>
 </body>
+
 </html>

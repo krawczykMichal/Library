@@ -20,30 +20,21 @@ public class LoanRequestService {
 
     private final LoanRequestDao loanRequestDao;
     private final LoanRequestItemDao loanRequestItemDao;
+    private final LoanRequestItemService loanRequestItemService;
 
     @Transactional
     public void makeLoanRequestFromReservation(Reservations reservation, Users userByUsername) {
         List<ReservationItem> reservationItemList = reservation.getReservationItem();
+        System.out.println("reservationItemList: " + reservationItemList);
         LoanRequest loanRequest = LoanRequest.builder()
-                .loanRequestNumber(createLoanRequestNumber())
-                .loanRequestItems(makeLoamRequestItemListFromReservation(reservationItemList))
+                .loanRequestNumber(reservation.getReservationNumber())
                 .requestDate(LocalDateTime.now())
                 .build();
-        LoanRequest loanRequest1 = loanRequest.withUser(userByUsername).withReservation(reservation);
-        loanRequestDao.saveLoanRequestFromReservation(loanRequest1);
+        LoanRequest loanRequest1 = loanRequest.withUser(userByUsername);
+        LoanRequest loanRequest2 = loanRequestDao.saveLoanRequestFromReservation(loanRequest1);
+
+        loanRequestItemService.addItems(reservationItemList, loanRequest2);
     }
-
-    private String createLoanRequestNumber() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder employeeNumber = new StringBuilder();
-
-        for (int i = 0; i < 10; i++) {
-            int digit = random.nextInt(10);
-            employeeNumber.append(digit);
-        }
-        return employeeNumber.toString();
-    }
-
     private List<LoanRequestItem> makeLoamRequestItemListFromReservation(List<ReservationItem> reservationItemList) {
         List<LoanRequestItem> loanRequestItemList = new ArrayList<>();
 
@@ -81,7 +72,7 @@ public class LoanRequestService {
                 .loanRequestItems(makeLoamRequestItemListFromCart(cartItemList))
                 .requestDate(LocalDateTime.now())
                 .build();
-        LoanRequest loanRequest1 = loanRequest.withUser(user).withCart(cart);
+        LoanRequest loanRequest1 = loanRequest.withUser(user);
         loanRequestDao.saveLoanRequestFromCart(loanRequest1);
 
     }

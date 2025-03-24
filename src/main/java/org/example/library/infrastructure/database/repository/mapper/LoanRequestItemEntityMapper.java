@@ -8,4 +8,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface LoanRequestItemEntityMapper {
     LoanRequestItem mapFromLoanRequestItemEntity(LoanRequestItemEntity loanRequestItemEntity);
+
+    LoanRequestItemEntity mapToLoanRequestItemEntity(LoanRequestItem loanRequestItem);
 }

@@ -102,7 +102,6 @@ public class UsersController {
     ) {
 
         Integer userId = getUserId(httpSession);
-        //@TODO sprawdzić czy ta metoda działa
 
         Users userById = usersService.findById(userId);
 
@@ -202,18 +201,23 @@ public class UsersController {
         List<ReservationItem> reservationItemList = reservation.getReservationItem();
         System.out.println("reservationItemList: " + reservationItemList);
 
+        model.addAttribute("reservationItemList", reservationItemList);
         model.addAttribute("reservation", reservation);
 
         return "reservation_details";
     }
 
 
-    @DeleteMapping(value = "/user/reservation/details/{reservationId}/delete")
+    @DeleteMapping(value = "/user/reservation/details/{reservationNumber}/delete")
     public String userReservationDelete(
-            @PathVariable("reservationId")
-            Integer reservationId
+            @PathVariable("reservationNumber")
+            String reservationNumber,
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
     ) {
-        reservationsService.cancelReservation(reservationId);
+        Integer userId = getUserId(httpSession);
+        reservationsService.cancelReservation(reservationNumber);
+        redirectAttributes.addAttribute("userId", userId);
 
         return "redirect:/user/reservation/list/{userId}";
     }
@@ -222,7 +226,6 @@ public class UsersController {
     public String makeRequest(
             @PathVariable("reservationNumber")
             String reservationNumber,
-            Model model,
             @ModelAttribute("loanRequestDTO")
             LoanRequestDTO loanRequestDTO,
             HttpSession httpSession
@@ -249,24 +252,34 @@ public class UsersController {
         model.addAttribute("loanRequestDTO", loanRequestDTO);
         model.addAttribute("loanRequestList", loanRequestList);
 
-        return "loan_request_list";
+        return "user_loan_request_list";
     }
 
-    @GetMapping(value = "/user/reservation/history/list/{userId}")
-    public String userReservationHistoryList(
-            @PathVariable Integer userId,
-            @ModelAttribute("cartDTO")
-            CartDTO cartDTO,
-            Model model,
-            HttpSession httpSession
+    @GetMapping(value = "/user/loan/request/{loanRequestNumber}/details")
+    public String userLoanRequestDetails(
+            @PathVariable("loanRequestNumber")
+            String loanRequestNumber,
+            Model model
     ) {
-        userId = getUserId(httpSession);
+        LoanRequest byLoanRequestNumber = loanRequestService.findByLoanRequestNumber(loanRequestNumber);
+        List<LoanRequestItem> loanRequestItems = byLoanRequestNumber.getLoanRequestItems();
+        System.out.println("loanRequestItems: " + loanRequestItems);
 
-        List<ReservationsHistory> reservationsHistoryList = reservationsHistoryService.findAllByUserId(userId);
+        model.addAttribute("loanRequestItems", loanRequestItems);
+        model.addAttribute("byLoanRequestNumber", byLoanRequestNumber);
 
-        model.addAttribute("reservationsHistoryList", reservationsHistoryList);
+        return "user_loan_request_details";
+    }
 
-        return "users_reservation_history_list";
+    @DeleteMapping(value = "/user/loan/request/{loanRequestNumber}/delete")
+    public String userLoanRequestDelete(
+            @PathVariable("loanRequestNumber")
+            String loanRequestNumber
+    ) {
+        LoanRequest byLoanRequestNumber = loanRequestService.findByLoanRequestNumber(loanRequestNumber);
+        loanRequestService.deleteLoanRequest(byLoanRequestNumber);
+
+        return "redirect:/user/loan/request/list";
     }
 
     @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
@@ -285,14 +298,21 @@ public class UsersController {
         return "users_reservation_history_details";
     }
 
-    @DeleteMapping(value = "/user/reservation/details/{reservationId}/delete")
-    public String userReservationHistoryDelete(
-            @PathVariable("reservationId")
-            Integer reservationId
+    @GetMapping(value = "/user/reservation/history/list/{userId}")
+    public String userReservationHistoryList(
+            @PathVariable Integer userId,
+            @ModelAttribute("cartDTO")
+            CartDTO cartDTO,
+            Model model,
+            HttpSession httpSession
     ) {
-        reservationsService.cancelReservation(reservationId);
+        userId = getUserId(httpSession);
 
-        return "redirect:/user/reservation/history/{userId}";
+        List<ReservationsHistory> reservationsHistoryList = reservationsHistoryService.findAllByUserId(userId);
+
+        model.addAttribute("reservationsHistoryList", reservationsHistoryList);
+
+        return "users_reservation_history_list";
     }
 
     @GetMapping(value = "/user/loan/list/{userId}")
@@ -351,7 +371,6 @@ public class UsersController {
     @PatchMapping(value = "/user/loan/{loanNumber}/return")
     public String userLoanReturn(
             @PathVariable("loanNumber") String loanNumber,
-            Model model,
             HttpSession httpSession,
             RedirectAttributes redirectAttributes
     ) {

@@ -17,13 +17,13 @@ import java.util.Optional;
 public class LoanRequestRepository implements LoanRequestDao {
 
     private final LoanRequestJpaRepository loanRequestJpaRepository;
-    private final LoanRequestEntityMapper loanRequestEntityMapper;
+    private final LoanRequestEntityMapperClass loanRequestEntityMapperClass;
 
     @Override
     public LoanRequest saveLoanRequestFromReservation(LoanRequest loanRequest) {
-        LoanRequestEntity toSave = loanRequestEntityMapper.mapToLoanRequestEntity(loanRequest);
+        LoanRequestEntity toSave = loanRequestEntityMapperClass.mapToLoanRequestEntity(loanRequest);
         LoanRequestEntity saved = loanRequestJpaRepository.save(toSave);
-        return loanRequestEntityMapper.mapFromLoanRequestEntity(saved);
+        return loanRequestEntityMapperClass.mapFromLoanRequestEntity(saved);
     }
 
     @Override
@@ -34,17 +34,17 @@ public class LoanRequestRepository implements LoanRequestDao {
     @Override
     public List<LoanRequest> findAll() {
         List<LoanRequestEntity> all = loanRequestJpaRepository.findAll();
-        return all.stream().map(loanRequestEntityMapper::mapFromLoanRequestEntity).toList();
+        return all.stream().map(loanRequestEntityMapperClass::mapFromLoanRequestEntity).toList();
     }
 
     @Override
     public Optional<LoanRequest> findById(Integer loanRequestId) {
-        return loanRequestJpaRepository.findById(loanRequestId).map(loanRequestEntityMapper::mapFromLoanRequestEntity);
+        return loanRequestJpaRepository.findById(loanRequestId).map(loanRequestEntityMapperClass::mapFromLoanRequestEntity);
     }
 
     @Override
     public List<LoanRequest> findByUserId(Integer userId) {
-        return loanRequestJpaRepository.findByUserId(userId).stream().map(loanRequestEntityMapper::mapFromLoanRequestEntity).toList();
+        return loanRequestJpaRepository.findByUserId(userId).stream().map(loanRequestEntityMapperClass::mapFromLoanRequestEntity).toList();
     }
 
     @Override
@@ -54,16 +54,11 @@ public class LoanRequestRepository implements LoanRequestDao {
 
     @Override
     public Optional<LoanRequest> findByLoanRequestNumber(String loanRequestNumber) {
-        return loanRequestJpaRepository.findByLoanRequestNumber(loanRequestNumber).map(loanRequestEntityMapper::mapFromLoanRequestEntity);
+        return loanRequestJpaRepository.findByLoanRequestNumber(loanRequestNumber).map(loanRequestEntityMapperClass::mapFromLoanRequestEntity);
     }
 
     @Override
     public void deleteByLoanRequestNumber(String loanRequestNumber) {
         loanRequestJpaRepository.deleteByLoanRequestNumber(loanRequestNumber);
-    }
-
-    @Override
-    public void deleteByReservationId(Integer reservationId) {
-        loanRequestJpaRepository.deleteByReservationId(reservationId);
     }
 }

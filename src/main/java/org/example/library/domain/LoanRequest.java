@@ -15,9 +15,7 @@ public class LoanRequest {
 
     Integer loanRequestId;
     String loanRequestNumber;
-    Reservations reservation;
     LocalDateTime requestDate;
-    Cart cart;
     Users user;
     List<LoanRequestItem> loanRequestItems;
 }

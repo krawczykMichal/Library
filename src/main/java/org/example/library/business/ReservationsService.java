@@ -2,10 +2,7 @@ package org.example.library.business;
 
 import lombok.AllArgsConstructor;
 import org.example.library.business.dao.*;
-import org.example.library.domain.Cart;
-import org.example.library.domain.CartItem;
-import org.example.library.domain.ReservationItem;
-import org.example.library.domain.Reservations;
+import org.example.library.domain.*;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,21 +20,24 @@ public class ReservationsService {
     private final ReservationsDao reservationsDao;
     private final ReservationsHistoryDao reservationsHistoryDao;
     private final ReservationItemDao reservationItemDao;
-    private final LoanRequestItemDao loanRequestItemDao;
-    private final LoanRequestDao loanRequestDao;
-    private final LoansDao loansDao;
-    private final LoanItemDao loanItemDao;
+    private final BooksDao booksDao;
 
     @Transactional
-    public void makeReservation(Cart cart, List<CartItem> cartItems) {
+    public Reservations makeReservation(Cart cart) {
+
+
         Reservations reservation = Reservations.builder()
                 .cart(cart)
                 .reservationNumber(createReservationNumber())
-                .reservationItem(makeReservationItemList(cartItems))
                 .reservationMakeDate(LocalDateTime.now())
-                .reservationMakeDate(LocalDateTime.now().plusDays(3L))
+                .reservationHoldToDate(LocalDateTime.now().plusDays(3))
                 .build();
-        reservationsDao.saveReservations(reservation);
+
+        Reservations reservations = reservationsDao.saveReservations(reservation);
+        System.out.println("Reservation: " + reservations);
+        return reservations;
+
+
     }
 
     private String createReservationNumber() {
@@ -51,21 +51,30 @@ public class ReservationsService {
         return employeeNumber.toString();
     }
 
-    private List<ReservationItem> makeReservationItemList(List<CartItem> cartItems) {
-        List<ReservationItem> reservationItemList = new ArrayList<>();
+//    private List<ReservationItem> makeReservationItemList(List<CartItem> cartItems) {
+//        List<ReservationItem> reservationItemList = new ArrayList<>();
+//
+//        for (CartItem cartItem : cartItems) {
+//            ReservationItem reservationItem = ReservationItem.builder()
+//                    .title(cartItem.getTitle())
+//                    .book(cartItem.getBook())
+//                    .quantity(cartItem.getQuantity())
+//                    .build();
+//
+//            reservationItemList.add(reservationItem);
+//
+//        }
+//        updateBookCopies(reservationItemList);
+//        return reservationItemList;
+//
+//    }
 
-        for (CartItem cartItem : cartItems) {
-            ReservationItem reservationItem = ReservationItem.builder()
-                    .title(cartItem.getTitle())
-                    .book(cartItem.getBook())
-                    .quantity(cartItem.getQuantity())
-                    .build();
-
-            reservationItemList.add(reservationItem);
+    private void updateBookCopies(List<ReservationItem> reservationItems) {
+        for (ReservationItem item : reservationItems) {
+            Books book = item.getBook();
+            Books updatedBook = book.withCopies(book.getCopies() - item.getQuantity());
+            booksDao.saveBook(updatedBook);
         }
-
-        return reservationItemList;
-
     }
 
     public List<Reservations> findAllByUserId(Integer userId) {
@@ -105,21 +114,20 @@ public class ReservationsService {
     }
 
     @Transactional
-    public void cancelReservation(Integer reservationId) {
-        Reservations byId = findById(reservationId);
-        String reservationNumber = byId.getReservationNumber();
+    public void cancelReservation(String reservationNumber) {
+
 //        loanItemDao.deleteByReservationId(reservationId);
 //        loansDao.deleteByReservationId(reservationId);
 //        loanRequestItemDao.deleteByReservationId(reservationId);
 //        loanRequestDao.deleteByReservationId(reservationId);
         reservationItemDao.deleteByReservationNumber(reservationNumber);
-        reservationsDao.deleteById(reservationId);
+        reservationsDao.deleteByReservationNumber(reservationNumber);
     }
 
     @Transactional
     public void deleteByReservationNumber(String reservationNumber) {
         Reservations reservation = findByReservationNumber(reservationNumber);
-        reservationsHistoryDao.saveReservationsHistory(reservation);
+//        reservationsHistoryDao.saveReservationsHistory(reservation);
         reservationItemDao.deleteByReservationNumber(reservationNumber);
         reservationsDao.deleteByReservationNumber(reservationNumber);
     }

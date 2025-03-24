@@ -1,7 +1,7 @@
 create table reservations
 (
     reservation_id           serial      not null,
-    reservation_number       varchar(10) not null,
+    reservation_number       varchar(10) not null unique,
     cart_id                  int         not null,
     reservation_make_date    timestamp,
     reservation_hold_to_date timestamp,

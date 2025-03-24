@@ -3,6 +3,7 @@ package org.example.library.infrastructure.database.repository;
 import lombok.AllArgsConstructor;
 import org.example.library.business.dao.LoanRequestItemDao;
 import org.example.library.domain.LoanRequestItem;
+import org.example.library.infrastructure.database.entity.LoanRequestItemEntity;
 import org.example.library.infrastructure.database.repository.jpa.LoanRequestItemJpaRepository;
 import org.example.library.infrastructure.database.repository.mapper.LoanRequestItemEntityMapper;
 import org.example.library.infrastructure.database.repository.mapper.LoanRequestItemEntityMapperClass;
@@ -34,7 +35,10 @@ public class LoanRequestItemRepository implements LoanRequestItemDao {
     }
 
     @Override
-    public void deleteByReservationId(Integer reservationId) {
-        loanRequestItemJpaRepository.deleteByReservationId(reservationId);
+    public LoanRequestItem save(LoanRequestItem loanRequestItem) {
+        LoanRequestItemEntity toSave = loanRequestItemEntityMapperClass.mapToLoanRequestItemEntity(loanRequestItem);
+        LoanRequestItemEntity saved = loanRequestItemJpaRepository.save(toSave);
+        return loanRequestItemEntityMapperClass.mapFromLoanRequestItemEntity(saved);
     }
+
 }

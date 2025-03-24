@@ -1,17 +1,24 @@
 package org.example.library.infrastructure.database.repository.mapper;
 
-import org.example.library.domain.Authors;
-import org.example.library.domain.Books;
-import org.example.library.domain.Categories;
-import org.example.library.domain.LoanRequestItem;
-import org.example.library.infrastructure.database.entity.AuthorsEntity;
-import org.example.library.infrastructure.database.entity.BooksEntity;
-import org.example.library.infrastructure.database.entity.CategoriesEntity;
-import org.example.library.infrastructure.database.entity.LoanRequestItemEntity;
+import lombok.AllArgsConstructor;
+import org.example.library.business.dao.BooksDao;
+import org.example.library.business.dao.LoanRequestDao;
+import org.example.library.domain.*;
+import org.example.library.infrastructure.database.entity.*;
+import org.example.library.infrastructure.database.repository.jpa.BooksJpaRepository;
+import org.example.library.infrastructure.database.repository.jpa.LoanRequestJpaRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.Optional;
+
 @Component
+@AllArgsConstructor
 public class LoanRequestItemEntityMapperClass {
+
+    private final BooksDao booksDao;
+    private final BooksJpaRepository booksJpaRepository;
+    private final LoanRequestDao loanRequestDao;
+    private final LoanRequestJpaRepository loanRequestJpaRepository;
 
     public LoanRequestItem mapFromLoanRequestItemEntity(LoanRequestItemEntity loanRequestItemEntity) {
         if (loanRequestItemEntity == null) {
@@ -64,5 +71,42 @@ public class LoanRequestItemEntityMapperClass {
                 .authorCode(authorsEntity.getAuthorCode())
                 .name(authorsEntity.getName())
                 .surname(authorsEntity.getSurname()).build();
+    }
+
+    public LoanRequestItemEntity mapToLoanRequestItemEntity(LoanRequestItem loanRequestItem) {
+        if (loanRequestItem == null) {
+            return null;
+
+        }
+
+        return LoanRequestItemEntity.builder()
+                .books(findBook(loanRequestItem.getBook().getIsbn()))
+                .title(loanRequestItem.getTitle())
+                .quantity(loanRequestItem.getQuantity())
+                .loanRequest(findLoanRequest(loanRequestItem.getLoanRequest().getLoanRequestNumber()))
+                .build();
+    }
+
+    private BooksEntity findBook(String isbn) {
+        Optional<Books> byIsbn = booksDao.findByIsbn(isbn);
+        Books books = byIsbn.get();
+        System.out.println("Books: " + books);
+
+        Optional<BooksEntity> booksEntityOptional = booksJpaRepository.findByIsbn(isbn);
+        BooksEntity booksEntity = booksEntityOptional.get();
+
+
+
+        return booksEntity;
+    }
+
+    private LoanRequestEntity findLoanRequest(String loanRequestNumber) {
+        Optional<LoanRequest> byLoanRequestNumber = loanRequestDao.findByLoanRequestNumber(loanRequestNumber);
+        LoanRequest loanRequest = byLoanRequestNumber.get();
+
+        System.out.println("LoanRequest: " + loanRequest);
+
+        Optional<LoanRequestEntity> byLoanRequestNumber1 = loanRequestJpaRepository.findByLoanRequestNumber(loanRequestNumber);
+        return byLoanRequestNumber1.get();
     }
 }

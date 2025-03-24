@@ -24,8 +24,9 @@ public class ReservationsRepository implements ReservationsDao {
 
     @Override
     public Reservations saveReservations(Reservations reservation) {
-        ReservationsEntity toSave = reservationsEntityMapper.mapToReservationsEntity(reservation);
+        ReservationsEntity toSave = reservationsEntityMapperClass.mapToReservationsEntity(reservation);
         ReservationsEntity saved = reservationsJpaRepository.save(toSave);
+        reservationsJpaRepository.flush();
         return reservationsEntityMapper.mapFromReservationsEntity(saved);
     }
 

@@ -44,7 +44,7 @@ public class EmployeesController {
 
         httpSession.setAttribute("usernameEmployee", username);
 
-        return "library_employee_home";
+        return "employee_home";
     }
 
     private String getEmailFromAuthentication(Authentication authentication) {
@@ -117,18 +117,18 @@ public class EmployeesController {
         return "employee_reservation_details";
     }
 
-    @DeleteMapping(value = "/employee/reservation/details/{reservationId}/delete")
+    @DeleteMapping(value = "/employee/reservation/details/{reservationNumber}/delete")
     public String userReservationHistoryDelete(
-            @PathVariable("reservationId")
-            Integer reservationId
+            @PathVariable("reservationNumber")
+            String reservationNumber
     ) {
-        reservationsService.cancelReservation(reservationId);
+        reservationsService.cancelReservation(reservationNumber);
 
         return "redirect:/employee/reservations/list";
     }
 
 
-    @GetMapping(value = "/employee/cart/loan/request/list")
+    @GetMapping(value = "/employee/loan/request/list")
     public String loanPage(
             @ModelAttribute("loanRequestDTO")
             LoanRequestDTO loanRequestDTO,
@@ -139,10 +139,10 @@ public class EmployeesController {
         model.addAttribute("loanRequestDTO", loanRequestDTO);
         model.addAttribute("loanRequestList", loanRequestList);
 
-        return "cart_loan_list";
+        return "employee_loan_request_list";
     }
 
-    @GetMapping(value = "/employee/cart/loanRequest/details/{loanRequestNumber}")
+    @GetMapping(value = "/employee/loanRequest/details/{loanRequestNumber}")
     public String loanRequestDetails(
             @ModelAttribute("loanRequestDTO")
             LoanRequestDTO loanRequestDTO,
@@ -158,30 +158,23 @@ public class EmployeesController {
         model.addAttribute("loanRequest", loanRequest);
         model.addAttribute("loanRequestItem", loanRequestItem);
 
-        return "cart_loan_request_details";
+        return "employee_loan_request_details";
     }
 
-    @PostMapping(value = "/employee/cart/loanRequest/details/{loanRequestNumber}")
+    @PostMapping(value = "/employee/loanRequest/details/{loanRequestNumber}")
     public String loan(
             @ModelAttribute("loansDTO")
             LoansDTO loansDTO,
             @PathVariable("loanRequestNumber")
             String loanRequestNumber,
-            Model model,
-            HttpSession httpSession
+            Model model
     ) {
-        String employeeUsername = httpSession.getAttribute("usernameEmployee").toString();
-        String userUsername = httpSession.getAttribute("username").toString();
 
-        Users user = usersService.findByUsername(userUsername);
-
-
-        Employees employee = employeesService.findByUsername(employeeUsername);
         LoanRequest loanRequest = loanRequestService.findByLoanRequestNumber(loanRequestNumber);
         List<LoanRequestItem> loanRequestItemList = loanRequest.getLoanRequestItems();
 
 
-        loansService.makeLoan(loanRequest, loanRequestItemList, employee, user);
+        loansService.makeLoan(loanRequest, loanRequestItemList);
         loanRequestService.deleteLoanRequest(loanRequest);
 
         model.addAttribute("loansDTO", loansDTO);

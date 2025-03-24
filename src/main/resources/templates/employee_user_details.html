@@ -49,11 +49,11 @@
 <h3>User details</h3>
 <br>
 <div th:object="${user}">
-  <p>Name: <span th:text="*{name}"></span></p>
-  <p>Surname: <span th:text="*{surname}"></span></p>
-  <p>Username: <span th:text="*{username}"></span></p>
-  <p>Email: <span th:text="*{email}"></span></p>
-  <p>Phone Number: <span th:text="*{phoneNumber}"></span></p>
+  <h6>Name: <span th:text="*{name}"></span></h6>
+  <h6>Surname: <span th:text="*{surname}"></span></h6>
+  <h6>Username: <span th:text="*{username}"></span></h6>
+  <h6>Email: <span th:text="*{email}"></span></h6>
+  <h6>Phone Number: <span th:text="*{phoneNumber}"></span></h6>
 </div>
 <br>
 <br>
@@ -71,8 +71,8 @@
   <tbody>
   <tr th:each="reservation : ${reservationsByUserId}">
     <td th:text="${reservation.reservationNumber}"></td>
-    <td th:text="${reservation.reservationMakeDate}"></td>
-    <td th:text="${reservation.reservationHoldToDate}" ></td>
+    <td th:text="${#temporals.format(reservation.reservationMakeDate, 'yyyy-MM-dd HH:mm')}"></td>
+    <td th:text="${#temporals.format(reservation.reservationHoldToDate, 'yyyy-MM-dd HH:mm')}" ></td>
     <td>
       <a th:href="@{/employee/reservation/details/{reservationNumber}(reservationNumber=${reservation.reservationNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
@@ -93,10 +93,10 @@
   </thead>
   <tbody>
   <tr th:each="loanRequest : ${loanRequestListByUserId}">
-    <td th:text="${loanRequest.requestDate}"></td>
+    <td th:text="${#temporals.format(loanRequest.requestDate, 'yyyy-MM-dd HH:mm')}"></td>
     <td th:text="${loanRequest.loanRequestNumber}"></td>
     <td>
-      <a th:href="@{/employee/cart/loanRequest/details/{loanRequestNumber}(loanRequestNumber=${loanRequest.loanRequestNumber})}" class="btn btn-info" role="button">Details</a>
+      <a th:href="@{/employee/loanRequest/details/{loanRequestNumber}(loanRequestNumber=${loanRequest.loanRequestNumber})}" class="btn btn-info" role="button">Details</a>
     </td>
   </tr>
   </tbody>
@@ -109,7 +109,6 @@
 
   <tr>
     <th>Loan date</th>
-    <th>Employee number</th>
     <th>Return date</th>
     <th>Return status</th>
     <th></th>
@@ -117,9 +116,8 @@
   </thead>
   <tbody>
   <tr th:each="loan : ${loansListByUserId}">
-    <td th:text="${loan.loanDate}"></td>
-    <td th:text="${loan.employee.employeeNumber}"></td>
-    <td th:text="${loan.returnDate}"></td>
+    <td th:text="${#temporals.format(loan.loanDate, 'yyyy-MM-dd HH:mm')}"></td>
+    <td th:text="${#temporals.format(loan.returnDate, 'yyyy-MM-dd HH:mm')}"></td>
     <td th:text="${loan.returned}"></td>
     <td>
       <a th:href="@{/employee/loan/details/{loanNumber}(loanNumber=${loan.loanNumber})}" class="btn btn-info" role="button">Details</a>

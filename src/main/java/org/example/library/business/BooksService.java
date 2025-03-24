@@ -5,6 +5,7 @@ import org.example.library.api.dto.BooksDTO;
 import org.example.library.business.dao.BooksDao;
 import org.example.library.domain.Authors;
 import org.example.library.domain.Books;
+import org.example.library.domain.CartItem;
 import org.example.library.domain.Categories;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,5 +68,17 @@ public class BooksService {
 
     public List<Books> findByTitleInclude(String title) {
         return booksDao.findByTitleInclude(title);
+    }
+
+    public void changeCopies(List<CartItem> cartItems) {
+        for (CartItem cartItem : cartItems) {
+            if (cartItem.getBook().getCopies() < 1) {
+                Books books = cartItem.getBook().withCopies(cartItem.getBook().getCopies() - cartItem.getQuantity()).withAvailable(false);
+                booksDao.saveBook(books);
+            } else {
+                Books books = cartItem.getBook().withCopies(cartItem.getBook().getCopies() - cartItem.getQuantity());
+                booksDao.saveBook(books);
+            }
+        }
     }
 }

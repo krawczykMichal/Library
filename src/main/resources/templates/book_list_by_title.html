@@ -49,7 +49,9 @@
 
 <form th:action="@{/book/list/by/title/{title}(title=${title})}" method="get">
     <!--    @TODO sprawdzić czy działa wyświetlanie tego co wyszukiwane -->
-    <input type="text" name="keyword" placeholder="Wpisz tytuł książki..." required>
+    <label>
+        <input type="text" name="keyword" placeholder="Wpisz tytuł książki..." required>
+    </label>
     <button type="submit">Szukaj</button>
 </form>
 

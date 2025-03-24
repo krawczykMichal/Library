@@ -9,7 +9,6 @@ import org.mapstruct.ReportingPolicy;
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface AuthorsEntityMapper {
 
-    @Mapping(target = "books", source = "books", ignore = true)
     Authors mapFromAuthorsEntity(AuthorsEntity authorsEntity);
 
     AuthorsEntity mapToAuthorsEntity(Authors authors);

@@ -35,17 +35,9 @@ public class LoansEntity {
     private Boolean returned;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id")
-    private EmployeesEntity employee;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UsersEntity user;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "loan")
     private List<LoanItemEntity> loanItems;
-
-    @OneToOne
-    @JoinColumn(name = "loan_request_id", nullable = false, unique = true)
-    private LoanRequestEntity loanRequest;
 }

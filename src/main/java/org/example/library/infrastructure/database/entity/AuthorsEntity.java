@@ -30,7 +30,4 @@ public class AuthorsEntity {
 
     @Column(name = "author_code")
     private String authorCode;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "author")
-    private List<BooksEntity> books;
 }

@@ -15,28 +15,16 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/user/home}" class="btn btn-info" role="button">Home</a>
+            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
         </div>
     </div>
 </div>
 <br>
-<form action="#" th:action="@{/user/{userId}/update(userId=${user.userId})}" th:object="${userDTO}" method="POST">
+<form action="#" th:action="@{/employee/category/{name}/details(name=${categories.name})}" th:object="${categories}" method="POST">
     <input type="hidden" name="_method" value="PATCH"/>
     <br>
     <label for="name">Name:</label>
     <input type="text" id="name" th:field="*{name}"/>
-    <br>
-    <label for="surname">Surname:</label>
-    <input type="text" id="surname" th:field="*{surname}"/>
-    <br>
-    <label for="email">Email:</label>
-    <input type="text" id="email" th:field="*{email}"/>
-    <br>
-    <label for="username">Username:</label>
-    <input type="text" id="Username" th:field="*{username}"/>
-    <br>
-    <label for="phoneNumber">Phone number:</label>
-    <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/>
     <br>
     <button type="submit">Update Profile</button>
 </form>

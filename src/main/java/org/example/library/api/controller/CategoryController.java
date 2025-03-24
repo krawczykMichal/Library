@@ -23,7 +23,7 @@ public class CategoryController {
     @GetMapping(value = "/employee/category/home")
     public String home() {
 
-        return "category_home";
+        return "employee_category_home";
     }
 
     @GetMapping(value = "/employee/category/list")
@@ -34,7 +34,7 @@ public class CategoryController {
 
         model.addAttribute("categories", all);
 
-        return "category_list";
+        return "employee_category_list";
     }
 
     @GetMapping(value = "/employee/category/add")
@@ -46,7 +46,7 @@ public class CategoryController {
 
         model.addAttribute("categoriesDTO", categoriesDTO);
 
-        return "category_add";
+        return "employee_category_add";
     }
     @PostMapping(value = "/employee/category/add")
     public String addCategory(
@@ -70,7 +70,7 @@ public class CategoryController {
 
         model.addAttribute("categories", byName);
 
-        return "category_by_name_update";
+        return "employee_category_details";
     }
 
     @PatchMapping(value = "/employee/category/{name}/details")

@@ -25,8 +25,4 @@ public class CategoriesEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "category")
-    private List<BooksEntity> books;
-
-
 }

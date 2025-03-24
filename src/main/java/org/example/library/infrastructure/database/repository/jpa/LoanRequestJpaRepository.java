@@ -13,12 +13,12 @@ import java.util.Optional;
 @Repository
 public interface LoanRequestJpaRepository extends JpaRepository<LoanRequestEntity, Integer> {
 
-    @Query("select lr from LoanRequestEntity lr where lr.cart.user.userId = :userId")
+    @Query("select lr from LoanRequestEntity lr where lr.user.userId = :userId")
     List<LoanRequestEntity> findByUserId(Integer userId);
 
 
     @Modifying
-    @Query("delete from LoanRequestEntity lr where lr.cart.user.userId = :userId")
+    @Query("delete from LoanRequestEntity lr where lr.user.userId = :userId")
     void deleteByCartUserId(Integer userId);
 
     @Query("select lr from LoanRequestEntity lr where lr.loanRequestNumber = :loanRequestNumber")
@@ -28,8 +28,4 @@ public interface LoanRequestJpaRepository extends JpaRepository<LoanRequestEntit
     @Modifying
     @Query("delete from LoanRequestEntity lr where lr.loanRequestNumber = :loanRequestNumber")
     void deleteByLoanRequestNumber(String loanRequestNumber);
-
-    @Modifying
-    @Query("delete from LoanRequestEntity lr where lr.reservation.reservationsId = :reservationId")
-    void deleteByReservationId(Integer reservationId);
 }

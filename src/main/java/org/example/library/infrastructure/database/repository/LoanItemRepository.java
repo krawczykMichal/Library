@@ -28,10 +28,6 @@ public class LoanItemRepository implements LoanItemDao {
         loanItemJpaRepository.deleteByLoanUserId(userId);
     }
 
-    @Override
-    public void deleteByReservationId(Integer reservationId) {
-        loanItemJpaRepository.deleteByReservationId(reservationId);
-    }
 
     @Override
     public List<LoanItem> findByLoanNumber(String loanNumber) {

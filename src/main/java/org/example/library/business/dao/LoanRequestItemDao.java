@@ -12,5 +12,5 @@ public interface LoanRequestItemDao {
 
     List<LoanRequestItem> findByLoanRequestNumber(String loanRequestNumber);
 
-    void deleteByReservationId(Integer reservationId);
+    LoanRequestItem save(LoanRequestItem loanRequestItem);
 }

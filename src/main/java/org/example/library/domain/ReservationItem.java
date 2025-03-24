@@ -13,4 +13,5 @@ public class ReservationItem {
     String title;
     Integer quantity;
     Books book;
+    Reservations reservation;
 }

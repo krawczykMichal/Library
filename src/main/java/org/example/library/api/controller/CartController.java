@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class CartController {
     private final LoanRequestService loanRequestService;
     private final BooksService booksService;
     private final CartItemService cartItemService;
+    private final ReservationItemService reservationItemService;
 
 
 //    @GetMapping(value = "/cart/{userId}/create")
@@ -97,11 +99,33 @@ public class CartController {
             cartService.findCartByUserId(userId);
         }
 
+        List<CartItem> cartItem = cart.getCartItem();
 
+        model.addAttribute("cartItem", cartItem);
         model.addAttribute("cart", cart);
         model.addAttribute("cartDTO", cartDTO);
 
         return "cart_details";
+    }
+
+    @GetMapping(value = "/user/cart/{isbn}/add")
+    public String addCart(
+            @PathVariable String isbn,
+            @ModelAttribute("cartItemDTO")
+            CartItemDTO cartItemDTO,
+            Model model
+    ) {
+
+        if (model.containsAttribute("error")) {
+            String errorMessage = (String) model.getAttribute("error");
+            model.addAttribute("error", errorMessage);
+        }
+        Books byIsbn = booksService.findByIsbn(isbn);
+
+        model.addAttribute("byIsbn", byIsbn);
+        model.addAttribute("cartItemDTO", cartItemDTO);
+
+        return "user_add_item_to_cart";
     }
 
     @PostMapping(value = "/user/cart/{isbn}/add")
@@ -111,8 +135,8 @@ public class CartController {
             CartDTO cartDTO,
             @ModelAttribute("cartItemDTO")
             CartItemDTO cartItemDTO,
-            Model model,
-            HttpSession httpSession
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
     ) {
         String username = httpSession.getAttribute("username").toString();
         Users userByUsername = usersService.findByUsername(username);
@@ -122,9 +146,24 @@ public class CartController {
         Cart cartByUserId = cartService.findCartByUserId(userId);
 
         Books byIsbn = booksService.findByIsbn(isbn);
-        Integer bookId = byIsbn.getBookId();
 
-        cartService.addItemToCart(cartByUserId, byIsbn);
+        if (cartItemDTO.getQuantity() == null || cartItemDTO.getQuantity() == 0) {
+
+            redirectAttributes.addFlashAttribute("error", "You try to add not enough copies");
+            redirectAttributes.addAttribute("isbn", isbn);
+
+            return "redirect:/user/cart/{isbn}/add";
+
+        } else if (cartItemDTO.getQuantity() > byIsbn.getCopies()) {
+
+            redirectAttributes.addFlashAttribute("error", "You try to add to much copies");
+            redirectAttributes.addAttribute("isbn", isbn);
+
+            return "redirect:/user/cart/{isbn}/add";
+
+        }
+
+            cartService.addItemToCart(cartByUserId, byIsbn, cartItemDTO);
 
         return "redirect:/book/list";
     }
@@ -136,6 +175,12 @@ public class CartController {
             Model model,
             HttpSession httpSession
     ) {
+
+        if (model.containsAttribute("error")) {
+            String errorMessage = (String) model.getAttribute("error");
+            model.addAttribute("error", errorMessage);
+        }
+
         String username = httpSession.getAttribute("username").toString();
         Users userByUsername = usersService.findByUsername(username);
 
@@ -155,16 +200,31 @@ public class CartController {
 
     @PostMapping(value = "/user/cart/make-reservation")
     public String reservation(
-            HttpSession httpSession
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
     ) {
-        Integer cartId = (Integer) httpSession.getAttribute("cartId");
+        String username = httpSession.getAttribute("username").toString();
+        Users userByUsername = usersService.findByUsername(username);
 
-        Cart cart = cartService.findById(cartId);
+        Integer userId = userByUsername.getUserId();
+
+        Cart cart = cartService.findCartByUserId(userId);
         List<CartItem> cartItems = cart.getCartItem();
 
-        reservationsService.makeReservation(cart, cartItems);
+        if (cartItems == null || cartItems.isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "Your cart is empty! Add books before making a reservation.");
+            return "redirect:/user/cart/make-reservation";
+        }
+
+        Reservations reservation = reservationsService.makeReservation(cart);
+        Reservations byReservationNumber = reservationsService.findByReservationNumber(reservation.getReservationNumber());
+        System.out.println("byReservationNumber: " + byReservationNumber);
+        reservationItemService.saveReservationItem(byReservationNumber, cartItems);
+        booksService.changeCopies(cartItems);
+        System.out.println("cartItems: " + cartItems);
         cartItemService.clearCartAfterReservationOrLoan(cart.getCartId());
-        return "redirect:/home";
+
+        return "redirect:/user/home";
     }
 
     @GetMapping(value = "/employee/cart/reservation/list/{userId}")
@@ -273,6 +333,7 @@ public class CartController {
         List<CartItem> cartItemList = cart.getCartItem();
 
         loanRequestService.makeLoanRequestFromCart(cart, cartItemList);
+        booksService.changeCopies(cartItemList);
         cartService.clearCart(cart.getCartId());
         // @TODO usunąć loanRequestItem po tym jak loanRequest przechodzi w loan, tak w sumie to sprawdzić czy można usunąć cały loanRequest kiedy zamieni się on w loan
 

@@ -4,6 +4,7 @@ import jakarta.transaction.TransactionScoped;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.EmployeesDTO;
 import org.example.library.business.dao.EmployeesDao;
+import org.example.library.business.dao.LoansDao;
 import org.example.library.domain.Employees;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;

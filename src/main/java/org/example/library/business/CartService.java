@@ -59,8 +59,8 @@ public class CartService {
     }
 
     @Transactional
-    public void addItemToCart(Cart cart, Books book) {
-        cartItemService.addToCartItem(book, cart);
+    public void addItemToCart(Cart cart, Books book, CartItemDTO cartItemDTO) {
+        cartItemService.addToCartItem(book, cart, cartItemDTO);
     }
 
     public void clearCart(Integer cartId) {

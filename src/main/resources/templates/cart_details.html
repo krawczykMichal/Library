@@ -47,28 +47,28 @@
 <br>
 <h3>Cart details</h3>
 
-<p th:text="${cartDTO.userUsername}">Username: </p>
+<p>Username: <span th:text="${cart.user.username}"></span></p>
 
 <table border="0">
     <thead>
     <tr>
+        <th>Title</th>
         <th>Category</th>
         <th>Author</th>
         <th>Isbn</th>
         <th>Publisher</th>
-        <th></th>
+        <th>Quantity</th>
     </tr>
     </thead>
     <tbody>
 
     <tr th:each="cartItems : ${cart.cartItem}">
         <td th:text="${cartItems.book.title}"></td>
+        <td th:text="${cartItems.book.category.name}"></td>
         <td th:text="${cartItems.book.author.name  + ' ' + cartItems.book.author.surname}"></td>
         <td th:text="${cartItems.book.isbn}"></td>
+        <td th:text="${cartItems.book.publisher}"></td>
         <td th:text="${cartItems.quantity}"></td>
-        <td>
-            <a th:href="@{/book/{isbn}/cart/details(isbn=${cartItems.book.isbn})}" class="btn btn-info" role="button">Book details</a>
-        </td>
     </tr>
     </tbody>
 </table>

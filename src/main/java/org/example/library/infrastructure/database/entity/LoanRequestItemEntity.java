@@ -5,8 +5,8 @@ import lombok.*;
 
 @Getter
 @Setter
-@EqualsAndHashCode(of = "loanRequestId")
-@ToString(of = {"loanRequestId"})
+@EqualsAndHashCode(of = "loanRequestItemId")
+@ToString(of = {"loanRequestItemId"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

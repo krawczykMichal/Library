@@ -25,6 +25,7 @@ public class BooksRepository implements BooksDao {
     @Override
     public List<Books> findAll() {
         return booksJpaRepository.findAll().stream().map(booksEntityMapperClass::mapFromBooksEntity).toList();
+//        @TODO zastanowić się czy findAll czy findAvailable. przemyśleć czy nie lepiej wyświetlać wszystkie ale jak jest copies 0 to ustawić napis w thyemelaf chwilowo niedostępne
     }
 
     @Override

@@ -1,12 +1,14 @@
 package org.example.library.business;
 
 import lombok.AllArgsConstructor;
+import org.example.library.business.dao.BooksDao;
 import org.example.library.business.dao.LoansDao;
 import org.example.library.domain.*;
 import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,18 +19,31 @@ import java.util.Optional;
 public class LoansService {
 
     private final LoansDao loansDao;
+    private final BooksDao booksDao;
 
     @Transactional
-    public void makeLoan(LoanRequest loanRequest,List<LoanRequestItem> loanRequestItemList, Employees employee, Users user) {
+    public void makeLoan(LoanRequest loanRequest,List<LoanRequestItem> loanRequestItemList) {
         Loans loan = Loans.builder()
-                .employee(employee)
-                .user(user)
-                .loanRequest(loanRequest)
+                .loanNumber(makeRandomLoanNumber())
+                .user(loanRequest.getUser())
                 .loanItem(makeLoanItemListFromLoanRequest(loanRequestItemList))
                 .loanDate(LocalDateTime.now())
+                .returned(false)
                 .build();
 
         loansDao.save(loan);
+    }
+
+    private String makeRandomLoanNumber() {
+            SecureRandom random = new SecureRandom();
+            StringBuilder employeeNumber = new StringBuilder();
+
+            for (int i = 0; i < 10; i++) {
+                int digit = random.nextInt(10);
+                employeeNumber.append(digit);
+            }
+            return employeeNumber.toString();
+
     }
 
     private List<LoanItem> makeLoanItemListFromLoanRequest(List<LoanRequestItem> loanRequestItemList) {
@@ -77,8 +92,12 @@ public class LoansService {
 
     @Transactional
     public void returnLoan(String loanNumber) {
-        int loans = loansDao.returnLoan(loanNumber);
-        System.out.println("Loans: " + loans);
-        System.out.println("Returned loan number " + loanNumber);
+        Loans byLoanNumber = findByLoanNumber(loanNumber);
+        List<LoanItem> loanItems = byLoanNumber.getLoanItem();
+        for (LoanItem loanItem : loanItems) {
+            Books books = loanItem.getBook().withCopies(loanItem.getBook().getCopies() + loanItem.getQuantity());
+            booksDao.saveBook(books);
+        }
+        loansDao.returnLoan(loanNumber);
     }
 }

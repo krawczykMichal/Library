@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface LoanRequestItemJpaRepository extends JpaRepository<LoanRequestItemEntity, Integer> {
 
     @Modifying
-    @Query("delete from LoanRequestItemEntity lri where lri.loanRequest.cart.user.userId = :userId")
+    @Query("delete from LoanRequestItemEntity lri where lri.loanRequest.user.userId = :userId")
     void deleteByLoanRequestCartUserId(Integer userId);
 
     @Modifying
@@ -23,7 +23,4 @@ public interface LoanRequestItemJpaRepository extends JpaRepository<LoanRequestI
     @Query("select lri from LoanRequestItemEntity lri where lri.loanRequest.loanRequestNumber = :loanRequestNumber")
     List<LoanRequestItemEntity> findByLoanRequestNumber(String loanRequestNumber);
 
-    @Modifying
-    @Query("delete from LoanRequestItemEntity lri where lri.loanRequest.reservation.reservationsId = :reservationId")
-    void deleteByReservationId(Integer reservationId);
 }

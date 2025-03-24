@@ -7,7 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 @EqualsAndHashCode(of = "reservationItemId")
-@ToString(of = {"reservationItemId", "title", "quantity", "cart", "book"})
+@ToString(of = {"reservationItemId", "title", "quantity", "book"})
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

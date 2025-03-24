@@ -70,8 +70,4 @@ public class LoansRepository implements LoansDao {
         return i;
     }
 
-    @Override
-    public void deleteByReservationId(Integer reservationId) {
-        loansJpaRepository.deleteByReservationId(reservationId);
-    }
 }

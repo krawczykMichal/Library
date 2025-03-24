@@ -7,7 +7,7 @@
           rel="stylesheet"
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
-    <title>Library</title>
+    <title>Library app</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"/>
     <style>
         table {
@@ -36,45 +36,38 @@
         }
     </style>
 </head>
+
 <body>
+
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/employee/home}" class="btn btn-info" role="button">Home</a>
+            <button type="button" onclick="history.back()">Back</button>
         </div>
     </div>
 </div>
 <br>
-<h3>Loan list</h3>
-<!--<form th:action="@{/book/list/by/title/{title}(title=${booksList})}" method="get">-->
-<!--&lt;!&ndash;    @TODO sprawdzić czy działa wyświetlanie tego co wyszukiwane &ndash;&gt;-->
-<!--    <input type="text" name="keyword" placeholder="Wpisz tytuł książki..." required>-->
-<!--    <button type="submit">Szukaj</button>-->
-<!--</form>-->
-
 <table border="0">
     <thead>
-
     <tr>
-        <th>User</th>
-        <th>Loan Date</th>
-        <th>Return date</th>
-        <th>Employee number</th>
+        <th>Category</th>
+        <th>Author</th>
+        <th>Isbn</th>
+        <th>Publisher</th>
+        <th>Quantity</th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="loan : ${loansList}">
-        <td th:text="${loan.user.username}"></td>
-        <td th:text="${loan.loanDate}"></td>
-        <td th:text="${loan.returnDate}"></td>
-        <td th:text="${loan.employee.employeeNumber}"></td>
+
+    <tr th:each="cartItems : ${byCartId}">
+        <td th:text="${cartItems.book.title}"></td>
+        <td th:text="${cartItems.book.author.name  + ' ' + cartItems.book.author.surname}"></td>
+        <td th:text="${cartItems.book.isbn}"></td>
+        <td th:text="${cartItems.book.publisher}"></td>
+        <td th:text="${cartItems.quantity}"></td>
         <td>
-            <a th:href="@{/employee/loan/details/{loanNumber}(loanNumber=${loan.loanNumber})}" class="btn btn-info" role="button">Details</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
+
 
 </body>
 </html>

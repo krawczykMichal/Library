@@ -36,8 +36,5 @@ public class ReservationsEntity {
     private CartEntity cart;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservation")
-    private List<LoanRequestEntity> loanRequests;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "reservation")
     private List<ReservationItemEntity> reservationItems;
 }

@@ -51,7 +51,7 @@
 <!--    <input type="text" name="keyword" placeholder="Wpisz tytuł książki..." required>-->
 <!--    <button type="submit">Szukaj</button>-->
 <!--</form>-->
-<h6 th:object="*{reservationNumber}">Reservation number:</h6>
+<h6>Reservation number: <span th:text="${reservation.reservationNumber}"></span></h6>
 <table border="0">
     <thead>
 
@@ -64,7 +64,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:each="item : ${reservation.reservationItem}">
+    <tr th:each="item : ${reservationItemList}">
         <td th:text="${item.book.category.name}" ></td>
         <td th:text="${item.book.title}"></td>
         <td th:text="${item.book.author.name + ' ' + item.book.author.surname}"></td>
@@ -74,8 +74,13 @@
     </tr>
     </tbody>
 </table>
-<form th:action="@{/user/reservation/details/{reservationId}/delete(reservationId=${reservation.reservationId})}" method="POST">
-    <input type="hidden" name="_method" value="PATCH"/>
+<form th:action="@{/user/loan/request/make/{reservationNumber}(reservationNumber=${reservation.reservationNumber})}" method="POST">
+    <input type="hidden" name="_method" value="post"/>
+    <button type="submit">Make loan</button>
+</form>
+<br>
+<form th:action="@{/user/reservation/details/{reservationNumber}/delete(reservationNumber=${reservation.reservationNumber})}" method="POST">
+    <input type="hidden" name="_method" value="delete"/>
     <button type="submit">Cancel</button>
 </form>
 </body>

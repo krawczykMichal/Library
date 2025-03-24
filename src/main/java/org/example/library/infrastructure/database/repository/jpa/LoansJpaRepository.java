@@ -18,7 +18,7 @@ public interface LoansJpaRepository extends JpaRepository<LoansEntity, Integer> 
     @Query("select l from LoansEntity l order by l.returned asc")
     List<LoansEntity> findAllForEmployee();
 
-    @Query("select loan from LoansEntity loan where loan.loanRequest.cart.user.userId = :userId and loan.returned = :returned")
+    @Query("select loan from LoansEntity loan where loan.user = :userId and loan.returned = :returned")
     List<LoansEntity> findAllWithReturned(Integer userId, boolean returned);
 
     @Query("select loan from LoansEntity loan where loan.loanNumber = :loanNumber")
@@ -37,7 +37,4 @@ public interface LoansJpaRepository extends JpaRepository<LoansEntity, Integer> 
     @Query("UPDATE LoansEntity l SET l.returned = true WHERE l.loanNumber = :loanNumber")
     int returnLoan(String loanNumber);
 
-    @Modifying
-    @Query("delete from LoansEntity l where l.loanRequest.reservation.reservationsId = :reservationId")
-    void deleteByReservationId(Integer reservationId);
 }

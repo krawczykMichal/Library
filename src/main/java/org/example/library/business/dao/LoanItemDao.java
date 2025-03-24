@@ -10,7 +10,5 @@ public interface LoanItemDao {
 
     void deleteByLoanUserId(Integer userId);
 
-    void deleteByReservationId(Integer reservationId);
-
     List<LoanItem> findByLoanNumber(String loanNumber);
 }

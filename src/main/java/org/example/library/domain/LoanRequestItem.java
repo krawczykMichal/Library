@@ -13,4 +13,5 @@ public class LoanRequestItem {
     String title;
     Integer quantity;
     Books book;
+    LoanRequest loanRequest;
 }

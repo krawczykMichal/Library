@@ -23,5 +23,4 @@ public interface LoanRequestDao {
 
     void deleteByLoanRequestNumber(String loanRequestNumber);
 
-    void deleteByReservationId(Integer reservationId);
 }
