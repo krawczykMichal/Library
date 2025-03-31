@@ -49,7 +49,7 @@ Library is a modern web application that enables efficient management of library
 - 🛍️ **Automated report generation**
 
 ## 📜 License
-This project is licensed under the MIT License - see the [License](https://github.com/krawczykMichal/ToDoList/blob/master/MitLicense) file for details.
+This project is licensed under the MIT License - see the [License](https://github.com/krawczykMichal/Library/blob/master/MITLicense.txt) file for details.
 
 ## Kontakt
 I am open to new challenges and career opportunities!
