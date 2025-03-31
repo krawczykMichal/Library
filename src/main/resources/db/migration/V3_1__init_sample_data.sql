@@ -526,7 +526,7 @@ values ( 1, 1, 'test test', 1),
        ( 29, 29, 'test test', 1),
        ( 30, 30, 'test test', 1);
 
--- @TODO zastanowić się nad drugą tabelą do security dla pracowników aby oddzielić użytkowników od pracowników w bazie danych
+
 insert into library_app_user (username, email, password, active)
 values ('jKowalski', 'Jkowalski@email.com', '$2a$12$J19FFc1YDRkwo6.bZqbSO.eGZ1bcx5vg0nBCG5L4/Vt3obgBB.c12', true),
        ('aNowak', 'anowak@email.com', '$2a$12$J19FFc1YDRkwo6.bZqbSO.eGZ1bcx5vg0nBCG5L4/Vt3obgBB.c12', true),
