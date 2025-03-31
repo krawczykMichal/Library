@@ -179,7 +179,7 @@ public class EmployeesController {
 
         model.addAttribute("loansDTO", loansDTO);
 
-        return "redirect:/employee/cart/loan/request/list";
+        return "redirect:/employee/loan/request/list";
     }
 
     @GetMapping(value = "/employee/loan/list")

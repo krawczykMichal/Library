@@ -11,5 +11,7 @@ public interface UserDao {
 
     User findByUsername(String username);
 
+    void updatePassword(String password, Integer userId);
+
 //
 }

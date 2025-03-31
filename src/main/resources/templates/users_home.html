@@ -31,7 +31,8 @@
     <div class="row mt-3">
         <p>You can check your borrowed history here</p>
         <div class="col-md-6">
-            <a th:href="@{/user/loan/list/{userId}(userId=${user.userId})}" class="btn btn-info" role="button">Loans history</a>
+            <a th:href="@{/user/loan/list/{userId}(userId=${user.userId})}" class="btn btn-info" role="button">Loans
+                history</a>
         </div>
     </div>
     <div class="row mt-3">
@@ -41,21 +42,17 @@
         </div>
     </div>
     <div class="row mt-3">
-        <p>You can check your reservations history here</p>
-        <div class="col-md-6">
-            <a th:href="@{/user/reservation/history/list/{userId}(userId=${user.userId})}" class="btn btn-info" role="button">Reservations history</a>
-        </div>
-    </div>
-    <div class="row mt-3">
         <p>You can check your profile here</p>
         <div class="col-md-6">
-            <a th:href="@{/user/{userId}/details(userId=${user.userId})}" class="btn btn-info" role="button">Profile details</a>
+            <a th:href="@{/user/{userId}/details(userId=${user.userId})}" class="btn btn-info" role="button">Profile
+                details</a>
         </div>
     </div>
     <div class="row mt-3">
         <p>You can check your cart here</p>
         <div class="col-md-6">
-            <a th:href="@{/user/cart/{userId}/details(userId=${user.userId})}" class="btn btn-info" role="button">Cart</a>
+            <a th:href="@{/user/cart/{userId}/details(userId=${user.userId})}" class="btn btn-info"
+               role="button">Cart</a>
         </div>
     </div>
 </div>

@@ -8,6 +8,27 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
     <title>Library app</title>
+    <style>
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,6 +56,9 @@
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="title" th:field="*{title}"/>
+                            <div th:if="${#fields.hasErrors('title')}" th:text="${#fields.errors('title')[0]}" class="error">
+                                <p th:errors="*{title}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -43,6 +67,9 @@
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="isbn" th:field="*{isbn}"/>
+                            <div th:if="${#fields.hasErrors('isbn')}" th:text="${#fields.errors('isbn')[0]}" class="error">
+                            <p th:errors="*{isbn}"></p>
+                        </div>
                         </div>
                         <br>
                         <br>
@@ -51,6 +78,9 @@
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="publisher" th:field="*{publisher}"/>
+                            <div th:if="${#fields.hasErrors('publisher')}" th:text="${#fields.errors('publisher')[0]}" class="error">
+                                <p th:errors="*{publisher}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -59,6 +89,9 @@
                         </div>
                         <div class="col-md-3">
                             <input type="number" id="publishedDate" th:field="*{publishedDate}"/>
+                            <div th:if="${#fields.hasErrors('publishedDate')}" th:text="${#fields.errors('publishedDate')[0]}" class="error">
+                                <p th:errors="*{publishedDate}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -71,7 +104,7 @@
                         <br>
                         <br>
                         <label for="author">Author:</label>
-                        <select id="author" th:field="*{booksAuthorCode}">
+                        <select id="author" th:field="*{booksAuthorCode}" required>
                             <option value="">-- Select Author --</option>
                             <option th:each="author : ${authors}"
                                     th:value="${author.authorCode}"
@@ -81,7 +114,7 @@
                         <br>
                         <br>
                         <label for="category">Category:</label>
-                        <select id="category" th:field="*{booksCategoriesName}">
+                        <select id="category" th:field="*{booksCategoriesName}" required>
                             <option value="">-- Select Category --</option>
                             <option th:each="category : ${categories}"
                                     th:value="${category.name}"

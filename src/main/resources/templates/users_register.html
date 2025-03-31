@@ -8,6 +8,27 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
     <title>Library app</title>
+    <style>
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </head>
 
 <body>
@@ -15,9 +36,13 @@
 <div class="container">
     <div class="row mt-3">
         <div class="col-md-4">
-            <a th:href="@{/home}" class="btn btn-info" role="button">Home</a>
+            <a th:href="@{/}" class="btn btn-info" role="button">Home</a>
         </div>
     </div>
+</div>
+<br>
+<div th:if="${errorUsername}" class="alert alert-danger">
+    <p th:text="${errorUsername}"></p>
 </div>
 <br>
 <div class="container">
@@ -26,7 +51,7 @@
 <br>
 <div class="container">
     <div>
-        <form action="#" th:action="@{/user/register}" th:object="${usersDTO}" method="POST">
+        <form action="#" th:action="@{/user/register}" th:object="${usersDTO}" method="POST" novalidate>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <div class="row mt-3">
@@ -34,7 +59,11 @@
                             <label for="name">Name:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="name" th:field="*{name}"/>
+                            <input type="text" id="name" pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]+$" th:field="*{name}"/>
+                            <div th:if="${#fields.hasErrors('name')}" th:text="${#fields.errors('name')[0]}"
+                                 class="error">
+                                <p th:errors="*{name}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -42,7 +71,12 @@
                             <label for="surname">Surname:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="surname" th:field="*{surname}"/>
+                            <input type="text" id="surname" pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]+$"
+                                   th:field="*{surname}"/>
+                            <div th:if="${#fields.hasErrors('surname')}" th:text="${#fields.errors('surname')[0]}"
+                                 class="error">
+                                <p th:errors="*{surname}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -51,6 +85,10 @@
                         </div>
                         <div class="col-md-3">
                             <input type="text" id="email" th:field="*{email}"/>
+                            <div th:if="${#fields.hasErrors('email')}" th:text="${#fields.errors('email')[0]}"
+                                 class="error">
+                                <p th:errors="*{email}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -58,7 +96,12 @@
                             <label for="username">Username:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="username" th:field="*{username}"/>
+                            <input type="text" id="username" pattern="^[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż0-9._]{3,20}$"
+                                   th:field="*{username}"/>
+                            <div th:if="${#fields.hasErrors('username')}" th:text="${#fields.errors('username')[0]}"
+                                 class="error">
+                                <p th:errors="*{username}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -66,7 +109,12 @@
                             <label for="phoneNumber">PhoneNumber:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/>
+                            <input type="text" id="phoneNumber" pattern="^\+?[0-9 ]{7,15}$"
+                                   placeholder="+48 123 456 789" th:field="*{phoneNumber}"/>
+                            <div th:if="${#fields.hasErrors('phoneNumber')}"
+                                 th:text="${#fields.errors('phoneNumber')[0]}" class="error">
+                                <p th:errors="*{phoneNumber}"></p>
+                            </div>
                         </div>
                         <br>
                         <br>
@@ -74,9 +122,28 @@
                             <label for="usersUserPassword">Password:</label>
                         </div>
                         <div class="col-md-3">
-                            <input type="password" id="usersUserPassword" th:field="*{usersUserPassword}"/>
+                            <input type="password" id="usersUserPassword"
+                                   pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$"
+                                   th:field="*{passwordDTO.usersUserPassword}"/>
+                            <div th:if="${#fields.hasErrors('passwordDTO.usersUserPassword')}"
+                                 th:text="${#fields.errors('passwordDTO.usersUserPassword')[0]}" class="error">
+                                <p th:errors="*{passwordDTO.usersUserPassword}"></p>
+                            </div>
                         </div>
                         <br>
+                        <br>
+                        <div class="col-md-6">
+                            <label for="confirmPassword">Confirm password:</label>
+                        </div>
+                        <div class="col-md-3">
+                            <input type="password" id="confirmPassword"
+                                   pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{4,}$"
+                                   th:field="*{passwordDTO.confirmPassword}"/>
+                            <div th:if="${#fields.hasErrors('passwordDTO.confirmPassword')}"
+                                 th:text="${#fields.errors('passwordDTO.confirmPassword')[0]}" class="error">
+                                <p th:errors="*{passwordDTO.confirmPassword}"></p>
+                            </div>
+                        </div>
                         <br>
                     </div>
                 </div>

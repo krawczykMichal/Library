@@ -1,12 +1,14 @@
 package org.example.library.api.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.BooksDTO;
 import org.example.library.business.*;
 import org.example.library.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,24 +34,30 @@ public class BooksController {
     @GetMapping(value = "/employee/book/add")
     public String addBookPage(
             @ModelAttribute("booksDTO")
-            BooksDTO bookDTO,
+            BooksDTO booksDTO,
+            BindingResult result,
             Model model
     ) {
 
         List<Categories> categories = categoriesService.findAll();
         List<Authors> authors = authorsService.findAll();
+        if (result.hasErrors()) {
+            model.addAttribute("booksDTO", booksDTO);  // Przekazujemy dane do widoku
+            model.addAttribute("categories", categories);
+            model.addAttribute("authors", authors);
+        }
 
+        model.addAttribute("booksDTO", booksDTO);
         model.addAttribute("categories", categories);
         model.addAttribute("authors", authors);
-        model.addAttribute("booksDTO", bookDTO);
-
         return "employee_book_add";
     }
 
     @PostMapping(value = "/employee/book/add")
     public String addBook(
             @ModelAttribute("booksDTO")
-            BooksDTO booksDTO,
+            @Valid BooksDTO booksDTO,
+            BindingResult result,
             Model model,
             HttpSession httpSession
     ) {
@@ -57,6 +65,13 @@ public class BooksController {
         List<Categories> categories = categoriesService.findAll();
         List<Authors> authors = authorsService.findAll();
 
+        if (result.hasErrors()) {
+            System.out.println("errors: " + result.getAllErrors());
+            model.addAttribute("booksDTO", booksDTO);
+            model.addAttribute("categories", categories);
+            model.addAttribute("authors", authors);
+            return "employee_book_add";
+        }
         booksService.saveBook(booksDTO);
 
         httpSession.setAttribute("book", booksDTO);

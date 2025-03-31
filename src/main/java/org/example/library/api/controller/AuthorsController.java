@@ -43,7 +43,7 @@ public class AuthorsController {
 
         model.addAttribute("authorsDTO", authorsDTO);
 
-        return "redirect:/library/employee/home";
+        return "redirect:/employee/author/list";
     }
 
     @GetMapping(value = "/employee/author/list")
@@ -85,6 +85,6 @@ public class AuthorsController {
 
         model.addAttribute("author", author);
 
-        return "redirect:/employee/home";
+        return "redirect:/employee/author/list";
     }
 }

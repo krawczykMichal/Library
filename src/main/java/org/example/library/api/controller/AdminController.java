@@ -9,12 +9,16 @@ import org.example.library.business.EmployeesService;
 import org.example.library.domain.Employees;
 import org.example.library.domain.User;
 import org.example.library.domain.Users;
+import org.example.library.domain.exception.UserNameAlreadyTakenException;
+import org.example.library.domain.exception.ValidationException;
 import org.example.library.infrastructure.security.business.dao.UserDao;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -62,8 +66,19 @@ public class AdminController {
     public String createPage(
             @ModelAttribute("employeesDTO")
             EmployeesDTO employeesDTO,
+            BindingResult result,
             Model model
     ) {
+
+        if (result.hasErrors()) {
+            model.addAttribute("employeesDTO", employeesDTO);  // Przekazujemy dane do widoku
+        }
+
+        if (model.containsAttribute("errorUsername")) {
+            String errorMessage = (String) model.getAttribute("errorUsername");
+            model.addAttribute("errorUsername", errorMessage);
+        }
+
         model.addAttribute("employeesDTO", employeesDTO);
 
         return "admin_employee_create";
@@ -73,8 +88,22 @@ public class AdminController {
     public String create(
             @ModelAttribute("employeesDTO")
             EmployeesDTO employeesDTO,
+            BindingResult result,
+            HttpSession session,
+            RedirectAttributes redirectAttributes,
             Model model
     ) {
+        if (result.hasErrors()) {
+
+            model.addAttribute("employeesDTO", employeesDTO);
+            return "admin_employee_create";
+        }
+
+        Employees employees = employeesService.findByUsername(employeesDTO.getUsername());
+        if (employees != null) {
+            redirectAttributes.addFlashAttribute("errorUsername", "Username is already taken!");
+            return "redirect:/admin/employee/create";
+        }
         employeesService.saveEmployee(employeesDTO);
 
         model.addAttribute("employeesDTO", employeesDTO);
@@ -117,6 +146,10 @@ public class AdminController {
 
         Employees byEmployeeNumber = employeesService.findByEmployeeNumber(employeeNumber);
 
+        if (model.containsAttribute("errorMessage")) {
+            model.addAttribute("errorMessage", model.getAttribute("errorMessage"));
+        }
+
         model.addAttribute("employeesDTO", byEmployeeNumber);
 
         return "admin_employee_update";
@@ -128,11 +161,21 @@ public class AdminController {
             String employeeNumber,
             @ModelAttribute("employeesDTO")
             EmployeesDTO employeesDTO,
-            Model model
+            Model model,
+            RedirectAttributes redirectAttributes
 
     ) {
 
-        employeesService.updateEmployee(employeeNumber, employeesDTO);
+        try {
+            employeesService.updateEmployee(employeeNumber, employeesDTO);
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+        } catch (UserNameAlreadyTakenException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admin/employee/{employeeNumber}/update";
+        } catch (ValidationException e) { // Obsługa błędów walidacji
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/admin/employee/{employeeNumber}/update";
+        }
 
         model.addAttribute("employeesDTO", employeesDTO);
 
@@ -149,4 +192,6 @@ public class AdminController {
 
         return "redirect:/admin/home";
     }
+
+
 }

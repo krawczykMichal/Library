@@ -1,18 +1,25 @@
 package org.example.library.api.controller;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.library.api.dto.CartDTO;
 import org.example.library.api.dto.LoanRequestDTO;
+import org.example.library.api.dto.PasswordDTO;
 import org.example.library.api.dto.UsersDTO;
 import org.example.library.business.*;
 import org.example.library.domain.*;
+import org.example.library.domain.exception.UserNameAlreadyTakenException;
+import org.example.library.domain.exception.ValidationException;
 import org.example.library.infrastructure.security.business.UserService;
+import org.example.library.infrastructure.security.business.validation.PasswordValidationGroup;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -47,7 +54,15 @@ public class UsersController {
         Object prin = authentication.getPrincipal();
         log.debug("log principal is instance of: " + prin.getClass());
 
-        String username = getUsernameFromAuthentication(authentication);
+        String username = (String) httpSession.getAttribute("username");
+
+        if (username == null) {
+            // Jeśli username nie ma w sesji, pobieramy go z authentication
+            username = getUsernameFromAuthentication(authentication);
+            // Zapisujemy username w sesji, aby móc go używać później
+            httpSession.setAttribute("username", username);
+        }
+
 
         Users userByUsername = usersService.findByUsername(username);
 
@@ -69,9 +84,18 @@ public class UsersController {
     public String userRegisterPage(
             @ModelAttribute("usersDTO")
             UsersDTO usersDTO,
+            BindingResult result,
             Model model
     ) {
-        model.addAttribute("usersDTO", usersDTO);
+
+        if (result.hasErrors()) {
+            model.addAttribute("usersDTO", usersDTO);  // Przekazujemy dane do widoku
+        }
+
+        if (model.containsAttribute("errorUsername")) {
+            String errorMessage = (String) model.getAttribute("errorUsername");
+            model.addAttribute("errorUsername", errorMessage);
+        }
 
         return "users_register";
     }
@@ -79,9 +103,28 @@ public class UsersController {
     @PostMapping(value = "/user/register")
     public String userRegister(
             @ModelAttribute("usersDTO")
-            UsersDTO usersDTO,
-            HttpSession httpSession
+            @Valid UsersDTO usersDTO,
+            BindingResult result,
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes,
+            Model model
     ) {
+
+        if (usersDTO.getPasswordDTO() != null) {
+            usersDTO.getPasswordDTO().setConfirmPassword(usersDTO.getPasswordDTO().getUsersUserPassword());
+        }
+
+        if (result.hasErrors()) {
+            System.out.println("errors: " + result.getAllErrors());
+            model.addAttribute("usersDTO", usersDTO);
+            return "users_register";
+        }
+
+        User user2 = userService.findByUsername(usersDTO.getUsername());
+        if (user2 != null) {
+            redirectAttributes.addFlashAttribute("errorUsername", "Username is already taken!");
+            return "redirect:/user/register";
+        }
         Users user = usersService.saveUser(usersDTO);
         String username = user.getUsername();
         Users user1 = usersService.findByUsername(username);
@@ -110,6 +153,67 @@ public class UsersController {
         return "users_details";
     }
 
+    @GetMapping(value = "/user/{userId}/details/pass/change")
+    public String changePasswordPage(
+            @PathVariable("userId")
+            Integer userId,
+            @ModelAttribute("passwordDTO")
+            PasswordDTO passwordDTO,
+            HttpSession httpSession,
+            Model model
+    ) {
+        Integer userId1 = getUserId(httpSession);
+
+        userId1 = userId;
+
+        Users user = usersService.findById(userId);
+        System.out.println("user: " + user);
+
+        model.addAttribute("passwordDTO", passwordDTO);
+        model.addAttribute("user", user);
+        model.addAttribute("userId", userId);
+
+        return "user_change_password";
+    }
+
+    @PatchMapping(value = "/user/{userId}/details/pass/change")
+    public String changePassword(
+            @PathVariable("userId")
+            Integer userId,
+            @ModelAttribute("passwordDTO") @Validated PasswordDTO passwordDTO,
+            BindingResult result,
+            Model model,
+            HttpSession httpSession
+    ) {
+        Integer userId1 = getUserId(httpSession);
+        userId1 = userId;
+        System.out.println("userId: " + userId);
+
+        Users byId = usersService.findById(userId);
+
+
+        // Sprawdzenie zgodności haseł
+        if (!passwordDTO.getUsersUserPassword().equals(passwordDTO.getConfirmPassword())) {
+            model.addAttribute("passwordError", "Passwords do not match");
+        }
+
+        // Jeśli wynik walidacji zawiera błędy, wróć do formularza
+        if (result.hasErrors()) {
+            System.out.println("errors: " + result.getAllErrors());
+            return "user_change_password";
+        }
+
+
+        usersService.changePassword(userId, passwordDTO);
+
+        model.addAttribute("passwordDTO", passwordDTO);
+        model.addAttribute("user", byId);
+        model.addAttribute("userId", userId);
+
+
+        return "redirect:/user/{userId}/details";
+    }
+
     @GetMapping(value = "/user/{userId}/update")
     public String userUpdatePage(
             @PathVariable Integer userId,
@@ -127,6 +231,10 @@ public class UsersController {
 
         usersService.findById(userId);
 
+        if (model.containsAttribute("errorMessage")) {
+            model.addAttribute("errorMessage", model.getAttribute("errorMessage"));
+        }
+
         model.addAttribute("user", userByUsername);
 
         return "users_update";
@@ -138,8 +246,10 @@ public class UsersController {
             @ModelAttribute("userDTO")
             UsersDTO usersDTO,
             Model model,
-            HttpSession httpSession
+            HttpSession httpSession,
+            RedirectAttributes redirectAttributes
     ) {
+
         String username = httpSession.getAttribute("username").toString();
         Users userByUsername = usersService.findByUsername(username);
 
@@ -147,7 +257,22 @@ public class UsersController {
 
         userId1 = userId;
 
-        usersService.updateUsers(userId, usersDTO);
+
+        try {
+            usersService.updateUsers(userId, usersDTO);
+            if (!usersDTO.getUsername().isEmpty()) {
+                httpSession.setAttribute("username", usersDTO.getUsername());
+            }
+            redirectAttributes.addFlashAttribute("successMessage", "Profile updated successfully!");
+        } catch (UserNameAlreadyTakenException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addAttribute("userId", userId);
+            return "redirect:/user/{userId}/update";
+        } catch (ValidationException e) { // Obsługa błędów walidacji
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            redirectAttributes.addAttribute("userId", userId);
+            return "redirect:/user/{userId}/update";
+        }
 
         model.addAttribute("userDTO", usersDTO);
 
@@ -281,39 +406,39 @@ public class UsersController {
 
         return "redirect:/user/loan/request/list";
     }
-
-    @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
-    public String userReservationHistoryDetails(
-            @PathVariable String reservationNumber,
-            Model model
-    ) {
-
-        ReservationsHistory reservationsHistory = reservationsHistoryService.findByReservationNumber(reservationNumber);
-
-        List<ReservationsHistoryItem> reservationsHistoryItemList = reservationsHistory.getReservationHistoryItems();
-
-        model.addAttribute("reservationsHistory", reservationsHistory);
-        model.addAttribute("reservationsHistoryItemList", reservationsHistoryItemList);
-
-        return "users_reservation_history_details";
-    }
-
-    @GetMapping(value = "/user/reservation/history/list/{userId}")
-    public String userReservationHistoryList(
-            @PathVariable Integer userId,
-            @ModelAttribute("cartDTO")
-            CartDTO cartDTO,
-            Model model,
-            HttpSession httpSession
-    ) {
-        userId = getUserId(httpSession);
-
-        List<ReservationsHistory> reservationsHistoryList = reservationsHistoryService.findAllByUserId(userId);
-
-        model.addAttribute("reservationsHistoryList", reservationsHistoryList);
-
-        return "users_reservation_history_list";
-    }
+//
+//    @GetMapping(value = "/user/reservation/history/details/{reservationNumber}")
+//    public String userReservationHistoryDetails(
+//            @PathVariable String reservationNumber,
+//            Model model
+//    ) {
+//
+//        ReservationsHistory reservationsHistory = reservationsHistoryService.findByReservationNumber(reservationNumber);
+//
+//        List<ReservationsHistoryItem> reservationsHistoryItemList = reservationsHistory.getReservationHistoryItems();
+//
+//        model.addAttribute("reservationsHistory", reservationsHistory);
+//        model.addAttribute("reservationsHistoryItemList", reservationsHistoryItemList);
+//
+//        return "users_reservation_history_details";
+//    }
+//
+//    @GetMapping(value = "/user/reservation/history/list/{userId}")
+//    public String userReservationHistoryList(
+//            @PathVariable Integer userId,
+//            @ModelAttribute("cartDTO")
+//            CartDTO cartDTO,
+//            Model model,
+//            HttpSession httpSession
+//    ) {
+//        userId = getUserId(httpSession);
+//
+//        List<ReservationsHistory> reservationsHistoryList = reservationsHistoryService.findAllByUserId(userId);
+//
+//        model.addAttribute("reservationsHistoryList", reservationsHistoryList);
+//
+//        return "users_reservation_history_list";
+//    }
 
     @GetMapping(value = "/user/loan/list/{userId}")
     public String userLoanList(
@@ -344,30 +469,10 @@ public class UsersController {
         System.out.println("loanItemList: " + loanItemList);
         model.addAttribute("loan", loan);
         model.addAttribute("loanItemList", loanItemList);
-//        model.addAttribute("cartItem", cartItem);
 
         return "user_loan_details";
     }
 
-//    @GetMapping(value = "/user/loan/{loanNumber}/details/returned")
-//    public String userLoanDetailsAfterReturn(
-//            @PathVariable("loanNumber") String loanNumber,
-//            Model model
-//    ) {
-//
-//        Loans loan = loansService.findByLoanNumber(loanNumber);
-//        Integer loanId = loan.getLoanId();
-//        List<LoanItem> loanItemList = loanItemService.findAllByLoanId(loanId);
-//
-//        System.out.println("loan: " + loan);
-//        System.out.println("loanItemList: " + loanItemList);
-//        model.addAttribute("loan", loan);
-//        model.addAttribute("loanItemList", loanItemList);
-
-    /// /        model.addAttribute("cartItem", cartItem);
-//
-//        return "user_loan_details_after_return";
-//    }
     @PatchMapping(value = "/user/loan/{loanNumber}/return")
     public String userLoanReturn(
             @PathVariable("loanNumber") String loanNumber,
@@ -383,7 +488,6 @@ public class UsersController {
         return "redirect:/user/loan/list/{userId}";
     }
 
-//@TODO kontunuować dodawanie funkcjonlności dla użytkownika i pracownika dotycząćych historii rezerwacji, dostępu do danych użytkownika, patrzenia czy nie spóźnia się z oddaniem, itd
 
     private Integer getUserId(HttpSession httpSession) {
         String username = httpSession.getAttribute("username").toString();

@@ -27,6 +27,7 @@
 <div class="container">
     <div>
         <form action="#" th:action="@{/employee/category/add}" th:object="${categoriesDTO}" method="POST">
+            <input type="hidden" name="_method" value="patch"/>
             <div class="row mt-3">
                 <div class="col-md-6">
                     <div class="row mt-3">

@@ -28,4 +28,9 @@ public class UserRepository implements UserDao {
         return userEntityMapper.mapFromUserEntity(byUsername);
     }
 
+    @Override
+    public void updatePassword(String password, Integer userId) {
+        userJpaRepository.updatePassword(password, userId);
+    }
+
 }

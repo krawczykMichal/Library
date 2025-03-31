@@ -2,6 +2,7 @@ package org.example.library.business;
 
 import lombok.AllArgsConstructor;
 import org.example.library.business.dao.BooksDao;
+import org.example.library.business.dao.LoanItemDao;
 import org.example.library.business.dao.LoansDao;
 import org.example.library.domain.*;
 import org.example.library.domain.exception.NotFoundException;
@@ -20,6 +21,7 @@ public class LoansService {
 
     private final LoansDao loansDao;
     private final BooksDao booksDao;
+    private final LoanItemDao loanItemDao;
 
     @Transactional
     public void makeLoan(LoanRequest loanRequest,List<LoanRequestItem> loanRequestItemList) {
@@ -93,7 +95,9 @@ public class LoansService {
     @Transactional
     public void returnLoan(String loanNumber) {
         Loans byLoanNumber = findByLoanNumber(loanNumber);
-        List<LoanItem> loanItems = byLoanNumber.getLoanItem();
+        System.out.println("loan: " + byLoanNumber);
+        List<LoanItem> loanItems = loanItemDao.findByLoanNumber(loanNumber);
+        System.out.println("loanItems: " + loanItems);
         for (LoanItem loanItem : loanItems) {
             Books books = loanItem.getBook().withCopies(loanItem.getBook().getCopies() + loanItem.getQuantity());
             booksDao.saveBook(books);

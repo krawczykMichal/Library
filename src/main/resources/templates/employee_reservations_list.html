@@ -61,8 +61,8 @@
     <tr th:each="reservation : ${reservationsList}">
         <td th:text="${reservation.cart.user.username}"></td>
         <td th:text="${reservation.reservationNumber}"></td>
-        <td th:text="${reservation.reservationMakeDate}"></td>
-        <td th:text="${reservation.reservationHoldToDate}" ></td>
+        <td th:text="${#temporals.format(reservation.reservationMakeDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${#temporals.format(reservation.reservationHoldToDate, 'yyyy-MM-dd HH:mm')}"></td>
         <td>
             <a th:href="@{/employee/reservation/details/{reservationNumber}(reservationNumber=${reservation.reservationNumber})}" class="btn btn-info" role="button">Details</a>
         </td>

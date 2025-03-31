@@ -8,6 +8,31 @@
           integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
           crossorigin="anonymous">
     <title>Library app</title>
+    <style>
+        .alert {
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+        ::placeholder {
+            color: gray;
+            font-style: italic;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,23 +45,32 @@
     </div>
 </div>
 <br>
-<form action="#" th:action="@{/user/{userId}/update(userId=${user.userId})}" th:object="${userDTO}" method="POST">
+<div th:if="${errorMessage}" class="alert alert-danger">
+    <p th:text="${errorMessage}"></p>
+</div>
+
+<form action="#" th:action="@{/user/{userId}/update(userId=${user.userId})}" th:object="${userDTO}" method="POST" novalidate>
     <input type="hidden" name="_method" value="PATCH"/>
     <br>
     <label for="name">Name:</label>
-    <input type="text" id="name" th:field="*{name}"/>
+    <input type="text" id="name" pattern="[A-Za-z]+" th:field="*{name}" th:placeholder="${user.name}"/>
+
     <br>
     <label for="surname">Surname:</label>
-    <input type="text" id="surname" th:field="*{surname}"/>
+    <input type="text" id="surname" pattern="[A-Za-z]+" th:field="*{surname}" th:placeholder="${user.surname}"/>
+
     <br>
     <label for="email">Email:</label>
-    <input type="text" id="email" th:field="*{email}"/>
+    <input type="text" id="email" th:field="*{email}" th:placeholder="${user.email}"/>
+
     <br>
     <label for="username">Username:</label>
-    <input type="text" id="Username" th:field="*{username}"/>
+    <input type="text" id="Username" pattern="[A-Za-z0-9_-]+" th:field="*{username}" th:placeholder="${user.username}"/>
+
     <br>
     <label for="phoneNumber">Phone number:</label>
-    <input type="text" id="phoneNumber" th:field="*{phoneNumber}"/>
+    <input type="text" id="phoneNumber" pattern="^\+?[0-9 ]{7,15}$" th:field="*{phoneNumber}" th:placeholder="${user.phoneNumber}"/>
+
     <br>
     <button type="submit">Update Profile</button>
 </form>
