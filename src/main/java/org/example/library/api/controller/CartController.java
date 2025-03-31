@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.example.library.api.dto.*;
 import org.example.library.business.*;
 import org.example.library.domain.*;
+import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -120,10 +121,14 @@ public class CartController {
             String errorMessage = (String) model.getAttribute("error");
             model.addAttribute("error", errorMessage);
         }
-        Books byIsbn = booksService.findByIsbn(isbn);
-
-        model.addAttribute("byIsbn", byIsbn);
-        model.addAttribute("cartItemDTO", cartItemDTO);
+        try {
+            Books book = booksService.findByIsbn(isbn);
+            model.addAttribute("byIsbn", book);
+            model.addAttribute("cartItemDTO", cartItemDTO);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", "Could not find book with: " + isbn + ". Try again or check your ISBN.");
+            return "book_not_found_by_isbn";
+        }
 
         return "user_add_item_to_cart";
     }
@@ -136,34 +141,41 @@ public class CartController {
             @ModelAttribute("cartItemDTO")
             CartItemDTO cartItemDTO,
             HttpSession httpSession,
-            RedirectAttributes redirectAttributes
+            RedirectAttributes redirectAttributes,
+            Model model
     ) {
-        String username = httpSession.getAttribute("username").toString();
-        Users userByUsername = usersService.findByUsername(username);
+        try {
+            String username = httpSession.getAttribute("username").toString();
+            Users userByUsername = usersService.findByUsername(username);
 
-        Integer userId = userByUsername.getUserId();
+            Integer userId = userByUsername.getUserId();
 
-        Cart cartByUserId = cartService.findCartByUserId(userId);
+            Cart cartByUserId = cartService.findCartByUserId(userId);
 
-        Books byIsbn = booksService.findByIsbn(isbn);
 
-        if (cartItemDTO.getQuantity() == null || cartItemDTO.getQuantity() == 0) {
+            Books book = booksService.findByIsbn(isbn);
+            model.addAttribute("book", book);
+            if (cartItemDTO.getQuantity() == null || cartItemDTO.getQuantity() == 0) {
 
-            redirectAttributes.addFlashAttribute("error", "You try to add not enough copies");
-            redirectAttributes.addAttribute("isbn", isbn);
+                redirectAttributes.addFlashAttribute("error", "You try to add not enough copies");
+                redirectAttributes.addAttribute("isbn", isbn);
 
-            return "redirect:/user/cart/{isbn}/add";
+                return "redirect:/user/cart/{isbn}/add";
 
-        } else if (cartItemDTO.getQuantity() > byIsbn.getCopies()) {
+            } else if (cartItemDTO.getQuantity() > book.getCopies()) {
 
-            redirectAttributes.addFlashAttribute("error", "You try to add to much copies");
-            redirectAttributes.addAttribute("isbn", isbn);
+                redirectAttributes.addFlashAttribute("error", "You try to add to much copies");
+                redirectAttributes.addAttribute("isbn", isbn);
 
-            return "redirect:/user/cart/{isbn}/add";
+                return "redirect:/user/cart/{isbn}/add";
 
+
+            }
+            cartService.addItemToCart(cartByUserId, book, cartItemDTO);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", "Could not find book with: " + isbn + ". Try again or check your ISBN.");
+            return "book_not_found_by_isbn";
         }
-
-            cartService.addItemToCart(cartByUserId, byIsbn, cartItemDTO);
 
         return "redirect:/book/list";
     }

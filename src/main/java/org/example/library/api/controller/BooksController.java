@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import org.example.library.api.dto.BooksDTO;
 import org.example.library.business.*;
 import org.example.library.domain.*;
+import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -120,9 +121,13 @@ public class BooksController {
             @ModelAttribute("booksDTO")
             BooksDTO booksDTO
     ) {
-        Books book = booksService.findByIsbn(isbn);
-
-        model.addAttribute("book", book);
+        try {
+            Books book = booksService.findByIsbn(isbn);
+            model.addAttribute("book", book);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", "Could not find book with: " + isbn + ". Try again or check your ISBN.");
+            return "book_not_found_by_isbn";
+        }
 
         return "book_details";
     }

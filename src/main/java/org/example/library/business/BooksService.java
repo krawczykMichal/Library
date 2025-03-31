@@ -7,6 +7,7 @@ import org.example.library.domain.Authors;
 import org.example.library.domain.Books;
 import org.example.library.domain.CartItem;
 import org.example.library.domain.Categories;
+import org.example.library.domain.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -48,7 +49,7 @@ public class BooksService {
     @Transactional
     public Books findByIsbn(String isbn) {
         if (booksDao.findByIsbn(isbn).isEmpty()) {
-            throw new RuntimeException();
+            throw new NotFoundException("Book with ISBN " + isbn + " not found");
         }
         //@TODO poprawić to tak aby zamiast wyjątków i wyrzucania z aplikacji pojawiały się informacje na stronie która dalej działa np; nie możemy znaleźć książki o takich danych, spróbuj ponownie później
         return booksDao.findByIsbn(isbn).get();

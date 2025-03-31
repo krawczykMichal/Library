@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.library.api.dto.*;
 import org.example.library.business.*;
 import org.example.library.domain.*;
+import org.example.library.domain.exception.NotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -236,9 +237,13 @@ public class EmployeesController {
             @ModelAttribute("booksDTO")
             BooksDTO booksDTO
     ) {
-        Books book = booksService.findByIsbn(isbn);
-
-        model.addAttribute("book", book);
+        try {
+            Books book = booksService.findByIsbn(isbn);
+            model.addAttribute("book", book);
+        } catch (NotFoundException e) {
+            model.addAttribute("errorMessage", "Could not find book with: " + isbn + ". Try again or check your ISBN.");
+            return "book_not_found_by_isbn";
+        }
 
         return "employee_book_details";
     }
@@ -254,7 +259,7 @@ public class EmployeesController {
         Books book = booksService.findByIsbn(isbn);
 
         model.addAttribute("booksDTO", booksDTO);
-
+// @TODO sprawdzić czy książka istnieje w bazie danych zanim ją zaktualizujemy
         return "employee_book_details_update";
     }
 
