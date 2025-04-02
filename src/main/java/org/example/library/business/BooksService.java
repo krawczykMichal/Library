@@ -51,7 +51,6 @@ public class BooksService {
         if (booksDao.findByIsbn(isbn).isEmpty()) {
             throw new NotFoundException("Book with ISBN " + isbn + " not found");
         }
-        //@TODO poprawić to tak aby zamiast wyjątków i wyrzucania z aplikacji pojawiały się informacje na stronie która dalej działa np; nie możemy znaleźć książki o takich danych, spróbuj ponownie później
         return booksDao.findByIsbn(isbn).get();
     }
 

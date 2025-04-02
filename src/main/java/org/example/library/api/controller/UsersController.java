@@ -37,8 +37,6 @@ public class UsersController {
     private final CartItemService cartItemService;
     private final LoanItemService loanItemService;
     private final UserService userService;
-    private final ReservationsHistoryService reservationsHistoryService;
-    private final LoansHistoryService loansHistoryService;
     private final LoanRequestService loanRequestService;
 
     @GetMapping(value = "/user/home")

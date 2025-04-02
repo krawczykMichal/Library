@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CategoriesDao {
+//    @TODO od tego miejsca pisać dalej testy
 
     List<Categories> findAll();
 

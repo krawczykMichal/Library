@@ -36,10 +36,6 @@ public class CartItemService {
         System.out.println("cartItem: " + cartItem1);
     }
 
-    public List<CartItem> findByCartId(Integer cartId) {
-        return cartItemDao.findByCartId(cartId);
-    }
-
     @Transactional
     public void clearCartAfterReservationOrLoan(Integer cartId) {
         cartItemDao.clearCartAfterReservationOrLoan(cartId);
