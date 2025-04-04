@@ -1,8 +1,6 @@
 package org.example.library.infrastructure.database.repository.jpa;
 
-import org.example.library.domain.LoansHistory;
 import org.example.library.infrastructure.database.entity.LoansHistoryEntity;
-import org.example.library.infrastructure.security.repository.mapper.UserRoleEntityMapper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

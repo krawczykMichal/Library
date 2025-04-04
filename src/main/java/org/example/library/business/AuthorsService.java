@@ -1,5 +1,6 @@
 package org.example.library.business;
 
+import jakarta.persistence.EntityManager;
 import lombok.AllArgsConstructor;
 import org.example.library.api.dto.AuthorsDTO;
 import org.example.library.business.dao.AuthorsDao;
@@ -21,9 +22,10 @@ public class AuthorsService {
     private final AuthorsDao authorsDao;
 
     @Transactional
-    public void saveAuthor(AuthorsDTO authorsDTO) {
+    public Authors saveAuthor(AuthorsDTO authorsDTO) {
         Authors author = registerAuthor(authorsDTO);
         authorsDao.saveAuthor(author);
+        return author;
     }
 
     private Authors registerAuthor(AuthorsDTO authorsDTO) {
@@ -43,7 +45,6 @@ public class AuthorsService {
         }
         return employeeNumber.toString();
     }
-
     @Transactional
     public void updateAuthor(Authors author, AuthorsDTO authorsDTO) {
 

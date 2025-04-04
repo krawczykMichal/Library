@@ -621,9 +621,10 @@ values (1,1, 1),
        (41,41, 2),
        (42,42, 3);
 
-SELECT setval('library_app_user_user_id_seq', COALESCE((SELECT MAX(user_id) FROM library_app_user), 0) + 1, false);
-SELECT setval('library_app_user_role_id_seq', COALESCE((SELECT MAX(user_id) FROM library_app_user), 0) + 1, false);
-
+-- SELECT setval('library_app_user_user_id_seq', COALESCE((SELECT MAX(user_id) FROM library_app_user), 0) + 1, false);
+-- SELECT setval('library_app_user_role_id_seq', COALESCE((SELECT MAX(user_id) FROM library_app_user), 0) + 1, false);
+-- SELECT setval('library_app_user_user_id_seq', (SELECT MAX(user_id) FROM library_app_user), false);
+-- SELECT setval('library_app_user_role_id_seq', (SELECT MAX(role_id) FROM library_app_user_role), false);
 
 
 
