@@ -72,15 +72,15 @@ public class CategoriesDaoTest {
     }
 
     @Test
-    void testAddCategory() {
+    void testSaveCategory() {
         // Tworzenie nowej kategorii za pomocą buildera
         Categories category = Categories.builder().name("Philosophy").build();
 
         // Mockowanie addCategory
-        when(categoriesDao.addCategory(any(Categories.class))).thenReturn(category);
+        when(categoriesDao.saveCategory(any(Categories.class))).thenReturn(category);
 
         // Wywołanie metody addCategory
-        Categories addedCategory = categoriesDao.addCategory(category);
+        Categories addedCategory = categoriesDao.saveCategory(category);
 
         // Sprawdzanie wyników
         assertNotNull(addedCategory);

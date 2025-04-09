@@ -18,12 +18,9 @@ import java.util.Optional;
 public class CartItemService {
 
     private final CartItemDao cartItemDao;
-    private final BooksDao booksDao;
 
     @Transactional
     public void addToCartItem(Books book, Cart cart, CartItemDTO cartItemDTO) {
-        Optional<Books> byIsbn = booksDao.findByIsbn(book.getIsbn());
-        Books books = byIsbn.get();
 
         CartItem cartItem = CartItem.builder()
                 .cart(cart)

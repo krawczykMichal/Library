@@ -32,7 +32,7 @@ public class CategoriesRepository implements CategoriesDao {
     }
 
     @Override
-    public Categories addCategory(Categories category) {
+    public Categories saveCategory(Categories category) {
         CategoriesEntity toSave = categoriesEntityMapper.mapToCategoriesEntity(category);
         CategoriesEntity saved = categoriesJpaRepository.save(toSave);
         return categoriesEntityMapper.mapFromCategoriesEntity(saved);

@@ -27,12 +27,16 @@ public class CategoriesService {
                 .name(categoriesDTO.getName())
                 .build();
 
-        categoriesDao.addCategory(category);
+        categoriesDao.saveCategory(category);
     }
 
     public Categories updateCategoryName(Categories byName, CategoriesDTO categoriesDTO) {
-        Categories toUpdate = byName.withName(categoriesDTO.getName() != null && !categoriesDTO.getName().isEmpty() ? byName.getName() : categoriesDTO.getName());
+        String updatedName = categoriesDTO.getName() != null && !categoriesDTO.getName().isEmpty()
+                ? categoriesDTO.getName()
+                : byName.getName();
 
-        return categoriesDao.addCategory(toUpdate);
+        Categories toUpdate = byName.withName(updatedName);
+
+        return categoriesDao.saveCategory(toUpdate);
     }
 }

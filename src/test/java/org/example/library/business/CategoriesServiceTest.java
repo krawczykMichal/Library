@@ -66,11 +66,11 @@ class CategoriesServiceTest {
         Categories expectedCategory = Categories.builder()
                 .name("Non-Fiction")
                 .build();
-        when(categoriesDao.addCategory(any(Categories.class))).thenReturn(expectedCategory);
+        when(categoriesDao.saveCategory(any(Categories.class))).thenReturn(expectedCategory);
 
         categoriesService.addCategory(categoriesDTO);
 
-        verify(categoriesDao, times(1)).addCategory(argThat(cat -> cat.getName().equals("Non-Fiction")));
+        verify(categoriesDao, times(1)).saveCategory(argThat(cat -> cat.getName().equals("Non-Fiction")));
 
     }
 
@@ -79,13 +79,13 @@ class CategoriesServiceTest {
         CategoriesDTO updateDto = CategoriesDTO.builder().name("Non-Fiction").build();
 
         Categories updatedCategory = Categories.builder().name("Fiction").build();
-        when(categoriesDao.addCategory(any(Categories.class))).thenReturn(updatedCategory);
+        when(categoriesDao.saveCategory(any(Categories.class))).thenReturn(updatedCategory);
 
         Categories result = categoriesService.updateCategoryName(category, updateDto);
 
         assertNotNull(result);
         assertEquals("Fiction", result.getName());
-        verify(categoriesDao, times(1)).addCategory(any(Categories.class));
+        verify(categoriesDao, times(1)).saveCategory(any(Categories.class));
     }
 
     @Test
@@ -93,12 +93,12 @@ class CategoriesServiceTest {
         CategoriesDTO updateDto = CategoriesDTO.builder().name("").build();
 
         Categories updatedCategory = Categories.builder().name("").build();
-        when(categoriesDao.addCategory(any(Categories.class))).thenReturn(updatedCategory);
+        when(categoriesDao.saveCategory(any(Categories.class))).thenReturn(updatedCategory);
 
         Categories result = categoriesService.updateCategoryName(category, updateDto);
 
         assertNotNull(result);
         assertEquals("", result.getName());
-        verify(categoriesDao, times(1)).addCategory(any(Categories.class));
+        verify(categoriesDao, times(1)).saveCategory(any(Categories.class));
     }
 }
