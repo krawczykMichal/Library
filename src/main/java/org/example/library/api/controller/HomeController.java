@@ -12,6 +12,7 @@ public class HomeController {
 
     @GetMapping(value = HOME)
     public String homePage() {
+        System.out.println("gitlabCI działa");
         return "home";
     }
 
