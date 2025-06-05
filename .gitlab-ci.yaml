@@ -1,0 +1,43 @@
+stages:
+  - build
+  - docker-build
+  - deploy
+  - test
+
+variables:
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
+
+build:
+  stage: build
+  script:
+    - ./mvnm clean package -DskipTests
+  artifacts:
+    paths:
+      - target/*.jar
+
+test:
+  stage: test
+  script:
+    - ./mvnm test
+
+docker-build:
+  stage: docker-build
+  image: docker:latest
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+
+deploy:
+  stage: deploy
+  image: bitnami/kubectl:latest
+  script:
+    - echo "$KUBE_CONFIG" | base64 -d > kubeconfig.yaml
+    - kubectl --kubeconfig=kubeconfig.yaml apply -f k8s/
+    - kubectl --kubeconfig=kubeconfig.yaml set image deployment/library-backend library-backend=$IMAGE_TAG
+    - kubectl --kubeconfig=kubeconfig.yaml rollout status deployment/library-backend
